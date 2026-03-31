@@ -129,7 +129,7 @@ export async function getPrivacyComparison(
         service_name: "NexusAD",
         category: "ai",
         privacy_score: 95,
-        data_location: ["UAE"],
+        data_location: ["USA (RunPod)"],
         data_sharing: {
           third_parties: false,
           advertisers: false,
@@ -142,7 +142,7 @@ export async function getPrivacyComparison(
           end_to_end: true,
           key_management: "user",
         },
-        compliance: ["ISO 27001", "SOC2", "UAE Data Protection Law"],
+        compliance: ["ISO 27001", "SOC2", "GDPR"],
         risks: [],
         advantages: ["Full data sovereignty", "Zero data sharing", "User-controlled encryption"],
       },
@@ -252,7 +252,7 @@ export async function getSovereigntyReport(
         local_data_gb: 120.3,
         foreign_data_gb: 5.2,
         jurisdictions: [
-          { country: "UAE", percentage: 95.8 },
+          { country: "USA (RunPod)", percentage: 95.8 },
           { country: "CDN Cache", percentage: 4.2 },
         ],
       },
@@ -272,7 +272,7 @@ export async function getSovereigntyReport(
       },
       compliance_status: [
         {
-          standard: "UAE Data Protection",
+          standard: "GDPR",
           status: "compliant",
           issues: [],
         },
@@ -333,20 +333,20 @@ export async function getSovereigntyCertificates(
         issued_date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
         expiry_date: new Date(Date.now() + 305 * 24 * 60 * 60 * 1000).toISOString(),
         status: "active",
-        issuer: "UAE Digital Authority",
+        issuer: "NexusAD Security Team",
         subject: {
           organization: "Your Organization",
           domain: "nexusad.ai",
-          jurisdiction: "UAE",
+          jurisdiction: "International",
         },
         claims: [
           {
-            claim: "100% data stored within UAE borders",
+            claim: "AES-256-GCM encryption applied to all stored data",
             verified: true,
-            evidence: "Datacenter audit report #2024-03",
+            evidence: "Encryption audit report #2024-03",
           },
           {
-            claim: "Zero data export to foreign jurisdictions",
+            claim: "Zero data sharing with advertisers or third parties",
             verified: true,
             evidence: "Network traffic analysis report",
           },

@@ -285,13 +285,13 @@ export function IntelligencePanel({
           </h3>
           <div className="space-y-2">
             {[
-              { name: "UAE Node 1", nameAr: "عقدة الإمارات ١", status: "active" },
-              { name: "UAE Node 2", nameAr: "عقدة الإمارات ٢", status: "active" },
-              { name: "UAE Node 3", nameAr: "عقدة الإمارات ٣", status: isProcessing ? "processing" : "active" },
+              { name: "Secure Node 1", nameAr: "عقدة آمنة ١", status: "active" },
+              { name: "Secure Node 2", nameAr: "عقدة آمنة ٢", status: "active" },
+              { name: "Secure Node 3", nameAr: "عقدة آمنة ٣", status: isProcessing ? "processing" : "active" },
             ].map((node) => (
               <div key={node.name} className="flex items-center justify-between p-2 rounded-lg bg-secondary/50">
                 <span className="text-sm flex items-center gap-2">
-                  <span>🇦🇪</span>
+                  <span>🔒</span>
                   {language === "ar" ? node.nameAr : node.name}
                 </span>
                 <span className={cn(

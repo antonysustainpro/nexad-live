@@ -34,7 +34,7 @@ export default function TermsPage() {
             <p>باستخدامك لخدمات NexusAD AI، فإنك توافق على الالتزام بهذه الشروط والأحكام. إذا لم توافق على هذه الشروط، يرجى عدم استخدام خدماتنا.</p>
 
             <h2>2. وصف الخدمة</h2>
-            <p>NexusAD AI هي منصة ذكاء اصطناعي سيادية توفر خدمات المساعدة الذكية مع التركيز على الخصوصية وحماية البيانات. يتم تشفير بياناتك وتجزئتها عبر عقد متعددة في الإمارات العربية المتحدة.</p>
+            <p>NexusAD AI هي منصة ذكاء اصطناعي سيادية توفر خدمات المساعدة الذكية مع التركيز على الخصوصية وحماية البيانات. يتم تشفير بياناتك وتجزئتها عبر عقد متعددة آمنة باستخدام تشفير AES-256-GCM.</p>
 
             <h2>3. حسابات المستخدمين</h2>
             <p>أنت مسؤول عن الحفاظ على سرية معلومات حسابك ومفتاح API الخاص بك. أنت توافق على إخطارنا فوراً بأي استخدام غير مصرح به. يجب أن يكون عمرك 16 عاماً أو أكثر لاستخدام خدماتنا.</p>
@@ -48,7 +48,7 @@ export default function TermsPage() {
             </ul>
 
             <h2>5. الخصوصية والبيانات</h2>
-            <p>نحن ملتزمون بحماية خصوصيتك. يتم تشفير جميع البيانات وتخزينها في مراكز بيانات الإمارات العربية المتحدة. لمزيد من التفاصيل، يرجى مراجعة <Link href="/privacy-policy" className="text-nexus-jade hover:underline">سياسة الخصوصية</Link> الخاصة بنا.</p>
+            <p>نحن ملتزمون بحماية خصوصيتك. يتم تشفير جميع البيانات وتخزينها على بنية تحتية آمنة بمستوى المؤسسات. لمزيد من التفاصيل، يرجى مراجعة <Link href="/privacy-policy" className="text-nexus-jade hover:underline">سياسة الخصوصية</Link> الخاصة بنا.</p>
             <p>بموجب قوانين حماية البيانات (GDPR/PDPL)، لديك حقوق كاملة في الوصول إلى بياناتك وتصديرها وحذفها. يمكنك ممارسة هذه الحقوق عبر <Link href="/settings" className="text-nexus-jade hover:underline">الإعدادات</Link>.</p>
 
             <h2>6. حقوقك في البيانات</h2>
@@ -73,7 +73,7 @@ export default function TermsPage() {
             <p>نحتفظ بالحق في تعديل هذه الشروط في أي وقت. سيتم إخطارك بأي تغييرات جوهرية قبل 30 يوماً من سريانها.</p>
 
             <h2>11. القانون المعمول به</h2>
-            <p>تخضع هذه الشروط لقوانين الإمارات العربية المتحدة. أي نزاعات ستُحل وفقاً لأحكام محاكم الإمارات العربية المتحدة.</p>
+            <p>تخضع هذه الشروط للقوانين المعمول بها. أي نزاعات ستُحل عبر القنوات القانونية المناسبة.</p>
 
             <h2>12. الاتصال بنا</h2>
             <p>إذا كانت لديك أي أسئلة حول هذه الشروط، يرجى الاتصال بنا على support@nexusad.ai</p>
@@ -84,7 +84,7 @@ export default function TermsPage() {
             <p>By using NexusAD AI services, you agree to be bound by these terms and conditions. If you do not agree to these terms, please do not use our services.</p>
 
             <h2>2. Description of Service</h2>
-            <p>NexusAD AI is a sovereign AI platform providing intelligent assistance services with a focus on privacy and data protection. Your data is encrypted and sharded across multiple UAE nodes.</p>
+            <p>NexusAD AI is a sovereign AI platform providing intelligent assistance services with a focus on privacy and data protection. Your data is encrypted and sharded across multiple secure nodes using AES-256-GCM encryption.</p>
 
             <h2>3. User Accounts</h2>
             <p>You are responsible for maintaining the confidentiality of your account information and API key. You agree to notify us immediately of any unauthorized use. You must be at least 16 years old to use our services.</p>
@@ -99,7 +99,7 @@ export default function TermsPage() {
 
             <h2>5. Privacy and Data</h2>
             <p>
-              We are committed to protecting your privacy. All data is encrypted and stored in UAE data centers. For full details, please review our{" "}
+              We are committed to protecting your privacy. All data is encrypted using AES-256-GCM and stored on enterprise-grade secure infrastructure. For full details, please review our{" "}
               <Link href="/privacy-policy" className="text-nexus-jade hover:underline">Privacy Policy</Link>.
             </p>
             <p>
@@ -129,7 +129,7 @@ export default function TermsPage() {
             <p>We reserve the right to modify these terms at any time. You will be notified of any material changes at least 30 days before they take effect.</p>
 
             <h2>11. Governing Law</h2>
-            <p>These terms are governed by the laws of the United Arab Emirates. Any disputes will be resolved in accordance with UAE court jurisdiction.</p>
+            <p>These terms are governed by applicable laws. Any disputes will be resolved through appropriate legal channels.</p>
 
             <h2>12. Contact Us</h2>
             <p>If you have any questions about these terms, please contact us at support@nexusad.ai</p>

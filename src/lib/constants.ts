@@ -37,9 +37,9 @@ export const SOVEREIGNTY_FACTORS = [
 ] as const
 
 export const SHARD_NODES = [
-  { id: "uae-1", name: "UAE Node 1", nameAr: "عقدة الإمارات ١", position: { x: 50, y: 30 } },
-  { id: "uae-2", name: "UAE Node 2", nameAr: "عقدة الإمارات ٢", position: { x: 20, y: 70 } },
-  { id: "uae-3", name: "UAE Node 3", nameAr: "عقدة الإمارات ٣", position: { x: 80, y: 70 } },
+  { id: "node-1", name: "Secure Node 1", nameAr: "عقدة آمنة ١", position: { x: 50, y: 30 } },
+  { id: "node-2", name: "Secure Node 2", nameAr: "عقدة آمنة ٢", position: { x: 20, y: 70 } },
+  { id: "node-3", name: "Secure Node 3", nameAr: "عقدة آمنة ٣", position: { x: 80, y: 70 } },
 ] as const
 
 export const NAV_ITEMS = [

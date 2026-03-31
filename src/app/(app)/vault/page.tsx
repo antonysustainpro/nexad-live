@@ -39,10 +39,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn, sanitizeFilename } from "@/lib/utils"
+import { cn, sanitizeFilename, scanTextForPii } from "@/lib/utils"
 import { getAccessLog, uploadToVault, listVaultDocuments } from "@/lib/api"
 import { toast } from "sonner"
 import { ErrorRetry } from "@/components/error-retry"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 // Document type used within vault UI
 interface VaultDoc {
@@ -153,6 +163,12 @@ export default function VaultPage() {
   const [accessLogLoading, setAccessLogLoading] = useState(true)
   const [accessLogError, setAccessLogError] = useState(false)
   const [docsError, setDocsError] = useState(false)
+  // SEC-PII-FILE-001: Track PII warning state for pre-upload scan
+  const [piiWarning, setPiiWarning] = useState<{
+    file: File
+    piiTypes: string[]
+    count: number
+  } | null>(null)
   const itemsPerPage = 5
   const totalPages = Math.max(1, Math.ceil(accessLogEntries.length / itemsPerPage))
   // SEC-BL-003: Clamp currentPage when entries are removed/changed to prevent blank page
@@ -282,10 +298,45 @@ export default function VaultPage() {
     return `${(bytes / 1048576).toFixed(1)} MB`
   }
 
+  // SEC-PII-FILE-001: Scan a file's text content for PII before upload.
+  // Only text-readable formats are scanned client-side. PDFs and images are
+  // forwarded to the backend which performs server-side extraction and scanning.
+  const scanFileForPii = useCallback(async (file: File): Promise<{ count: number; types: string[] }> => {
+    const TEXT_MIME_TYPES = new Set([
+      "text/plain", "text/csv", "text/markdown",
+      "application/json", "application/x-yaml",
+    ])
+    const ext = file.name.split(".").pop()?.toLowerCase() || ""
+    const TEXT_EXTENSIONS = new Set(["txt", "csv", "md", "json", "yaml", "yml"])
+
+    // Only scan client-side for text formats
+    if (!TEXT_MIME_TYPES.has(file.type) && !TEXT_EXTENSIONS.has(ext)) {
+      // Non-text files (PDF, images, Office docs) go to backend — return empty
+      return { count: 0, types: [] }
+    }
+
+    try {
+      const text = await file.text()
+      return scanTextForPii(text)
+    } catch {
+      // If we can't read the file text, skip scanning safely
+      return { count: 0, types: [] }
+    }
+  }, [])
+
   // Upload file via real API, with progress animation
   const handleUpload = useCallback(async (file: File) => {
     const name = file.name
     const size = file.size
+
+    // SEC-PII-FILE-001: Scan text files for PII before upload and warn user
+    const piiScan = await scanFileForPii(file)
+    if (piiScan.count > 0) {
+      // Surface warning — user must confirm to proceed
+      setPiiWarning({ file, piiTypes: piiScan.types, count: piiScan.count })
+      return
+    }
+
     setUploadFileName(name)
     setUploadFileSize(size)
     setUploadProgress(0)
@@ -354,7 +405,79 @@ export default function VaultPage() {
         setUploadFileName(null)
       }, 1500)
     }
-  }, [language])
+  }, [language, scanFileForPii])
+
+  // SEC-PII-FILE-001: Proceed with upload after user acknowledges PII warning
+  const handlePiiWarningProceed = useCallback(async () => {
+    if (!piiWarning) return
+    const file = piiWarning.file
+    setPiiWarning(null)
+
+    // Directly execute the upload without re-scanning
+    const name = file.name
+    const size = file.size
+    setUploadFileName(name)
+    setUploadFileSize(size)
+    setUploadProgress(0)
+
+    let currentProgress = 0
+    uploadIntervalRef.current = setInterval(() => {
+      currentProgress = Math.min(currentProgress + 3, 90)
+      setUploadProgress(currentProgress)
+    }, 200)
+
+    try {
+      const result = await uploadToVault(file)
+      if (uploadIntervalRef.current) {
+        clearInterval(uploadIntervalRef.current)
+        uploadIntervalRef.current = null
+      }
+      setUploadProgress(100)
+      const idBytes = new Uint8Array(16)
+      crypto.getRandomValues(idBytes)
+      const secureId = `doc-${Array.from(idBytes).map(b => b.toString(16).padStart(2, "0")).join("")}`
+      const newDoc: VaultDoc = {
+        id: secureId,
+        name: result.filename || name,
+        type: getFileType(name),
+        size: formatFileSize(size),
+        sizeBytes: size,
+        domain: "Personal",
+        shards: result.chunks_stored || 1,
+        lastModified: "Just now",
+        encrypted: true,
+      }
+      setDocuments((prev) => [newDoc, ...prev])
+      toast.success(language === "ar" ? "تم رفع المستند بنجاح" : "Document uploaded successfully")
+    } catch {
+      if (uploadIntervalRef.current) {
+        clearInterval(uploadIntervalRef.current)
+        uploadIntervalRef.current = null
+      }
+      setUploadProgress(100)
+      const idBytes = new Uint8Array(16)
+      crypto.getRandomValues(idBytes)
+      const secureId = `doc-${Array.from(idBytes).map(b => b.toString(16).padStart(2, "0")).join("")}`
+      const newDoc: VaultDoc = {
+        id: secureId,
+        name,
+        type: getFileType(name),
+        size: formatFileSize(size),
+        sizeBytes: size,
+        domain: "Personal",
+        shards: 1,
+        lastModified: "Just now",
+        encrypted: true,
+      }
+      setDocuments((prev) => [newDoc, ...prev])
+      toast.info(language === "ar" ? "تم إضافة المستند محلياً" : "Document added locally (API unavailable)")
+    } finally {
+      setTimeout(() => {
+        setUploadProgress(null)
+        setUploadFileName(null)
+      }, 1500)
+    }
+  }, [piiWarning, language, getFileType, formatFileSize])
 
   // Filter documents by selected folder/domain
   const filteredDocuments = documents.filter((doc) => {
@@ -371,6 +494,52 @@ export default function VaultPage() {
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto pb-20">
+
+      {/* SEC-PII-FILE-001: PII detected in file — warn user before upload */}
+      <AlertDialog open={!!piiWarning} onOpenChange={(open) => { if (!open) setPiiWarning(null) }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5 text-yellow-500" aria-hidden="true" />
+              {language === "ar" ? "تحذير: معلومات شخصية محتملة" : "PII Detected in File"}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <p>
+                {language === "ar"
+                  ? `تم اكتشاف ${piiWarning?.count ?? 0} بيان(ات) شخصية محتملة في الملف "${piiWarning?.file.name}".`
+                  : `Found ${piiWarning?.count ?? 0} potential personal data item(s) in "${piiWarning?.file.name}".`
+                }
+              </p>
+              {piiWarning?.piiTypes && piiWarning.piiTypes.length > 0 && (
+                <p className="text-sm font-medium">
+                  {language === "ar" ? "الأنواع المكتشفة: " : "Types detected: "}
+                  <span className="text-yellow-600 dark:text-yellow-400">
+                    {piiWarning.piiTypes.join(", ")}
+                  </span>
+                </p>
+              )}
+              <p className="text-sm text-muted-foreground">
+                {language === "ar"
+                  ? "سيتم تشفير الملف وتجزئته عبر عقد آمنة. هل تريد المتابعة؟"
+                  : "The file will be encrypted and sharded across secure nodes. Do you still want to proceed with the upload?"
+                }
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setPiiWarning(null)}>
+              {language === "ar" ? "إلغاء" : "Cancel"}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handlePiiWarningProceed}
+              className="bg-nexus-jade hover:bg-nexus-jade-hover text-background"
+            >
+              {language === "ar" ? "متابعة الرفع" : "Upload Anyway"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

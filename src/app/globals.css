@@ -523,7 +523,7 @@
   }
 }
 
-/* High Contrast Mode - UAE Disability Inclusion Act 2018 Compliance */
+/* High Contrast Mode - WCAG 2.1 AA Compliance */
 /* NOTE: Brand colors (nexus-jade, nexus-gold) already meet WCAG AA contrast ratios.
    We only enhance borders and readability, NOT strip colors entirely. */
 @media (prefers-contrast: more) {

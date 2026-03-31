@@ -31,11 +31,10 @@ export default function PrivacyPolicyPage() {
         {language === "ar" ? (
           <>
             <h2>1. من نحن (المتحكم في البيانات)</h2>
-            <p>NexusAD AI (المشار إليها بـ "نحن" أو "الشركة") هي المتحكم في البيانات المسؤول عن بياناتك الشخصية. مقرنا في الإمارات العربية المتحدة.</p>
+            <p>NexusAD AI (المشار إليها بـ "نحن" أو "الشركة") هي المتحكم في البيانات المسؤول عن بياناتك الشخصية.</p>
             <ul>
               <li><strong>اسم الشركة:</strong> NexusAD AI</li>
               <li><strong>مسؤول حماية البيانات (DPO):</strong> privacy@nexusad.ai</li>
-              <li><strong>العنوان:</strong> الإمارات العربية المتحدة</li>
             </ul>
 
             <h2>2. المعلومات التي نجمعها</h2>
@@ -72,7 +71,7 @@ export default function PrivacyPolicyPage() {
             <p>نستخدم إجراءات أمنية متقدمة لحماية بياناتك:</p>
             <ul>
               <li><strong>التشفير:</strong> AES-256-GCM لجميع البيانات المخزنة والمنقولة</li>
-              <li><strong>التجزئة:</strong> يتم تجزئة بياناتك عبر عقد متعددة في الإمارات</li>
+              <li><strong>التجزئة:</strong> يتم تجزئة بياناتك عبر عقد متعددة مشفرة</li>
               <li><strong>TLS 1.3:</strong> جميع الاتصالات مشفرة أثناء النقل</li>
               <li><strong>التحكم في الوصول:</strong> صلاحيات قائمة على الأدوار مع سجلات تدقيق</li>
               <li><strong>مفاتيح التشفير:</strong> يتم إنشاؤها محلياً على جهازك، لا نرى مفتاحك الخاص أبداً</li>
@@ -111,13 +110,13 @@ export default function PrivacyPolicyPage() {
             </ul>
             <p>لا نبيع بياناتك أبداً. لا نشارك بياناتك لأغراض إعلانية.</p>
 
-            <h2>9. النقل الدولي للبيانات</h2>
-            <p>يتم تخزين جميع بياناتك في مراكز بيانات الإمارات العربية المتحدة. عند تجزئة استفساراتك لمزودي الذكاء الاصطناعي، يتم تنظيف المعلومات الشخصية أولاً. لأي نقل دولي للبيانات، نعتمد على الضمانات التالية:</p>
+            <h2>9. نقل البيانات</h2>
+            <p>يتم تخزين بياناتك على بنية تحتية بمستوى المؤسسات مع تشفير AES-256-GCM. عند تجزئة استفساراتك لمزودي الذكاء الاصطناعي، يتم تنظيف المعلومات الشخصية أولاً. لأي نقل بيانات، نعتمد على الضمانات التالية:</p>
             <ul>
-              <li><strong>البنود التعاقدية القياسية (SCCs):</strong> موقعة مع جميع مزودي الذكاء الاصطناعي والمعالجين الفرعيين خارج الإمارات</li>
+              <li><strong>البنود التعاقدية القياسية (SCCs):</strong> موقعة مع جميع مزودي الذكاء الاصطناعي والمعالجين الفرعيين</li>
               <li><strong>قرارات الملاءمة:</strong> حيث تم الاعتراف بالولاية القضائية المتلقية كمقدمة لحماية كافية للبيانات</li>
-              <li><strong>تقليل البيانات:</strong> يتم تجريد المعلومات الشخصية قبل أي نقل عبر الحدود؛ لا يتلقى أي مزود أكثر من 24% من أي استفسار</li>
-              <li><strong>الامتثال لقانون PDPL الإماراتي:</strong> جميع عمليات النقل تمتثل للمرسوم بقانون اتحادي رقم 45 لسنة 2021 بشأن حماية البيانات الشخصية</li>
+              <li><strong>تقليل البيانات:</strong> يتم تجريد المعلومات الشخصية قبل أي نقل؛ لا يتلقى أي مزود أكثر من 24% من أي استفسار</li>
+              <li><strong>الامتثال لـ GDPR:</strong> جميع عمليات النقل تمتثل للوائح حماية البيانات المعمول بها</li>
             </ul>
 
             <h2>10. ملفات تعريف الارتباط</h2>
@@ -155,11 +154,10 @@ export default function PrivacyPolicyPage() {
         ) : (
           <>
             <h2>1. Who We Are (Data Controller)</h2>
-            <p>NexusAD AI (referred to as "we", "us", or "the Company") is the data controller responsible for your personal data. We are based in the United Arab Emirates.</p>
+            <p>NexusAD AI (referred to as "we", "us", or "the Company") is the data controller responsible for your personal data.</p>
             <ul>
               <li><strong>Company Name:</strong> NexusAD AI</li>
               <li><strong>Data Protection Officer (DPO):</strong> privacy@nexusad.ai</li>
-              <li><strong>Address:</strong> United Arab Emirates</li>
             </ul>
 
             <h2>2. Information We Collect</h2>
@@ -196,7 +194,7 @@ export default function PrivacyPolicyPage() {
             <p>We employ advanced security measures to protect your data:</p>
             <ul>
               <li><strong>Encryption:</strong> AES-256-GCM for all stored and transmitted data</li>
-              <li><strong>Sharding:</strong> Your data is sharded across multiple UAE nodes</li>
+              <li><strong>Sharding:</strong> Your data is sharded across multiple encrypted nodes</li>
               <li><strong>TLS 1.3:</strong> All communications encrypted in transit</li>
               <li><strong>Access controls:</strong> Role-based permissions with audit logging</li>
               <li><strong>Encryption keys:</strong> Generated locally on your device; we never see your private key</li>
@@ -239,13 +237,13 @@ export default function PrivacyPolicyPage() {
             </ul>
             <p>We never sell your data. We do not share your data for advertising purposes.</p>
 
-            <h2>9. International Data Transfers</h2>
-            <p>All your data is stored in UAE data centers. When queries are sharded to AI providers, PII is scrubbed first. For any international data transfer, we rely on the following safeguards:</p>
+            <h2>9. Data Transfers</h2>
+            <p>Your data is stored on enterprise-grade infrastructure with AES-256-GCM encryption. When queries are sharded to AI providers, PII is scrubbed first. For any cross-provider data transfer, we rely on the following safeguards:</p>
             <ul>
-              <li><strong>Standard Contractual Clauses (SCCs):</strong> Executed with all AI providers and sub-processors outside the UAE</li>
+              <li><strong>Standard Contractual Clauses (SCCs):</strong> Executed with all AI providers and sub-processors</li>
               <li><strong>Adequacy decisions:</strong> Where the receiving jurisdiction has been recognized as providing adequate data protection</li>
-              <li><strong>Data minimization:</strong> PII is stripped before any cross-border transfer; no single provider receives more than 24% of any query</li>
-              <li><strong>UAE PDPL compliance:</strong> All transfers comply with UAE Federal Decree-Law No. 45 of 2021 on Personal Data Protection</li>
+              <li><strong>Data minimization:</strong> PII is stripped before any transfer; no single provider receives more than 24% of any query</li>
+              <li><strong>GDPR compliance:</strong> All transfers comply with applicable data protection regulations</li>
             </ul>
 
             <h2>10. Cookies</h2>

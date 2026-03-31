@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect, useCallback, type KeyboardEvent, type DragEvent } from "react"
 import { Paperclip, Mic, ArrowUp, X, FileText, Video, Image, Music, FileSpreadsheet, Presentation, Archive, Book, Loader2, CheckCircle2, AlertCircle, Square, RefreshCw } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, scanTextForPii } from "@/lib/utils"
 import { useNexus } from "@/contexts/nexus-context"
 import { uploadToVault } from "@/lib/api"
+import { auditUserAction, auditVault } from "@/lib/audit-logger"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
@@ -56,6 +57,8 @@ export function ChatInput({
   const [message, setMessage] = useState(initialValue || "")
   const [uploadingFiles, setUploadingFiles] = useState<UploadingFile[]>([])
   const [isDragging, setIsDragging] = useState(false)
+  // SEC-PII-FILE-001: Tracks pending files that triggered a PII warning
+  const [piiWarningFiles, setPiiWarningFiles] = useState<{ file: File; types: string[]; count: number }[]>([])
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -91,6 +94,14 @@ export function ChatInput({
     if (disabled) return
     // SEC-BL-006: Prevent submission while files are still uploading
     if (uploadingFiles.some(f => f.status === "uploading" || f.status === "processing")) return
+
+    // AUD-012: Log chat message sent (no message content — privacy)
+    auditUserAction("chat.message.sent", {
+      tier,
+      hasFiles: completedFiles.length > 0,
+      fileCount: completedFiles.length,
+      messageLength: trimmedMessage.length,
+    })
 
     onSend(trimmedMessage, completedFiles.length > 0 ? completedFiles : undefined)
     setMessage("")
@@ -130,6 +141,11 @@ export function ChatInput({
           ? { ...f, progress: 100, status: "complete" as FileUploadStatus, completedAt: new Date().toISOString() }
           : f
       ))
+      // AUD-013: Log successful vault upload
+      auditVault("document.uploaded", undefined, {
+        fileType: file.type || "unknown",
+        fileSize: file.size,
+      })
     } catch (error) {
       clearInterval(progressInterval)
       setUploadingFiles(prev => prev.map(f =>
@@ -142,27 +158,64 @@ export function ChatInput({
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || [])
-    processFiles(selectedFiles)
+    void processFiles(selectedFiles)
     // Reset input
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
     }
   }
 
-  const processFiles = (files: File[]) => {
+  // SEC-PII-FILE-001: Scan a text file for PII before queuing upload
+  const checkFilePii = useCallback(async (file: File): Promise<{ count: number; types: string[] }> => {
+    const TEXT_MIME_TYPES = new Set([
+      "text/plain", "text/csv", "text/markdown",
+      "application/json", "application/x-yaml",
+    ])
+    const ext = file.name.split(".").pop()?.toLowerCase() || ""
+    const TEXT_EXTENSIONS = new Set(["txt", "csv", "md", "json", "yaml", "yml"])
+    if (!TEXT_MIME_TYPES.has(file.type) && !TEXT_EXTENSIONS.has(ext)) {
+      return { count: 0, types: [] }
+    }
+    try {
+      const text = await file.text()
+      return scanTextForPii(text)
+    } catch {
+      return { count: 0, types: [] }
+    }
+  }, [])
+
+  const processFiles = useCallback(async (files: File[]) => {
     const maxSizeBytes = limits.maxSizeMb * 1024 * 1024
     const currentCount = uploadingFiles.length
     const availableSlots = limits.maxFiles - currentCount
 
     if (availableSlots <= 0) {
-      // Could show toast here
       return
     }
 
-    const filesToAdd = files.slice(0, availableSlots).map(file => {
+    const candidates = files.slice(0, availableSlots)
+
+    // SEC-PII-FILE-001: Scan each file for PII before queuing
+    const piiHits: { file: File; types: string[]; count: number }[] = []
+    const cleanFiles: File[] = []
+
+    for (const file of candidates) {
+      const scan = await checkFilePii(file)
+      if (scan.count > 0) {
+        piiHits.push({ file, types: scan.types, count: scan.count })
+      } else {
+        cleanFiles.push(file)
+      }
+    }
+
+    // Surface PII warnings — user must dismiss before those files proceed
+    if (piiHits.length > 0) {
+      setPiiWarningFiles(prev => [...prev, ...piiHits])
+    }
+
+    // Queue clean files immediately
+    const filesToAdd = cleanFiles.map(file => {
       // SEC-SM-004 + SEC-SM-R3-008: Use crypto.getRandomValues for fully unpredictable IDs.
-      // Removed Date.now() prefix — it leaks the exact upload timestamp which can be used
-      // for timing correlation attacks. A pure random ID is both unique and private.
       const randomBytes = new Uint8Array(16)
       crypto.getRandomValues(randomBytes)
       const id = Array.from(randomBytes).map(b => b.toString(16).padStart(2, "0")).join("")
@@ -181,13 +234,13 @@ export function ChatInput({
       } as UploadingFile
     })
 
-    setUploadingFiles(prev => [...prev, ...filesToAdd])
-
-    // Start uploads for valid files
-    filesToAdd.filter(f => f.status !== "error").forEach(f => {
-      uploadFile(f.id, f.file)
-    })
-  }
+    if (filesToAdd.length > 0) {
+      setUploadingFiles(prev => [...prev, ...filesToAdd])
+      filesToAdd.filter(f => f.status !== "error").forEach(f => {
+        uploadFile(f.id, f.file)
+      })
+    }
+  }, [limits.maxSizeMb, limits.maxFiles, uploadingFiles.length, checkFilePii, uploadFile])
 
   const handleDragOver = (e: DragEvent) => {
     e.preventDefault()
@@ -203,7 +256,7 @@ export function ChatInput({
     e.preventDefault()
     setIsDragging(false)
     const droppedFiles = Array.from(e.dataTransfer.files)
-    processFiles(droppedFiles)
+    void processFiles(droppedFiles)
   }
 
   const removeFile = (id: string) => {
@@ -260,6 +313,65 @@ export function ChatInput({
               }
             </p>
           </div>
+        </div>
+      )}
+
+      {/* SEC-PII-FILE-001: PII warning banners for files pending user confirmation */}
+      {piiWarningFiles.length > 0 && (
+        <div className="mb-3 space-y-2">
+          {piiWarningFiles.map((pw, idx) => (
+            <div
+              key={idx}
+              className="flex items-start gap-3 p-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-xs"
+            >
+              <AlertCircle className="h-4 w-4 text-yellow-500 mt-0.5 shrink-0" aria-hidden="true" />
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-yellow-700 dark:text-yellow-400">
+                  {language === "ar"
+                    ? `تحذير: بيانات شخصية في "${pw.file.name}"`
+                    : `PII detected in "${pw.file.name}"`}
+                </p>
+                <p className="text-muted-foreground mt-0.5">
+                  {language === "ar"
+                    ? `${pw.count} بيان(ات) محتمل(ة) — ${pw.types.join(", ")}`
+                    : `${pw.count} potential item(s): ${pw.types.join(", ")}`}
+                </p>
+              </div>
+              <div className="flex gap-1 shrink-0">
+                <button
+                  onClick={() => {
+                    // Proceed: add file to upload queue without re-scanning
+                    const randomBytes = new Uint8Array(16)
+                    crypto.getRandomValues(randomBytes)
+                    const id = Array.from(randomBytes).map(b => b.toString(16).padStart(2, "0")).join("")
+                    const newFile: UploadingFile = {
+                      id,
+                      file: pw.file,
+                      name: pw.file.name,
+                      size: pw.file.size,
+                      type: pw.file.type,
+                      status: "pending" as FileUploadStatus,
+                      progress: 0,
+                      startedAt: new Date().toISOString(),
+                    }
+                    setUploadingFiles(prev => [...prev, newFile])
+                    void uploadFile(id, pw.file)
+                    setPiiWarningFiles(prev => prev.filter((_, i) => i !== idx))
+                  }}
+                  className="px-2 py-1 rounded bg-nexus-jade/10 hover:bg-nexus-jade/20 text-nexus-jade font-medium"
+                >
+                  {language === "ar" ? "تأكيد" : "Upload"}
+                </button>
+                <button
+                  onClick={() => setPiiWarningFiles(prev => prev.filter((_, i) => i !== idx))}
+                  className="p-1 rounded hover:bg-muted"
+                  aria-label={language === "ar" ? "إلغاء" : "Dismiss"}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

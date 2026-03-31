@@ -69,8 +69,8 @@ export function LoginTrustedBy() {
     <div className={cn("space-y-4", isRTL && "text-right")}>
       <p className="text-sm text-muted-foreground">
         {language === "ar"
-          ? "موثوق من قادة في جميع أنحاء الإمارات"
-          : "Trusted by leaders across the UAE"}
+          ? "موثوق من قادة الأعمال حول العالم"
+          : "Trusted by business leaders worldwide"}
       </p>
 
       <div className={cn("flex flex-wrap gap-2", isRTL && "justify-end")}>

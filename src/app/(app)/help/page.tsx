@@ -53,8 +53,8 @@ const faqSections = [
       {
         questionEn: "Is my data encrypted?",
         questionAr: "هل بياناتي مشفرة؟",
-        answerEn: "Yes, all data is encrypted using AES-256-GCM with your sovereign key. Data is sharded across multiple UAE data centers for additional security.",
-        answerAr: "نعم، يتم تشفير جميع البيانات باستخدام AES-256-GCM مع مفتاحك السيادي. يتم تجزئة البيانات عبر مراكز بيانات متعددة في الإمارات لمزيد من الأمان.",
+        answerEn: "Yes, all data is encrypted using AES-256-GCM with your sovereign key. Data is sharded across multiple encrypted secure nodes for additional security.",
+        answerAr: "نعم، يتم تشفير جميع البيانات باستخدام AES-256-GCM مع مفتاحك السيادي. يتم تجزئة البيانات عبر عقد آمنة ومشفرة متعددة لمزيد من الأمان.",
       },
       {
         questionEn: "Who can access my data?",

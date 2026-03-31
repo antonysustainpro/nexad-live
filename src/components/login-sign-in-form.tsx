@@ -17,6 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
+import { auditAuth } from "@/lib/audit-logger"
 
 interface LoginSignInFormProps {
   onSwitchToSignUp: () => void
@@ -56,12 +57,16 @@ export function LoginSignInForm({ onSwitchToSignUp }: LoginSignInFormProps) {
 
       if (!response || !response.ok) {
         setError(language === "ar" ? "مفتاح API غير صالح" : "Invalid API key")
+        // AUD-008: Log failed auth attempt
+        auditAuth("login.failed", { reason: "invalid_api_key" })
         setIsLoading(false)
         return
       }
 
       // Session is managed via httpOnly cookie set by server
       // No client-side storage of API keys for security
+      // AUD-008: Log successful login
+      auditAuth("login.success")
       updatePreferences({ hasCompletedOnboarding: true })
       router.push("/")
     } catch {
@@ -70,6 +75,8 @@ export function LoginSignInForm({ onSwitchToSignUp }: LoginSignInFormProps) {
           ? "خطأ في الاتصال، يرجى المحاولة مرة أخرى"
           : "Connection error, please try again"
       )
+      // AUD-008: Log connection-level auth failure
+      auditAuth("login.failed", { reason: "connection_error" })
     } finally {
       setIsLoading(false)
     }

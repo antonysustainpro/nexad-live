@@ -8,6 +8,7 @@ import { useNexus } from "@/contexts/nexus-context"
 import { proveDelete } from "@/lib/api"
 import type { DeletionCertificate } from "@/lib/types"
 import { sanitizeFilename } from "@/lib/utils"
+import { auditVault } from "@/lib/audit-logger"
 
 interface DeleteCeremonyProps {
   onComplete: () => void
@@ -25,9 +26,9 @@ const PHASES = [
 ]
 
 const NODE_CONFIRMATIONS = [
-  { id: "uae-1", name: "UAE Node 1", nameAr: "عقدة الإمارات ١", flag: "🇦🇪", status: "confirmed" },
-  { id: "uae-2", name: "UAE Node 2", nameAr: "عقدة الإمارات ٢", flag: "🇦🇪", status: "confirmed" },
-  { id: "uae-3", name: "UAE Node 3", nameAr: "عقدة الإمارات ٣", flag: "🇦🇪", status: "confirmed" },
+  { id: "node-1", name: "Secure Node 1", nameAr: "عقدة آمنة ١", flag: "🔒", status: "confirmed" },
+  { id: "node-2", name: "Secure Node 2", nameAr: "عقدة آمنة ٢", flag: "🔒", status: "confirmed" },
+  { id: "node-3", name: "Secure Node 3", nameAr: "عقدة آمنة ٣", flag: "🔒", status: "confirmed" },
 ]
 
 export function DeleteCeremony({ onComplete, onCancel, documentName = "All Data", documentId }: DeleteCeremonyProps) {
@@ -102,12 +103,17 @@ export function DeleteCeremony({ onComplete, onCancel, documentName = "All Data"
   const handleConfirm = async () => {
     if (confirmText.toUpperCase() === CONFIRM_PHRASE) {
       setPhase(1)
-      
+
+      // AUD-011: Log vault document deletion
+      auditVault("document.deleted", documentId, { documentName })
+
       // Try to get real deletion certificate from API
       if (documentId) {
         const cert = await proveDelete(documentId)
         if (cert) {
           setCertificate(cert)
+          // AUD-011: Log deletion proof generated
+          auditVault("proof.generated", documentId, { certificateHash: cert.deletion_hash })
         }
       }
     }
@@ -398,7 +404,7 @@ export function DeleteCeremony({ onComplete, onCancel, documentName = "All Data"
                       hash: certificateData.hash,
                       timestamp: certificateData.timestamp,
                       certificateId: certificateData.certificateId,
-                      nodes: ["UAE Node 1", "UAE Node 2", "UAE Node 3"]
+                      nodes: ["Secure Node 1", "Secure Node 2", "Secure Node 3"]
                     }
                     const blob = new Blob([JSON.stringify(cert, null, 2)], { type: "application/json" })
                     const url = URL.createObjectURL(blob)

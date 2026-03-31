@@ -30,22 +30,25 @@ interface ShardMapProps {
 }
 
 const defaultNodes: ShardNode[] = [
-  { id: "uae-1", name: "UAE Node 1", nameAr: "عقدة الإمارات ١", x: 50, y: 20, shards: 4 },
-  { id: "uae-2", name: "UAE Node 2", nameAr: "عقدة الإمارات ٢", x: 20, y: 60, shards: 4 },
-  { id: "uae-3", name: "UAE Node 3", nameAr: "عقدة الإمارات ٣", x: 80, y: 60, shards: 4 },
+  { id: "node-1", name: "Secure Node 1", nameAr: "عقدة آمنة ١", x: 50, y: 20, shards: 4 },
+  { id: "node-2", name: "Secure Node 2", nameAr: "عقدة آمنة ٢", x: 20, y: 60, shards: 4 },
+  { id: "node-3", name: "Secure Node 3", nameAr: "عقدة آمنة ٣", x: 80, y: 60, shards: 4 },
 ]
 
 // Map node IDs from API to component node format
 const NODE_ID_MAP: Record<string, { id: string; x: number; y: number }> = {
-  "uae-1": { id: "uae-1", x: 50, y: 20 },
-  "uae-2": { id: "uae-2", x: 20, y: 60 },
-  "uae-3": { id: "uae-3", x: 80, y: 60 },
+  "uae-1": { id: "node-1", x: 50, y: 20 },
+  "uae-2": { id: "node-2", x: 20, y: 60 },
+  "uae-3": { id: "node-3", x: 80, y: 60 },
+  "node-1": { id: "node-1", x: 50, y: 20 },
+  "node-2": { id: "node-2", x: 20, y: 60 },
+  "node-3": { id: "node-3", x: 80, y: 60 },
 }
 
 const LOCATION_NAME_AR: Record<string, string> = {
-  "UAE Node 1": "عقدة الإمارات ١",
-  "UAE Node 2": "عقدة الإمارات ٢",
-  "UAE Node 3": "عقدة الإمارات ٣",
+  "Secure Node 1": "عقدة آمنة ١",
+  "Secure Node 2": "عقدة آمنة ٢",
+  "Secure Node 3": "عقدة آمنة ٣",
 }
 
 export function ShardMap({
@@ -223,12 +226,12 @@ export function ShardMap({
           ctx.stroke()
         }
 
-        // Draw node label with UAE flag
+        // Draw node label
         const foregroundColor = getComputedStyle(document.documentElement).getPropertyValue('--foreground').trim() || "#F5F5F7"
         ctx.fillStyle = foregroundColor
         ctx.font = "11px Inter, sans-serif"
         ctx.textAlign = "center"
-        const label = language === "ar" ? `🇦🇪 ${node.nameAr}` : `🇦🇪 ${node.name}`
+        const label = language === "ar" ? `🔒 ${node.nameAr}` : `🔒 ${node.name}`
         ctx.fillText(label, x, y + 35)
       })
 
@@ -286,8 +289,8 @@ export function ShardMap({
           <div className="absolute bottom-3 start-3 px-2 py-1 bg-black/60 rounded-md backdrop-blur-sm">
             <span className="text-xs text-white">
               {language === "ar"
-                ? `${totalShards} خادم موزع عبر ${displayNodes.length} عقد إماراتية`
-                : `${totalShards} shards across ${displayNodes.length} UAE nodes`}
+                ? `${totalShards} خادم موزع عبر ${displayNodes.length} عقد آمنة`
+                : `${totalShards} shards across ${displayNodes.length} secure nodes`}
             </span>
           </div>
         )}

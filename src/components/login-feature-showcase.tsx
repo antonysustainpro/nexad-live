@@ -11,8 +11,8 @@ const features = [
     icon: Shield,
     titleEn: "End-to-end sovereignty",
     titleAr: "سيادة شاملة",
-    descEn: "Your data is encrypted, sharded, and stored only in UAE nodes",
-    descAr: "بياناتك مشفرة ومجزأة ومخزنة فقط في خوادم الإمارات",
+    descEn: "Your data is encrypted with AES-256-GCM, sharded across secure nodes",
+    descAr: "بياناتك مشفرة بـ AES-256-GCM ومجزأة عبر عقد آمنة",
   },
   {
     icon: Target,

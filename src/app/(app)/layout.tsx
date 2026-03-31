@@ -8,6 +8,7 @@ import { MobileTabBar } from "@/components/mobile-tab-bar"
 import { OnboardingChecklist } from "@/components/onboarding-checklist"
 import { useNexus } from "@/contexts/nexus-context"
 import { cn } from "@/lib/utils"
+import { usePageAudit, useIdleAudit } from "@/hooks/use-audit"
 
 // Pages that are immersive - no shell
 const IMMERSIVE_PAGES = ["/voice", "/onboarding", "/login", "/welcome"]
@@ -24,6 +25,11 @@ export default function AppLayout({
   const pathname = usePathname()
   const { isRTL, language } = useNexus()
   const [isTransitioning, setIsTransitioning] = useState(false)
+
+  // AUD-006: Log every page view and start a new correlation ID on navigation
+  usePageAudit()
+  // AUD-007: Detect and log 15-minute idle periods
+  useIdleAudit()
 
   // Trigger a brief CSS transition on route change
   useEffect(() => {

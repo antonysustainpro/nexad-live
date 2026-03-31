@@ -5,7 +5,13 @@
 
 import { getCsrfToken } from "./csrf"
 import { withRetry, withCircuitBreaker, type RetryOptions } from "./resilience"
-import { checkRateLimit } from "./rate-limiter"
+import { checkRateLimit, RateLimitError } from "./rate-limiter"
+import {
+  getCorrelationId,
+  getSessionId,
+  auditApiCall,
+  auditRateLimitHit,
+} from "./audit-logger"
 
 // Default retry config for read-only (GET) API calls
 export const DEFAULT_READ_RETRY: RetryOptions = {
@@ -30,6 +36,7 @@ export function isAbortError(err: unknown): boolean {
 
 /**
  * Get common headers for API requests
+ * Injects correlation ID and session ID on every request for full audit trail.
  * @param userId - Optional user ID to include in headers
  * @param contentType - Content type (defaults to application/json)
  */
@@ -49,6 +56,15 @@ export function getHeaders(userId?: string, contentType = "application/json"): H
     headers["X-CSRF-Token"] = csrfToken
   }
 
+  // AUD-001: Inject correlation & session IDs for end-to-end audit trail
+  // These headers link frontend events to backend logs
+  try {
+    headers["X-Correlation-Id"] = getCorrelationId()
+    headers["X-Session-Id"] = getSessionId()
+  } catch {
+    // Never break a request because of audit header injection failure
+  }
+
   return headers
 }
 
@@ -60,7 +76,7 @@ export function getUploadHeaders(userId?: string): HeadersInit {
 }
 
 /**
- * Resilient fetch with retry and circuit breaker
+ * Resilient fetch with retry, circuit breaker, and full audit trail.
  * @param url - The URL to fetch
  * @param init - Request init options
  * @param circuitName - Circuit breaker name for this API
@@ -78,24 +94,67 @@ export async function resilientFetch(
   const defaultRetry = isReadOnly ? DEFAULT_READ_RETRY : DEFAULT_MUTATION_RETRY
   const finalRetryOpts = retryOpts || defaultRetry
 
+  // Strip query params from endpoint path for logging (may contain PII)
+  let endpoint = url
+  try {
+    endpoint = new URL(url, typeof window !== "undefined" ? window.location.origin : "http://x").pathname
+  } catch {
+    endpoint = url.split("?")[0]
+  }
+
   // SEC-RL-001: Enforce client-side rate limit before any network request.
-  // Throws RateLimitError immediately if the bucket for this URL is empty,
-  // which prevents DoS-ing the backend even from a single browser session.
-  checkRateLimit(url)
+  // AUD-002: Log rate limit hits as security events for audit trail.
+  try {
+    checkRateLimit(url)
+  } catch (err) {
+    if (err instanceof RateLimitError) {
+      try { auditRateLimitHit(err.group, endpoint) } catch { /* never break */ }
+    }
+    throw err
+  }
 
-  return withCircuitBreaker(circuitName, () =>
-    withRetry(
-      async () => {
-        const response = await fetch(url, { ...init, credentials: "include" })
+  const startMs = Date.now()
 
-        // Retry on server errors
-        if (!response.ok && [500, 502, 503, 504].includes(response.status)) {
-          throw new Error(`API error: ${response.status}`)
-        }
+  try {
+    const response = await withCircuitBreaker(circuitName, () =>
+      withRetry(
+        async () => {
+          const fetchResponse = await fetch(url, { ...init, credentials: "include" })
 
-        return response
-      },
-      { ...finalRetryOpts, signal: init.signal as AbortSignal | undefined }
+          // Retry on server errors
+          if (!fetchResponse.ok && [500, 502, 503, 504].includes(fetchResponse.status)) {
+            throw new Error(`API error: ${fetchResponse.status}`)
+          }
+
+          return fetchResponse
+        },
+        { ...finalRetryOpts, signal: init.signal as AbortSignal | undefined }
+      )
     )
-  )
+
+    // AUD-003: Log every API call with status, latency, and request ID
+    try {
+      auditApiCall({
+        method,
+        endpoint,
+        statusCode: response.status,
+        latencyMs: Date.now() - startMs,
+        requestId: response.headers.get("x-request-id") ?? undefined,
+      })
+    } catch { /* never break */ }
+
+    return response
+  } catch (err) {
+    // AUD-004: Log failed API calls
+    try {
+      auditApiCall({
+        method,
+        endpoint,
+        latencyMs: Date.now() - startMs,
+        error: err instanceof Error ? err.message : "fetch_failed",
+      })
+    } catch { /* never break */ }
+
+    throw err
+  }
 }

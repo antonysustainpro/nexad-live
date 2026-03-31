@@ -140,10 +140,10 @@ export const EncryptionVisualization = memo(function EncryptionVisualization({
   const algoConfig = ENCRYPTION_ALGORITHMS[algorithm as keyof typeof ENCRYPTION_ALGORITHMS] || ENCRYPTION_ALGORITHMS["AES-256-GCM"]
   const AlgoIcon = algoConfig.icon
 
-  // UAE Data Sovereignty compliance badge
+  // Enterprise encryption compliance badge
   const complianceBadge = (
     <span className="text-[10px] text-emerald-400 bg-emerald-400/10 px-1.5 py-0.5 rounded">
-      {language === "ar" ? "متوافق مع قانون البيانات الإماراتي" : "UAE Data Law Compliant"}
+      {language === "ar" ? "تشفير AES-256-GCM بمستوى المؤسسات" : "Enterprise-grade AES-256-GCM"}
     </span>
   )
 
@@ -448,7 +448,7 @@ export const EncryptionVisualization = memo(function EncryptionVisualization({
         </div>
       </div>
 
-      {/* Encryption Strength + UAE Compliance */}
+      {/* Encryption Strength + Compliance */}
       <div className="mt-4 flex items-center justify-between text-xs">
         <div className="flex items-center gap-2">
           <Fingerprint className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
@@ -472,7 +472,7 @@ export const EncryptionVisualization = memo(function EncryptionVisualization({
         </div>
       </div>
 
-      {/* UAE Compliance Badge */}
+      {/* Encryption Compliance Badge */}
       <div className="mt-3 flex justify-end">
         {complianceBadge}
       </div>

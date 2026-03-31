@@ -277,8 +277,8 @@ export async function getSecurityAuditLog(
           ip_address: "192.168.1.1",
           user_agent: "Mozilla/5.0...",
           location: {
-            country: "UAE",
-            city: "Dubai",
+            country: "USA",
+            city: "Unknown",
           },
           success: true,
           details: {

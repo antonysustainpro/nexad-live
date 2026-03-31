@@ -1502,10 +1502,13 @@ export async function triggerButlerRefresh(userId: string, signal?: AbortSignal)
 // Auth API
 export async function getSession(signal?: AbortSignal): Promise<Session | null> {
   try {
+    // Use the dedicated session endpoint which reads the httpOnly cookie server-side
+    // and decodes the JWT without exposing the token to client JavaScript.
+    // This avoids the /api/proxy route which would forward to the backend (no /auth/session there).
     const response = await resilientFetch(
-      `${API_BASE}/auth/session`,
+      "/api/v1/auth/session",
       {
-        headers: getAuthHeaders(),
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         signal,
       },

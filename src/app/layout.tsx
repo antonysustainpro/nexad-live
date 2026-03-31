@@ -20,7 +20,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "NexusAD Ai - Your Sovereign Intelligence",
-  description: "A sovereign AI platform for UAE CEOs. Your data, your intelligence, your control.",
+  description: "A sovereign AI platform for business leaders. Your data, your intelligence, your control.",
   generator: "v0.app",
   manifest: "/manifest.json",
   appleWebApp: {

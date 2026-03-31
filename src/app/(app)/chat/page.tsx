@@ -302,7 +302,7 @@ function ChatPageContent() {
           recordAnonymousRequest({
             url: `chat/${mode}`,
             timestamp: new Date().toISOString(),
-            proxyRegion: "UAE",
+            proxyRegion: "US",
             status: "streaming",
           })
           setMessages(prev => [...prev, {
@@ -333,7 +333,7 @@ function ChatPageContent() {
             recordAnonymousRequest({
               url: "chat",
               timestamp: new Date().toISOString(),
-              proxyRegion: "UAE",
+              proxyRegion: "US",
               status: "protected",
               piiScrubbed: meta.routing.pii_scrubbed,
             })
@@ -448,7 +448,7 @@ function ChatPageContent() {
             recordAnonymousRequest({
               url: `orchestration/${mode}`,
               timestamp: new Date().toISOString(),
-              proxyRegion: "UAE",
+              proxyRegion: "US",
               status: "complete",
               piiScrubbed: completeData.pii_scrubbed,
             })

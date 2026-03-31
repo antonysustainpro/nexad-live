@@ -14,6 +14,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { getCsrfToken } from "@/lib/csrf"
 import { TIER_CONFIG, USD_TO_AED, type BillingTier } from "@/lib/billing-api"
+import { auditAuth } from "@/lib/audit-logger"
 
 interface LoginSignUpFormProps {
   onSwitchToSignIn: () => void
@@ -96,9 +97,14 @@ export function LoginSignUpForm({ onSwitchToSignIn }: LoginSignUpFormProps) {
             ? "فشل التسجيل، يرجى المحاولة مرة أخرى"
             : message || "Registration failed. Please try again."
         )
+        // AUD-009: Log failed registration
+        auditAuth("register.failed", { reason: "api_error", tier: selectedTier })
         setIsLoading(false)
         return
       }
+
+      // AUD-009: Log successful registration
+      auditAuth("register.success", { tier: selectedTier })
 
       // Save user info
       updatePreferences({ name: fullName })
@@ -120,6 +126,8 @@ export function LoginSignUpForm({ onSwitchToSignIn }: LoginSignUpFormProps) {
           ? "خطأ في الاتصال، يرجى المحاولة مرة أخرى"
           : "Connection error, please try again"
       )
+      // AUD-009: Log connection error during registration
+      auditAuth("register.failed", { reason: "connection_error" })
     } finally {
       setIsLoading(false)
     }

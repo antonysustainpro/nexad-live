@@ -172,7 +172,7 @@ export default function PrivacyPage() {
                 />
               </svg>
               <p className="text-nexus-gold text-sm">NexusAD Ai</p>
-              <p className="text-white/40 text-xs">{language === "ar" ? "موزع عبر 3 عقد إماراتية" : "Split across 3 UAE nodes"}</p>
+              <p className="text-white/40 text-xs">{language === "ar" ? "موزع عبر 3 عقد آمنة" : "Split across 3 secure nodes"}</p>
             </div>
           </motion.div>
         </div>
@@ -207,7 +207,7 @@ export default function PrivacyPage() {
                     {language === "ar" ? "موقع البيانات" : "Data Location"}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {language === "ar" ? "داخل الإمارات" : "UAE Territory"}
+                    {language === "ar" ? "بنية تحتية مشفرة" : "Encrypted Infrastructure"}
                   </p>
                 </div>
               </div>
@@ -249,8 +249,8 @@ export default function PrivacyPage() {
           <Info className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
           <p className="text-sm text-muted-foreground">
             {language === "ar"
-              ? "NexusAD Ai لا يبيع أو يشارك بياناتك مع أطراف ثالثة. جميع البيانات مشفرة ومحمية بموجب قوانين الإمارات العربية المتحدة لحماية البيانات."
-              : "NexusAD Ai does not sell or share your data with third parties. All data is encrypted and protected under UAE data protection laws."}
+              ? "NexusAD Ai لا يبيع أو يشارك بياناتك مع أطراف ثالثة. جميع البيانات مشفرة بمعيار AES-256-GCM ومحمية بموجب لوائح حماية البيانات المعمول بها."
+              : "NexusAD Ai does not sell or share your data with third parties. All data is encrypted with AES-256-GCM and protected under applicable data protection regulations."}
           </p>
         </motion.div>
       </div>

@@ -26,6 +26,7 @@ import { DeleteCeremony } from "@/components/delete-ceremony"
 
 import { getVaultDocument, type VaultDocumentDetail } from "@/lib/api"
 import { sanitizeFilename } from "@/lib/utils"
+import { auditVault } from "@/lib/audit-logger"
 
 export default function VaultDocumentPage() {
   const { language } = useNexus()
@@ -48,6 +49,8 @@ export default function VaultDocumentPage() {
         if (!isMounted) return
         setDoc(document)
         setLoading(false)
+        // AUD-010: Log vault document access
+        auditVault("document.viewed", params.id as string)
       })
       .catch((err) => {
         if (!isMounted) return
