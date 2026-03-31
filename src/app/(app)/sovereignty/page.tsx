@@ -509,17 +509,15 @@ export default function SovereigntyPage() {
               <canvas
                 ref={(canvas) => {
                   if (canvas && backupData) {
-                    // Simple local QR placeholder - in production, use a client-side QR library
-                    const ctx = canvas.getContext("2d")
-                    if (ctx) {
-                      ctx.fillStyle = "#ffffff"
-                      ctx.fillRect(0, 0, 192, 192)
-                      ctx.fillStyle = "#000000"
-                      ctx.font = "12px monospace"
-                      ctx.textAlign = "center"
-                      ctx.fillText("QR Code", 96, 90)
-                      ctx.fillText("(install qrcode.react)", 96, 110)
-                    }
+                    // Real QR code generation using the qrcode library - fully client-side, no external calls
+                    QRCode.toCanvas(canvas, backupData, {
+                      width: 192,
+                      margin: 2,
+                      color: { dark: "#000000", light: "#ffffff" },
+                      errorCorrectionLevel: "H",
+                    }).catch((err) => {
+                      console.error("QR generation failed:", err)
+                    })
                   }
                 }}
                 width={192}
@@ -541,9 +539,26 @@ export default function SovereigntyPage() {
                 ? "هذا الرمز مشفر بعبارة مرورك. لا تشاركه."
                 : "This code is encrypted with your passphrase. Do not share it."}
             </p>
-            <Button variant="outline" onClick={() => { setShowQR(false); setBackupData(null) }}>
-              {language === "ar" ? "إغلاق" : "Close"}
-            </Button>
+            <div className="flex gap-3 justify-center">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const canvas = document.querySelector<HTMLCanvasElement>('[aria-label="Backup QR Code"]')
+                  if (canvas) {
+                    const url = canvas.toDataURL("image/png")
+                    const a = document.createElement("a")
+                    a.href = url
+                    a.download = `nexusad-key-backup-${displayFingerprint.replace(/:/g, "")}.png`
+                    a.click()
+                  }
+                }}
+              >
+                {language === "ar" ? "تنزيل" : "Download"}
+              </Button>
+              <Button variant="outline" onClick={() => { setShowQR(false); setBackupData(null) }}>
+                {language === "ar" ? "إغلاق" : "Close"}
+              </Button>
+            </div>
           </div>
         </div>
       )}
