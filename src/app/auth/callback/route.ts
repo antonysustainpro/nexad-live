@@ -11,16 +11,39 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL("/login?error=no_token", req.url))
   }
 
-  // Set the session cookie
-  const cookieStore = await cookies()
-  cookieStore.set("nexus-session", token, {
+  const now = Math.floor(Date.now() / 1000)
+  const SESSION_ABSOLUTE_TIMEOUT = 24 * 60 * 60 // 24 hours
+  const SESSION_IDLE_TIMEOUT = 15 * 60 // 15 minutes
+
+  // Create response with redirect
+  const response = NextResponse.redirect(new URL("/chat", req.url))
+
+  // Set session cookie (matching login route exactly)
+  response.cookies.set("nexus-session", token, {
     httpOnly: true,
-    secure: true,
-    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict", // Match login route
     path: "/",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: SESSION_ABSOLUTE_TIMEOUT, // 24h to match login
   })
 
-  // Redirect to home page
-  return NextResponse.redirect(new URL("/", req.url))
+  // Set session creation timestamp
+  response.cookies.set("nexus-session-created", String(now), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+    maxAge: SESSION_ABSOLUTE_TIMEOUT,
+  })
+
+  // Set last activity timestamp
+  response.cookies.set("nexus-last-activity", String(now), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
+    maxAge: SESSION_IDLE_TIMEOUT,
+  })
+
+  return response
 }

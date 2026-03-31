@@ -131,6 +131,15 @@ export async function POST(req: NextRequest) {
     await clearFailedAuthAttempts(rateLimitKey)
 
     const data = await backendResponse.json()
+
+    // Debug: Log the structure of backend response
+    console.log("[Login] Backend response structure:", {
+      hasUser: !!data.user,
+      hasToken: !!data.token,
+      tokenLength: data.token?.length,
+      userKeys: data.user ? Object.keys(data.user) : []
+    })
+
     const response = NextResponse.json({ user: data.user, success: true })
 
     // SEC-027: Generate new session token on successful login (token regeneration)
