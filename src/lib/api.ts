@@ -246,12 +246,15 @@ export async function* streamChat(request: ChatRequest, signal?: AbortSignal): A
 }> {
   // REL-004: Retry the initial connection (not the streaming body) via resilientFetch.
   // This handles transient 502/503/504 on the initial POST to /chat.
+  const payload = { ...request, stream: true, max_tokens: request.max_tokens || 2048 }
+  console.log("[streamChat] Sending request with mode:", payload.mode, "messages:", payload.messages.length)
+
   const response = await resilientFetch(
     `${API_BASE}/chat`,
     {
       method: "POST",
       headers: getAuthHeaders(),
-      body: JSON.stringify({ ...request, stream: true, max_tokens: request.max_tokens || 2048 }),
+      body: JSON.stringify(payload),
       credentials: "include", // Send session cookie
       signal,
     },

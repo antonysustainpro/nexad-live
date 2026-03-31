@@ -247,6 +247,7 @@ function ChatPageContent() {
     const currentMessages = [...messages, { role: "user" as const, content: content.trim() }]
 
     try {
+      console.log("[Chat] Sending request with mode:", mode)
       const stream = streamChat({
         messages: currentMessages,
         stream: true,
