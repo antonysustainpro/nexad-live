@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import QRCode from "qrcode"
 import {
   Crown,
   Key,
