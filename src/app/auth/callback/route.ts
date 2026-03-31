@@ -11,6 +11,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL("/login?error=no_token", req.url))
   }
 
+  // Debug: Check if this is a JWT or a plain token
+  console.log("[Auth Callback] Token received:", {
+    length: token.length,
+    hasThreeParts: token.split(".").length === 3,
+    preview: token.substring(0, 50) + "..."
+  })
+
   const now = Math.floor(Date.now() / 1000)
   const SESSION_ABSOLUTE_TIMEOUT = 24 * 60 * 60 // 24 hours
   const SESSION_IDLE_TIMEOUT = 15 * 60 // 15 minutes

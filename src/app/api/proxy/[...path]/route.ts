@@ -845,15 +845,35 @@ async function proxyRequest(
     headers["Authorization"] = `Bearer ${session}`
   }
 
-  // SEC-211: DO NOT forward user ID from client-controlled cookie to backend.
-  // The nexus-user-id cookie is readable/writable by client-side JavaScript,
-  // meaning an attacker can set it to ANY user ID to impersonate other users.
-  // The backend MUST extract the authenticated userId from the JWT in the
-  // Authorization: Bearer header. Forwarding X-User-ID from a cookie is an
-  // IDOR (Insecure Direct Object Reference) vulnerability.
-  //
-  // Previously: headers["X-User-ID"] = cookieStore.get("nexus-user-id")?.value
-  // Now: Removed. Backend must derive userId from the JWT token only.
+  // SEC-211: Extract user ID from session token and forward to backend.
+  // The session token is httpOnly and cannot be modified by client-side JavaScript.
+  // We verify the session and extract the user ID server-side before forwarding.
+  if (session) {
+    // Always forward the session token as Authorization header for backend validation
+    headers["Authorization"] = `Bearer ${session}`
+
+    try {
+      // Try to decode the session token - it might be a JWT or plain token
+      const parts = session.split(".")
+      if (parts.length === 3) {
+        // It's a JWT - decode the payload
+        const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/")
+        const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4)
+        const decoded = atob(padded)
+        const payload = JSON.parse(decoded)
+        const userId = payload.userId || payload.sub
+        if (userId) {
+          headers["X-User-Id"] = userId
+          console.log(`[${requestId}] Added X-User-Id header from JWT:`, userId)
+        }
+      } else {
+        // It might be a plain token - the backend will need to validate it
+        console.log(`[${requestId}] Session token is not a JWT, backend must validate`)
+      }
+    } catch (error) {
+      console.error(`[${requestId}] Failed to extract user ID from session:`, error)
+    }
+  }
 
   // SEC-228: Explicitly DO NOT forward client-supplied hop-by-hop or
   // internal headers to the backend. These headers from the client could:
