@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head><title>CSRF Flow Test</title></head>
+<body>
+<h1>Testing CSRF Flow on nexusad.ai</h1>
+<button onclick="testCsrf()">Test CSRF Flow</button>
+<pre id="result"></pre>
+<script>
+async function testCsrf() {
+  const result = document.getElementById('result');
+  result.textContent = 'Testing...\n';
+
+  try {
+    // 1. Check if csrf-token cookie exists
+    const cookies = document.cookie.split(';');
+    let csrfToken = null;
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'csrf-token') {
+        csrfToken = decodeURIComponent(value);
+      }
+    }
+    result.textContent += '\n1. CSRF Cookie: ' + (csrfToken ? csrfToken.slice(0, 8) + '...' : 'NOT FOUND');
+
+    // 2. Try to make a POST request to proxy with CSRF header
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    if (csrfToken) {
+      headers['X-CSRF-Token'] = csrfToken;
+    }
+
+    result.textContent += '\n2. Making request with headers: ' + JSON.stringify(headers, null, 2);
+
+    const response = await fetch('/api/proxy/chat', {
+      method: 'POST',
+      headers,
+      credentials: 'include',
+      body: JSON.stringify({
+        messages: [{role: 'user', content: 'test'}],
+        stream: false
+      })
+    });
+
+    result.textContent += '\n\n3. Response status: ' + response.status;
+    result.textContent += '\n4. Response headers:';
+    for (const [key, value] of response.headers.entries()) {
+      result.textContent += '\n   ' + key + ': ' + value;
+    }
+
+    const text = await response.text();
+    try {
+      const data = JSON.parse(text);
+      result.textContent += '\n\n5. Response body: ' + JSON.stringify(data, null, 2);
+    } catch {
+      result.textContent += '\n\n5. Response text: ' + text;
+    }
+
+  } catch (error) {
+    result.textContent += '\n\nERROR: ' + error.message;
+  }
+}
+
+// Auto-show cookies on load
+window.onload = () => {
+  const result = document.getElementById('result');
+  result.textContent = 'All cookies:\n';
+  document.cookie.split(';').forEach(c => {
+    const [name, value] = c.trim().split('=');
+    if (name) {
+      result.textContent += name + ': ' + (value ? value.slice(0, 20) + '...' : '(empty)') + '\n';
+    }
+  });
+};
+</script>
+</body>
+</html>
