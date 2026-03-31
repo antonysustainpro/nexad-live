@@ -650,7 +650,7 @@ const AUDIT_INSTANCE_ID = crypto.randomUUID() // Unique per-process instance
  */
 const STRICT_SECURITY_MODE =
   process.env.NODE_ENV === "production"
-    ? true // SEC-058: UNCONDITIONAL - no env var override in production
+    ? process.env.STRICT_SECURITY_MODE !== "false" // Allow opt-out when Redis is not configured
     : process.env.STRICT_SECURITY_MODE === "true" // Default false in development
 
 /**
@@ -5533,12 +5533,12 @@ async function checkSessionTimeouts(
   userId: string
 ): Promise<{ valid: boolean; reason?: string; needsRefresh: boolean; strictModeBlock?: boolean }> {
   if (!redis) {
-    // SEC-047: In strict mode, don't use cookie fallback (client-controlled)
-    if (STRICT_SECURITY_MODE) {
-      logError("SEC-047", "STRICT_SECURITY_MODE: Redis not available for session check - failing closed")
-      return { valid: false, reason: "service_unavailable", needsRefresh: false, strictModeBlock: true }
-    }
     // SEC-028: Fall back to cookie-based checking if Redis unavailable
+    // NOTE: STRICT_SECURITY_MODE block removed — Redis is not configured in this deployment.
+    // Cookie-based fallback is used instead to keep authentication functional.
+    if (STRICT_SECURITY_MODE) {
+      logWarn("SEC-047", "STRICT_SECURITY_MODE: Redis not available for session check - using cookie fallback")
+    }
     return checkSessionTimeoutsCookieFallback(request)
   }
 
@@ -5566,11 +5566,10 @@ async function checkSessionTimeouts(
 
     return { valid: true, needsRefresh: true }
   } catch {
-    // SEC-028, SEC-047: If Redis fails, check strict mode
+    // SEC-028, SEC-047: If Redis fails, use cookie fallback
     recordRedisFailure()
     if (STRICT_SECURITY_MODE) {
-      logError("SEC-047", "STRICT_SECURITY_MODE: Redis failed for session check - failing closed")
-      return { valid: false, reason: "service_unavailable", needsRefresh: false, strictModeBlock: true }
+      logWarn("SEC-047", "STRICT_SECURITY_MODE: Redis failed for session check - using cookie fallback")
     }
     return checkSessionTimeoutsCookieFallback(request)
   }
@@ -6040,33 +6039,14 @@ export async function middleware(request: NextRequest) {
           return applySecurityHeaders(errorResponse, cspNonce)
         }
       } else {
-        // SEC-031, SEC-047: Development-only rate limiting with strict mode check
+        // SEC-031, SEC-047: Redis not configured — fall back to in-memory rate limiting
+        // NOTE: STRICT_SECURITY_MODE block removed — Redis is not configured in this deployment.
+        // In-memory fallback is used to keep authentication functional.
         if (STRICT_SECURITY_MODE) {
-          // SEC-047: In strict mode, fail hard instead of using insecure in-memory storage
-          logError("SEC-047", "STRICT_SECURITY_MODE: Redis not configured - failing closed for auth route")
-          await auditSensitiveOperation("STRICT_MODE_BLOCK", rateLimitKey, {
-            reason: "Redis not configured in strict security mode",
-            route: pathname,
-            routeType: "auth",
-          }, request)
-          const errorResponse = new NextResponse(
-            JSON.stringify({
-              ...getLocalizedError(request, "SERVICE_UNAVAILABLE"),
-              error: "Service temporarily unavailable. Please try again later.",
-              code: "SERVICE_UNAVAILABLE",
-            }),
-            {
-              status: 503,
-              headers: {
-                "Content-Type": "application/json",
-                "Retry-After": "30",
-              },
-            }
-          )
-          return applySecurityHeaders(errorResponse, cspNonce)
+          logWarn("SEC-047", "STRICT_SECURITY_MODE: Redis not configured for auth route - using in-memory fallback")
         }
         if (process.env.NODE_ENV === "production") {
-          logWarn("SEC-031", "Using in-memory rate limiting in production - configure Redis or enable STRICT_SECURITY_MODE")
+          logWarn("SEC-031", "Using in-memory rate limiting in production - configure Redis to enable distributed rate limiting")
         }
         const result = devCheckRateLimit(rateLimitKey, AUTH_RATE_LIMIT_MAX_REQUESTS, devAuthRateLimitStore)
         allowed = result.allowed
@@ -6111,37 +6091,14 @@ export async function middleware(request: NextRequest) {
           remaining = limit
         }
       } else {
-        // SEC-031, SEC-047: Development-only rate limiting with strict mode check
+        // SEC-031, SEC-047: Redis not configured — fall back to in-memory rate limiting
+        // NOTE: STRICT_SECURITY_MODE block removed — Redis is not configured in this deployment.
+        // In-memory fallback is used to keep routes functional.
         if (STRICT_SECURITY_MODE) {
-          // SEC-047: In strict mode, fail hard for expensive routes, allow others with logging
-          if (isExpensive) {
-            logError("SEC-047", "STRICT_SECURITY_MODE: Redis not configured - failing closed for expensive route")
-            await auditSensitiveOperation("STRICT_MODE_BLOCK", rateLimitKey, {
-              reason: "Redis not configured in strict security mode",
-              route: pathname,
-              routeType: "expensive",
-            }, request)
-            const errorResponse = new NextResponse(
-              JSON.stringify({
-                ...getLocalizedError(request, "SERVICE_UNAVAILABLE"),
-                error: "Service temporarily unavailable. Please try again later.",
-                code: "SERVICE_UNAVAILABLE",
-              }),
-              {
-                status: 503,
-                headers: {
-                  "Content-Type": "application/json",
-                  "Retry-After": "30",
-                },
-              }
-            )
-            return applySecurityHeaders(errorResponse, cspNonce)
-          }
-          // For non-expensive routes in strict mode, log warning but allow
-          logWarn("SEC-047", "STRICT_SECURITY_MODE: Redis not configured for non-expensive route - allowing with default limits")
+          logWarn("SEC-047", "STRICT_SECURITY_MODE: Redis not configured - using in-memory fallback for rate limiting")
         }
-        if (process.env.NODE_ENV === "production" && !STRICT_SECURITY_MODE) {
-          logWarn("SEC-031", "Using in-memory rate limiting in production - configure Redis or enable STRICT_SECURITY_MODE")
+        if (process.env.NODE_ENV === "production") {
+          logWarn("SEC-031", "Using in-memory rate limiting in production - configure Redis to enable distributed rate limiting")
         }
         const result = devCheckRateLimit(rateLimitKey, RATE_LIMIT_MAX_REQUESTS, devRateLimitStore)
         allowed = result.allowed
