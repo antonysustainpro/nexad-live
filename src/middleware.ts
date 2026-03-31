@@ -4941,10 +4941,22 @@ function getJwtSecret(): string {
 async function verifyJwtSignature(token: string): Promise<boolean> {
   try {
     const parts = token.split(".")
-    if (parts.length !== 3) return false
+    if (parts.length !== 3) {
+      console.error("[JWT Verify] Token does not have 3 parts:", parts.length)
+      return false
+    }
 
     const [headerB64, payloadB64, signatureB64] = parts
     const signedData = `${headerB64}.${payloadB64}`
+
+    // Debug: Decode header to see algorithm
+    try {
+      const headerJson = atob(headerB64.replace(/-/g, "+").replace(/_/g, "/"))
+      const header = JSON.parse(headerJson)
+      console.log("[JWT Verify] Header:", header)
+    } catch (e) {
+      console.error("[JWT Verify] Failed to decode header:", e)
+    }
 
     // Decode signature (URL-safe base64)
     const sigBase64 = signatureB64.replace(/-/g, "+").replace(/_/g, "/")
@@ -4952,9 +4964,12 @@ async function verifyJwtSignature(token: string): Promise<boolean> {
     const signature = Uint8Array.from(atob(sigPadded), (c) => c.charCodeAt(0))
 
     // Import key and verify
+    const secret = getJwtSecret()
+    console.log("[JWT Verify] Using secret starting with:", secret.substring(0, 8) + "...")
+
     const key = await crypto.subtle.importKey(
       "raw",
-      new TextEncoder().encode(getJwtSecret()),
+      new TextEncoder().encode(secret),
       { name: "HMAC", hash: "SHA-256" },
       false,
       ["verify"]
@@ -4967,8 +4982,10 @@ async function verifyJwtSignature(token: string): Promise<boolean> {
       new TextEncoder().encode(signedData)
     )
 
+    console.log("[JWT Verify] Signature valid:", isValid)
     return isValid
-  } catch {
+  } catch (error) {
+    console.error("[JWT Verify] Error:", error)
     return false
   }
 }
@@ -4987,14 +5004,24 @@ async function verifyJwtSignature(token: string): Promise<boolean> {
  */
 async function getUserId(request: NextRequest, requireVerification: boolean = false): Promise<string | null> {
   const sessionCookie = request.cookies.get("nexus-session")?.value
-  if (!sessionCookie) return null
+  if (!sessionCookie) {
+    console.log("[getUserId] No nexus-session cookie found")
+    return null
+  }
+
+  console.log("[getUserId] Session token length:", sessionCookie.length)
+  console.log("[getUserId] Session token preview:", sessionCookie.substring(0, 50) + "...")
 
   try {
     const parts = sessionCookie.split(".")
-    if (parts.length !== 3) return null
+    if (parts.length !== 3) {
+      console.log("[getUserId] Token doesn't have 3 parts:", parts.length)
+      return null
+    }
 
     // SEC-064: If verification required, check signature first
     if (requireVerification) {
+      console.log("[getUserId] Verifying JWT signature...")
       const isValid = await verifyJwtSignature(sessionCookie)
       if (!isValid) {
         logSecurity("SEC-064", "JWT signature verification failed - treating as unauthenticated")
