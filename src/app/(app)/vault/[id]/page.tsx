@@ -4,13 +4,12 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { motion } from "motion/react"
-import { 
-  ChevronLeft, 
-  FileText, 
-  Download, 
-  Share2, 
-  Trash2, 
-  Edit,
+import {
+  ChevronLeft,
+  FileText,
+  Download,
+  Share2,
+  Trash2,
   Calendar,
   Layers,
   Eye,
@@ -187,14 +186,8 @@ export default function VaultDocumentPage() {
               transition={{ delay: 0.2 }}
               className="flex flex-wrap gap-3"
             >
-              <Button 
-                variant="outline" 
-                className="active:scale-[0.98] transition-transform"
-                onClick={() => alert(language === "ar" ? "قريباً" : "Edit mode coming soon")}
-              >
-                <Edit className="h-4 w-4 me-2" aria-hidden="true" />
-                {language === "ar" ? "تعديل" : "Edit"}
-              </Button>
+              {/* Hidden until backend implementation complete */}
+              {/* Edit button previously showed an alert saying "coming soon" — removed to avoid confusing users */}
               <Button 
                 variant="outline" 
                 className="active:scale-[0.98] transition-transform"

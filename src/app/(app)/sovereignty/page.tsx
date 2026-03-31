@@ -21,6 +21,7 @@ import { getKeyStatus, getShardDistribution, getSovereigntyReport, backupKey, ro
 import type { KeyStatusResponse, ShardDistributionResponse, SovereigntyReportResponse } from "@/lib/types"
 import { SovereigntyScore } from "@/components/sovereignty-score"
 import { ShardMap } from "@/components/shard-map"
+import { ErrorRetry } from "@/components/error-retry"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -80,24 +81,28 @@ export default function SovereigntyPage() {
   const [keyInfo, setKeyInfo] = useState<KeyStatusResponse | null>(null)
   const [shardData, setShardData] = useState<ShardDistributionResponse | null>(null)
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const passphraseInputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    Promise.all([
-      getKeyStatus(),
-      getShardDistribution(),
-      getSovereigntyReport(),
-    ])
-      .then(([key, shards, _report]) => {
+  const loadSovereigntyData = () => {
+    setLoading(true)
+    setLoadError(false)
+    Promise.all([getKeyStatus(), getShardDistribution(), getSovereigntyReport()])
+      .then(([key, shards]) => {
         if (key) setKeyInfo(key)
         if (shards) setShardData(shards)
         setLoading(false)
       })
       .catch((error) => {
         console.error("Failed to load sovereignty data:", error)
-        toast.error("We couldn't load your sovereignty data. Please try again in a moment.")
+        setLoadError(true)
         setLoading(false)
       })
+  }
+
+  useEffect(() => {
+    loadSovereigntyData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Use real key data with fallback
@@ -183,12 +188,35 @@ export default function SovereigntyPage() {
     }
   }
 
+  // Loading skeleton
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-nexus-jade" aria-hidden="true" />
+      </div>
+    )
+  }
+
+  // Data load error — show retry
+  if (loadError) {
+    return (
+      <ErrorRetry
+        onRetry={loadSovereigntyData}
+        message={language === "ar"
+          ? "تعذّر تحميل بيانات السيادة. يرجى المحاولة مجدداً."
+          : "We couldn't load your sovereignty data. Please try again."}
+        networkError
+        variant="page"
+      />
+    )
+  }
+
   return (
-    <div className="p-6 space-y-6 max-w-4xl mx-auto pb-20">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 max-w-4xl mx-auto pb-20">
       {/* Header */}
       <div>
         <h1 className="text-title-1 flex items-center gap-2">
-          <Crown className="h-6 w-6 text-nexus-gold" aria-hidden="true" />
+          <Crown className="h-6 w-6 text-nexus-gold flex-shrink-0" aria-hidden="true" />
           {language === "ar" ? "السيادة" : "Sovereignty"}
         </h1>
         <p className="text-muted-foreground mt-1">
@@ -199,12 +227,12 @@ export default function SovereigntyPage() {
       </div>
 
       {/* Score and Map */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <SovereigntyScore />
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-headline flex items-center gap-2">
-              <Server className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+              <Server className="h-5 w-5 text-muted-foreground flex-shrink-0" aria-hidden="true" />
               {language === "ar" ? "توزيع الأجزاء" : "Shard Distribution"}
             </CardTitle>
           </CardHeader>
@@ -218,7 +246,7 @@ export default function SovereigntyPage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-headline flex items-center gap-2">
-            <Key className="h-5 w-5 text-nexus-gold" aria-hidden="true" />
+            <Key className="h-5 w-5 text-nexus-gold flex-shrink-0" aria-hidden="true" />
             {language === "ar" ? "مفتاح التشفير" : "Encryption Key"}
           </CardTitle>
           <CardDescription>
@@ -228,26 +256,27 @@ export default function SovereigntyPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="p-4 rounded-lg bg-secondary/30">
+          {/* 1 col on 320px, 2 on sm, 3 on md */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="p-3 sm:p-4 rounded-lg bg-secondary/30">
               <p className="text-sm text-muted-foreground mb-1">
                 {language === "ar" ? "البصمة" : "Fingerprint"}
               </p>
-              <p className="font-mono text-nexus-gold">{displayFingerprint}</p>
+              <p className="font-mono text-nexus-gold text-sm break-all">{displayFingerprint}</p>
             </div>
-            <div className="p-4 rounded-lg bg-secondary/30">
+            <div className="p-3 sm:p-4 rounded-lg bg-secondary/30">
               <p className="text-sm text-muted-foreground mb-1">
                 {language === "ar" ? "الخوارزمية" : "Algorithm"}
               </p>
               <p className="font-medium">{displayAlgorithm}</p>
             </div>
-            <div className="p-4 rounded-lg bg-secondary/30">
+            <div className="p-3 sm:p-4 rounded-lg bg-secondary/30">
               <p className="text-sm text-muted-foreground mb-1">
                 {language === "ar" ? "تاريخ الإنشاء" : "Created"}
               </p>
               <p className="font-medium">{displayCreatedAt}</p>
             </div>
-            <div className="p-4 rounded-lg bg-secondary/30">
+            <div className="p-3 sm:p-4 rounded-lg bg-secondary/30">
               <p className="text-sm text-muted-foreground mb-1">
                 {language === "ar" ? "النسخ الاحتياطي" : "Backup"}
               </p>
@@ -257,7 +286,7 @@ export default function SovereigntyPage() {
                 </Badge>
               </div>
             </div>
-            <div className="p-4 rounded-lg bg-secondary/30">
+            <div className="p-3 sm:p-4 rounded-lg bg-secondary/30">
               <p className="text-sm text-muted-foreground mb-1">
                 {language === "ar" ? "آخر تدوير" : "Last Rotation"}
               </p>
@@ -265,9 +294,11 @@ export default function SovereigntyPage() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-3 pt-4">
+          {/* Full-width on mobile, auto on larger screens */}
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-4">
             <Button
               variant="outline"
+              className="w-full sm:w-auto min-h-[44px]"
               onClick={() => {
                 setBackupData(null)
                 setShowPassphrasePrompt(true)
@@ -276,7 +307,7 @@ export default function SovereigntyPage() {
               <QrCode className="h-4 w-4 me-2" aria-hidden="true" />
               {language === "ar" ? "نسخ احتياطي عبر QR" : "Backup via QR"}
             </Button>
-            <Button variant="outline" onClick={async () => {
+            <Button variant="outline" className="w-full sm:w-auto min-h-[44px]" onClick={async () => {
               // SEC-SM-001: Clipboard API can throw if permission denied
               try {
                 await navigator.clipboard.writeText(displayFingerprint)
@@ -290,6 +321,7 @@ export default function SovereigntyPage() {
             </Button>
             <Button
               variant="outline"
+              className="w-full sm:w-auto min-h-[44px]"
               disabled={rotateLoading}
               onClick={handleRotateKey}
             >
@@ -319,13 +351,13 @@ export default function SovereigntyPage() {
             <div
               key={rec.id}
               className={cn(
-                "flex items-center justify-between p-4 rounded-lg",
+                "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 sm:p-4 rounded-lg",
                 rec.status === "completed" ? "bg-nexus-gold/5" : "bg-secondary/30"
               )}
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
                 <div className={cn(
-                  "p-2 rounded-full",
+                  "p-2 rounded-full flex-shrink-0",
                   rec.status === "completed" ? "bg-nexus-gold/10" : "bg-muted"
                 )}>
                   {rec.status === "completed" ? (
@@ -334,7 +366,7 @@ export default function SovereigntyPage() {
                     <AlertTriangle className="h-4 w-4 text-emotion-excited" aria-hidden="true" />
                   )}
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="font-medium">
                     {language === "ar" ? rec.titleAr : rec.titleEn}
                   </p>
@@ -343,7 +375,7 @@ export default function SovereigntyPage() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-shrink-0 ps-9 sm:ps-0">
                 <Badge variant="secondary">
                   +{rec.impact} {language === "ar" ? "نقاط" : "pts"}
                 </Badge>
@@ -359,33 +391,34 @@ export default function SovereigntyPage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-headline flex items-center gap-2">
-            <Shield className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+            <Shield className="h-5 w-5 text-muted-foreground flex-shrink-0" aria-hidden="true" />
             {language === "ar" ? "تفاصيل التجزئة" : "Sharding Details"}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div className="p-4 rounded-lg bg-secondary/30">
-              <p className="text-3xl font-bold text-nexus-gold">12</p>
-              <p className="text-sm text-muted-foreground">
+          {/* 3 cols preserved but scaled down on smallest screens */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+            <div className="p-2 sm:p-4 rounded-lg bg-secondary/30">
+              <p className="text-2xl sm:text-3xl font-bold text-nexus-gold">{totalShards}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
                 {language === "ar" ? "أجزاء نشطة" : "Active Shards"}
               </p>
             </div>
-            <div className="p-4 rounded-lg bg-secondary/30">
-              <p className="text-3xl font-bold text-nexus-gold">3</p>
-              <p className="text-sm text-muted-foreground">
+            <div className="p-2 sm:p-4 rounded-lg bg-secondary/30">
+              <p className="text-2xl sm:text-3xl font-bold text-nexus-gold">{nodeCount}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
                 {language === "ar" ? "عقد" : "Nodes"}
               </p>
             </div>
-            <div className="p-4 rounded-lg bg-secondary/30">
-              <p className="text-3xl font-bold text-foreground">4</p>
-              <p className="text-sm text-muted-foreground">
+            <div className="p-2 sm:p-4 rounded-lg bg-secondary/30">
+              <p className="text-2xl sm:text-3xl font-bold text-foreground">4</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
                 {language === "ar" ? "نسخ احتياطية" : "Redundancy"}
               </p>
             </div>
           </div>
 
-          <div className="p-4 rounded-lg bg-secondary/30">
+          <div className="p-3 sm:p-4 rounded-lg bg-secondary/30">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium">
                 {language === "ar" ? "صحة الشبكة" : "Network Health"}
@@ -406,12 +439,12 @@ export default function SovereigntyPage() {
 
       {/* Vault ID */}
       <Card className="border-nexus-gold/30">
-        <CardContent className="p-6 text-center">
+        <CardContent className="p-4 sm:p-6 text-center">
           <Lock className="h-8 w-8 text-nexus-gold mx-auto mb-3" aria-hidden="true" />
           <p className="text-sm text-muted-foreground mb-1">
             {language === "ar" ? "معرف خزنتك" : "Your Vault ID"}
           </p>
-          <p className="font-mono text-2xl text-nexus-gold">
+          <p className="font-mono text-xl sm:text-2xl text-nexus-gold break-all">
             {preferences.vaultId
               ? `${language === "ar" ? "خزنة" : "Vault"} ${preferences.vaultId}`
               : language === "ar" ? "خزنة #00247" : "Vault #00247"}
@@ -421,22 +454,22 @@ export default function SovereigntyPage() {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-secondary text-foreground px-4 py-2 rounded-lg shadow-lg z-50 animate-in fade-in slide-in-from-bottom-2">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm bg-secondary text-foreground px-4 py-2 rounded-lg shadow-lg z-50 animate-in fade-in slide-in-from-bottom-2 text-center text-sm">
           {toastMessage}
         </div>
       )}
 
-      {/* Passphrase Prompt Modal */}
+      {/* Passphrase Prompt Modal — bottom sheet on mobile, centered dialog on desktop */}
       {showPassphrasePrompt && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50"
           onClick={() => { setShowPassphrasePrompt(false); setPassphrase("") }}
           role="dialog"
           aria-modal="true"
           aria-label={language === "ar" ? "عبارة المرور للنسخ الاحتياطي" : "Backup Passphrase"}
         >
           <div
-            className="bg-card p-8 rounded-2xl text-center max-w-sm w-full mx-4"
+            className="bg-card p-6 sm:p-8 rounded-t-2xl sm:rounded-2xl text-center w-full sm:max-w-sm"
             onClick={(e) => e.stopPropagation()}
           >
             <Key className="h-8 w-8 text-nexus-gold mx-auto mb-3" aria-hidden="true" />
@@ -459,13 +492,14 @@ export default function SovereigntyPage() {
               onChange={(e) => setPassphrase(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") handleBackupKey() }}
               placeholder={language === "ar" ? "عبارة المرور..." : "Passphrase..."}
-              className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm mb-4 outline-none focus:ring-2 focus:ring-nexus-gold"
+              className="w-full px-3 py-3 rounded-lg border border-border bg-background text-foreground text-base sm:text-sm mb-4 outline-none focus:ring-2 focus:ring-nexus-gold min-h-[44px]"
               autoComplete="off"
               autoFocus
             />
-            <div className="flex gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button
                 variant="outline"
+                className="w-full sm:w-auto min-h-[44px]"
                 onClick={() => { setShowPassphrasePrompt(false); setPassphrase("") }}
               >
                 {language === "ar" ? "إلغاء" : "Cancel"}
@@ -473,7 +507,7 @@ export default function SovereigntyPage() {
               <Button
                 disabled={backupLoading || !passphrase.trim()}
                 onClick={handleBackupKey}
-                className="bg-nexus-gold hover:bg-nexus-gold/90 text-background"
+                className="w-full sm:w-auto min-h-[44px] bg-nexus-gold hover:bg-nexus-gold/90 text-background"
               >
                 {backupLoading
                   ? <Loader2 className="h-4 w-4 motion-safe:animate-spin" aria-hidden="true" />
@@ -484,17 +518,17 @@ export default function SovereigntyPage() {
         </div>
       )}
 
-      {/* QR Code Modal */}
+      {/* QR Code Modal — bottom sheet on mobile, centered dialog on desktop */}
       {showQR && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50"
           onClick={() => { setShowQR(false); setBackupData(null) }}
           role="dialog"
           aria-modal="true"
           aria-label={language === "ar" ? "رمز QR" : "QR Code"}
         >
           <div
-            className="bg-card p-8 rounded-2xl text-center max-w-sm w-full mx-4"
+            className="bg-card p-6 sm:p-8 rounded-t-2xl sm:rounded-2xl text-center w-full sm:max-w-sm"
             onClick={(e) => e.stopPropagation()}
           >
             {/* SEC-UI-001: QR code generated locally via canvas - NEVER send backup data to external APIs */}
@@ -532,9 +566,10 @@ export default function SovereigntyPage() {
                 ? "هذا الرمز مشفر بعبارة مرورك. لا تشاركه."
                 : "This code is encrypted with your passphrase. Do not share it."}
             </p>
-            <div className="flex gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button
                 variant="outline"
+                className="w-full sm:w-auto min-h-[44px]"
                 onClick={() => {
                   const canvas = document.querySelector<HTMLCanvasElement>('[aria-label="Backup QR Code"]')
                   if (canvas) {
@@ -548,7 +583,7 @@ export default function SovereigntyPage() {
               >
                 {language === "ar" ? "تنزيل" : "Download"}
               </Button>
-              <Button variant="outline" onClick={() => { setShowQR(false); setBackupData(null) }}>
+              <Button variant="outline" className="w-full sm:w-auto min-h-[44px]" onClick={() => { setShowQR(false); setBackupData(null) }}>
                 {language === "ar" ? "إغلاق" : "Close"}
               </Button>
             </div>
