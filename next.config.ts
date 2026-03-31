@@ -42,9 +42,29 @@ const nextConfig: NextConfig = {
           // Using 'credentialless' to avoid breaking third-party image/font loads while
           // still enabling SharedArrayBuffer and high-res timers protection.
           { key: "Cross-Origin-Embedder-Policy", value: "credentialless" },
-          // CSP is generated per-request with nonce by middleware (SEC-034)
-          // Do NOT set a static CSP here - it conflicts with the nonce-based policy
-          // The middleware's nonce-based CSP is the authoritative policy
+          // SEC-034 (PRIMARY): CSP is generated per-request with nonce by middleware.
+          // The middleware nonce-based CSP takes precedence and overrides this header.
+          //
+          // SEC-046 (FALLBACK): Static CSP below activates only when middleware does not run
+          // (e.g., static export, edge-runtime bypass, or misconfigured matcher).
+          // It cannot use nonces, so 'unsafe-inline' is required for styles and Next.js hydration.
+          // This is intentionally less strict than the middleware CSP — it is a last-resort guard,
+          // not the primary control. The nonce-based middleware policy is authoritative.
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              // Next.js requires 'unsafe-inline' and 'unsafe-eval' in static mode (no nonce available)
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: https: blob:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://*.vercel-analytics.com https://*.nexusad.ai wss://*.nexusad.ai https://*.ingest.sentry.io https://*.proxy.runpod.net",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join("; ") + ";",
+          },
         ],
       },
       // Long-lived cache for immutable static assets (JS/CSS chunks, fonts, images)

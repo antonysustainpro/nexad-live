@@ -11,7 +11,10 @@
         "start": "next start",
         "lint": "eslint",
         "test:e2e": "npx playwright test --project=desktop",
-        "test:e2e:all": "npx playwright test"
+        "test:e2e:all": "npx playwright test",
+        "test:e2e:ui": "npx playwright test --ui",
+        "test:e2e:critical": "npx playwright test e2e/critical --project=desktop",
+        "test:e2e:report": "npx playwright show-report test-results/html"
     },
     "dependencies": {
         "@radix-ui/react-accordion": "^1.2.12",

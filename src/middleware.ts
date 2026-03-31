@@ -3796,7 +3796,12 @@ function generateCspHeader(nonce: string): string {
     `style-src 'self' 'unsafe-inline' 'nonce-${nonce}'`,
     "img-src 'self' data: https: blob:",
     "font-src 'self' data:",
-    "connect-src 'self' https://*.vercel-analytics.com https://*.nexusad.ai wss://*.nexusad.ai",
+    // SEC-045: connect-src covers all outbound XHR/fetch/WebSocket from the browser.
+    // *.ingest.sentry.io  — Sentry error reporting (sentry.client.config.ts uses NEXT_PUBLIC_SENTRY_DSN)
+    // *.proxy.runpod.net  — RunPod GPU backend (Sovereign AI); wildcard covers dynamic pod IDs
+    // *.vercel-analytics.com — Vercel Speed Insights / Web Analytics
+    // *.nexusad.ai / wss://*.nexusad.ai — first-party API and WebSocket endpoints
+    "connect-src 'self' https://*.vercel-analytics.com https://*.nexusad.ai wss://*.nexusad.ai https://*.ingest.sentry.io https://*.proxy.runpod.net",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
