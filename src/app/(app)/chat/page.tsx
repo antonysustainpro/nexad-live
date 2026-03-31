@@ -244,7 +244,7 @@ function ChatPageContent() {
     }
 
     // Capture current messages for the API call
-    const currentMessages = [...messages, { role: "user" as const, content }]
+    const currentMessages = [...messages, { role: "user" as const, content: content.trim() }]
 
     try {
       const stream = streamChat({
