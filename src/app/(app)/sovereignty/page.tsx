@@ -95,7 +95,7 @@ export default function SovereigntyPage() {
       })
       .catch((error) => {
         console.error("Failed to load sovereignty data:", error)
-        toast.error("Failed to load sovereignty data. Please try again.")
+        toast.error("We couldn't load your sovereignty data. Please try again in a moment.")
         setLoading(false)
       })
   }, [])
@@ -347,15 +347,8 @@ export default function SovereigntyPage() {
                 <Badge variant="secondary">
                   +{rec.impact} {language === "ar" ? "نقاط" : "pts"}
                 </Badge>
-                {rec.status === "pending" && (
-                  <Button 
-                    size="sm" 
-                    className="bg-nexus-jade hover:bg-nexus-jade-hover text-background"
-                    onClick={() => showToast(language === "ar" ? "سيتم التفعيل قريبًا" : "Feature coming soon")}
-                  >
-                    {language === "ar" ? "تفعيل" : "Enable"}
-                  </Button>
-                )}
+                {/* Hidden until backend implementation complete */}
+                {/* "Enable" button previously showed "Feature coming soon" toast — removed to avoid implying the action works */}
               </div>
             </div>
           ))}

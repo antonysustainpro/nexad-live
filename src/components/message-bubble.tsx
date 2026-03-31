@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { Lock, Check, X, ChevronDown, ChevronUp, Shield, RefreshCw } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 import { motion } from "motion/react"
@@ -43,6 +43,7 @@ export interface Message {
     sources: string[]
   }
   isStreaming?: boolean
+  isError?: boolean // True when the message represents a failed/errored response
   piiScrubbed?: number // NEW: Number of PII items scrubbed from this message
 }
 
@@ -55,7 +56,22 @@ export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbl
   const { language, isRTL } = useNexus()
   const [sourcesOpen, setSourcesOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const regenerateBtnRef = useRef<HTMLButtonElement>(null)
   const isUser = message.role === "user"
+
+  // Accessible label for the whole message bubble
+  const bubbleAriaLabel = isUser
+    ? (language === "ar" ? "رسالتك" : "Your message")
+    : (language === "ar" ? "رد المساعد" : "Assistant response")
+
+  // Accessible label for sources toggle
+  const sourcesToggleLabel = sourcesOpen
+    ? (language === "ar"
+        ? `إخفاء المصادر، ${message.sources?.length ?? 0} مصدر`
+        : `Hide sources, ${message.sources?.length ?? 0} source${(message.sources?.length ?? 0) !== 1 ? "s" : ""}`)
+    : (language === "ar"
+        ? `إظهار المصادر، ${message.sources?.length ?? 0} مصدر`
+        : `Show sources, ${message.sources?.length ?? 0} source${(message.sources?.length ?? 0) !== 1 ? "s" : ""}`)
 
   return (
     <motion.div
@@ -66,7 +82,9 @@ export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbl
         isUser ? (isRTL ? "justify-start" : "justify-end") : (isRTL ? "justify-end" : "justify-start")
       )}
     >
-      <div
+      {/* A11Y: article landmark gives screen readers context for each message */}
+      <article
+        aria-label={bubbleAriaLabel}
         className={cn(
           "relative max-w-[85%] sm:max-w-[80%] p-3 sm:p-4 min-w-0",
           isUser
@@ -85,6 +103,13 @@ export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbl
         )}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onFocus={() => setIsHovered(true)}
+        onBlur={(e) => {
+          // Only hide when focus leaves the article entirely
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            setIsHovered(false)
+          }
+        }}
       >
         {/* AI Message Header */}
         {!isUser && (message.domain || message.provider || message.piiScrubbed) && (
@@ -103,7 +128,10 @@ export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbl
               )}
             </div>
             {message.provider && (
-              <span className="text-caption text-nexus-gold font-medium whitespace-nowrap">
+              <span
+                className="text-caption text-nexus-gold font-medium whitespace-nowrap"
+                aria-label={language === "ar" ? "المزود: العقل السيادي" : "Provider: Sovereign Brain"}
+              >
                 {language === "ar" ? "العقل السيادي" : "Sovereign Brain"}
               </span>
             )}
@@ -127,7 +155,7 @@ export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbl
                   href={sanitizeUrl(href)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-nexus-jade hover:underline"
+                  className="text-nexus-jade hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-nexus-jade focus-visible:ring-offset-2 rounded-sm"
                 >
                   {children}
                 </a>
@@ -161,40 +189,68 @@ export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbl
         {/* Sources Accordion */}
         {!isUser && message.sources && message.sources.length > 0 && (
           <Collapsible open={sourcesOpen} onOpenChange={setSourcesOpen} className="mt-3">
-            <CollapsibleTrigger className="flex items-center gap-1 text-sm text-nexus-jade hover:text-nexus-jade-hover transition-colors">
-              {sourcesOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-              {language === "ar" ? `المصادر (${message.sources.length})` : `Sources (${message.sources.length})`}
+            {/* A11Y: explicit aria-label describes action + count; chevron icons are decorative */}
+            <CollapsibleTrigger
+              className="flex items-center gap-1 text-sm text-nexus-jade hover:text-nexus-jade-hover transition-colors rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-nexus-jade focus-visible:ring-offset-2"
+              aria-label={sourcesToggleLabel}
+              aria-expanded={sourcesOpen}
+            >
+              {sourcesOpen
+                ? <ChevronUp className="h-4 w-4" aria-hidden="true" />
+                : <ChevronDown className="h-4 w-4" aria-hidden="true" />}
+              <span aria-hidden="true">
+                {language === "ar" ? `المصادر (${message.sources.length})` : `Sources (${message.sources.length})`}
+              </span>
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-2 space-y-2">
-              {message.sources.map((source, i) => (
-                <div
-                  key={i}
-                  className="p-2 rounded-lg bg-secondary/50 text-sm"
-                >
-                  <p className="text-muted-foreground line-clamp-2">{source.text}</p>
-                  <p className="text-caption text-muted-foreground mt-1">
-                    {language === "ar" ? "الصلة:" : "Relevance:"} {Math.round(source.score * 100)}%
-                  </p>
-                </div>
-              ))}
+              {/* A11Y: semantic list so screen readers announce count */}
+              <ul role="list" aria-label={language === "ar" ? "قائمة المصادر" : "Sources list"} className="space-y-2">
+                {message.sources.map((source, i) => (
+                  <li
+                    key={i}
+                    className="p-2 rounded-lg bg-secondary/50 text-sm"
+                  >
+                    <p className="text-muted-foreground line-clamp-2">{source.text}</p>
+                    <p className="text-caption text-muted-foreground mt-1">
+                      {/* A11Y: sr-only label for screen readers, visible label for sighted users */}
+                      <span className="sr-only">{language === "ar" ? "نسبة الصلة:" : "Relevance score:"}</span>
+                      <span aria-hidden="true">{language === "ar" ? "الصلة:" : "Relevance:"}</span>
+                      {" "}{Math.round(source.score * 100)}%
+                    </p>
+                  </li>
+                ))}
+              </ul>
             </CollapsibleContent>
           </Collapsible>
         )}
 
         {/* Fact Check Badge */}
         {!isUser && message.factCheck && (
-          <div className="mt-3 pt-2 border-t border-border">
-            <div className="flex items-center gap-2">
+          // A11Y: role="status" + aria-label gives screen readers a complete fact-check summary
+          <div
+            className="mt-3 pt-2 border-t border-border"
+            role="status"
+            aria-label={
+              message.factCheck.verified
+                ? (language === "ar"
+                    ? `تم التحقق، مستوى الثقة ${Math.round(message.factCheck.confidence * 100)}%`
+                    : `Verified, confidence ${Math.round(message.factCheck.confidence * 100)}%`)
+                : (language === "ar"
+                    ? `لم يتم التحقق، مستوى الثقة ${Math.round(message.factCheck.confidence * 100)}%`
+                    : `Unverified, confidence ${Math.round(message.factCheck.confidence * 100)}%`)
+            }
+          >
+            <div className="flex items-center gap-2" aria-hidden="true">
               {message.factCheck.verified ? (
                 <>
-                  <Check className="h-4 w-4 text-emotion-joyful" />
+                  <Check className="h-4 w-4 text-emotion-joyful" aria-hidden="true" />
                   <span className="text-sm text-emotion-joyful">
                     {language === "ar" ? "تم التحقق" : "Verified"}
                   </span>
                 </>
               ) : (
                 <>
-                  <X className="h-4 w-4 text-destructive" />
+                  <X className="h-4 w-4 text-destructive" aria-hidden="true" />
                   <span className="text-sm text-destructive">
                     {language === "ar" ? "لم يتم التحقق" : "Unverified"}
                   </span>
@@ -212,21 +268,23 @@ export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbl
           <div className={cn(
             "flex mt-2 pt-1 transition-opacity duration-150",
             isRTL ? "justify-start" : "justify-end",
-            isHovered ? "opacity-100" : "opacity-0 focus-within:opacity-100 touch:opacity-100 [@media(hover:none)]:opacity-100"
+            // A11Y: focus-within keeps button visible when keyboard-focused, not just on hover
+            isHovered ? "opacity-100" : "opacity-0 focus-within:opacity-100 [@media(hover:none)]:opacity-100"
           )}>
             <button
+              ref={regenerateBtnRef}
               onClick={onRegenerate}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-nexus-jade transition-colors rounded-md px-3 py-2.5 min-h-[44px] min-w-[44px] hover:bg-secondary/60 active:bg-secondary/80"
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-nexus-jade transition-colors rounded-md px-3 py-2.5 min-h-[44px] min-w-[44px] hover:bg-secondary/60 active:bg-secondary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-nexus-jade focus-visible:ring-offset-2"
               aria-label={language === "ar" ? "توليد رد آخر" : "Regenerate response"}
               title={language === "ar" ? "توليد رد آخر" : "Regenerate response"}
             >
-              <RefreshCw className="h-3 w-3" />
+              <RefreshCw className="h-3 w-3" aria-hidden="true" />
               <span>{language === "ar" ? "رد آخر" : "Regenerate"}</span>
             </button>
           </div>
         )}
 
-        {/* Gold Lock Icon */}
+        {/* Gold Lock Icon — decorative, no semantic meaning */}
         <Lock
           aria-hidden="true"
           className={cn(
@@ -236,7 +294,7 @@ export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbl
               : (isRTL ? "bottom-2 start-2" : "bottom-2 end-2")
           )}
         />
-      </div>
+      </article>
     </motion.div>
   )
 })
@@ -267,13 +325,18 @@ export const TypingIndicator = React.memo(() => {
   }, [phase, phases])
 
   return (
+    // A11Y: role="status" + aria-live="polite" announces loading phase changes to screen readers
+    // The visible animated text is aria-hidden to prevent double-announcement
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="flex items-center gap-3 text-callout text-muted-foreground p-3 rounded-lg bg-card/50 border border-border/50 backdrop-blur-sm"
+      role="status"
+      aria-live="polite"
+      aria-label={phases[phase]?.text}
     >
-      {/* Sovereignty-themed loading dots */}
-      <div className="flex items-center gap-1">
+      {/* Decorative animated dots — hidden from screen readers */}
+      <div className="flex items-center gap-1" aria-hidden="true">
         {[0, 1, 2].map((i) => (
           <motion.span
             key={i}
@@ -297,6 +360,7 @@ export const TypingIndicator = React.memo(() => {
         exit={{ opacity: 0, x: 5 }}
         transition={{ duration: 0.3 }}
         className="italic"
+        aria-hidden="true"
       >
         {phases[phase]?.text}
       </motion.span>
