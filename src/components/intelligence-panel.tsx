@@ -233,7 +233,7 @@ export function IntelligencePanel({
               <p className="text-sm text-muted-foreground italic">
                 {isProcessing 
                   ? (language === "ar" ? "ننسق مع المختصين..." : "Consulting...")
-                  : (language === "ar" ? "لا يوجد مختصون" : "No specialists")}
+                  : (language === "ar" ? "يتم تفعيل المختصين عند التحدث عن مجالات محددة" : "Specialists activate as you chat about specific domains")}
               </p>
             </div>
           )}
@@ -263,7 +263,7 @@ export function IntelligencePanel({
             </div>
           ) : (
             <p className="text-sm text-muted-foreground italic">
-              {language === "ar" ? "لا توجد مصادر" : "No sources"}
+              {language === "ar" ? "قم بتحميل المستندات إلى الخزنة للحصول على إجابات مدعومة بالمصادر" : "Upload documents to Vault for AI-sourced answers"}
             </p>
           )}
         </section>

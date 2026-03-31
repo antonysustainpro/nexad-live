@@ -169,19 +169,19 @@ export default function ButlerPage() {
               </div>
               <div className="flex-1">
                 <p className={cn("font-medium text-foreground", isRTL && "text-right")}>
-                  {language === "ar" ? "مرحباً! قم بإعداد خادمك" : "Welcome! Set up your Butler"}
+                  {language === "ar" ? "خصص الذكاء الاصطناعي الخاص بك" : "Personalize your AI"}
                 </p>
                 <p className={cn("text-sm text-muted-foreground", isRTL && "text-right")}>
-                  {language === "ar" 
-                    ? "خصص موجزك للحصول على المحتوى الأكثر صلة"
-                    : "Personalize your feed to get the most relevant content"
+                  {language === "ar"
+                    ? "أخبرنا عن دورك واهتماماتك للحصول على ذكاء مخصص"
+                    : "Tell us your role and interests for tailored intelligence"
                   }
                 </p>
               </div>
               <Button asChild size="sm" className="bg-[#C6AD90] hover:bg-[#D4C4A8] text-background rounded-md">
-                <Link href="/butler/onboarding">
-                  {language === "ar" ? "ابدأ" : "Start"}
-                  <ArrowRight className={cn("h-4 w-4 ms-1", isRTL && "rotate-180")} aria-hidden="true" />
+                <Link href="/onboarding" className="flex items-center gap-1">
+                  <span>{language === "ar" ? "ابدأ الإعداد" : "Get Started"}</span>
+                  <ArrowRight className={cn("h-4 w-4", isRTL && "rotate-180")} aria-hidden="true" />
                 </Link>
               </Button>
             </div>
@@ -246,14 +246,14 @@ export default function ButlerPage() {
               {language === "ar" ? "خادمك يستعد" : "Your Butler is getting ready"}
             </h3>
             <p className="text-muted-foreground mb-4">
-              {language === "ar" 
-                ? "أكمل الإعداد لتخصيص موجزك."
-                : "Complete onboarding to personalize your feed."
+              {language === "ar"
+                ? "أكمل الإعداد → تحدث مع الذكاء الاصطناعي → ستظهر رؤاك هنا"
+                : "Complete your setup → Chat with your AI → Your insights appear here"
               }
             </p>
             <Button asChild className="bg-[#C6AD90] hover:bg-[#D4C4A8] text-background rounded-md">
-              <Link href="/butler/onboarding">
-                {language === "ar" ? "إعداد الخادم" : "Set up Butler"}
+              <Link href="/onboarding">
+                {language === "ar" ? "إكمال الإعداد" : "Complete Setup"}
               </Link>
             </Button>
           </div>

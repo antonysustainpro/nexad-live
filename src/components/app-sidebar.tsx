@@ -57,20 +57,26 @@ const iconMap = {
 }
 
 const navItems = [
-  { path: "/butler", labelEn: "Butler", labelAr: "الخادم", icon: "Crown", isGold: true },
-  { path: "/", labelEn: "Dashboard", labelAr: "لوحة التحكم", icon: "Home" },
+  // Primary navigation items
+  { path: "/butler", labelEn: "Feed", labelAr: "الخادم", icon: "Crown", isGold: true },
   { path: "/chat", labelEn: "Chat", labelAr: "المحادثة", icon: "MessageCircle" },
-  { path: "/voice", labelEn: "Voice", labelAr: "الصوت", icon: "Mic" },
   { path: "/vault", labelEn: "Vault", labelAr: "الخزنة", icon: "Lock", isGold: true },
-  { path: "/domains", labelEn: "Domains", labelAr: "المجالات", icon: "Compass" },
-  { path: "/notifications", labelEn: "Notifications", labelAr: "الإشعارات", icon: "Bell" },
-  { path: "/billing", labelEn: "Billing", labelAr: "الفواتير", icon: "CreditCard" },
-  { path: "/team", labelEn: "Team", labelAr: "الفريق", icon: "Users" },
-  { path: "/referral", labelEn: "Referrals", labelAr: "الإحالات", icon: "Gift" },
-  { path: "/profile", labelEn: "Profile", labelAr: "الملف الشخصي", icon: "User" },
+  { path: "/sovereignty", labelEn: "Insights", labelAr: "رؤى", icon: "Shield" },
+  { path: "/voice", labelEn: "Voice", labelAr: "الصوت", icon: "Mic" },
   { path: "/memory", labelEn: "Memory", labelAr: "الذاكرة", icon: "Brain", isGold: true },
+
+  // MORE section items
+  { path: "/domains", labelEn: "Domains", labelAr: "المجالات", icon: "Compass" },
   { path: "/help", labelEn: "Help", labelAr: "المساعدة", icon: "HelpCircle" },
+  { path: "/billing", labelEn: "Billing", labelAr: "الفواتير", icon: "CreditCard" },
+  { path: "/profile", labelEn: "Profile", labelAr: "الملف الشخصي", icon: "User" },
   { path: "/settings", labelEn: "Settings", labelAr: "الإعدادات", icon: "Settings" },
+  { path: "/team", labelEn: "Team", labelAr: "الفريق", icon: "Users" },
+  { path: "/notifications", labelEn: "Notifications", labelAr: "الإشعارات", icon: "Bell" },
+
+  // Hidden from sidebar but accessible via routes
+  { path: "/", labelEn: "Dashboard", labelAr: "لوحة التحكم", icon: "Home", hidden: true },
+  { path: "/referral", labelEn: "Referrals", labelAr: "الإحالات", icon: "Gift", hidden: true },
 ]
 
 // Helper to group conversations by time
@@ -167,7 +173,7 @@ export function AppSidebar() {
         {/* Navigation */}
         <nav className="px-2 py-2">
           <ul className="space-y-1">
-            {navItems.map((item) => {
+            {navItems.filter(item => !item.hidden).map((item, index) => {
               const Icon = iconMap[item.icon as keyof typeof iconMap]
               const isActive = pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path))
               const label = language === "ar" ? item.labelAr : item.labelEn
@@ -197,7 +203,16 @@ export function AppSidebar() {
               )
 
               return (
-                <li key={item.path}>
+                <>
+                  {/* Add MORE divider after 6th item */}
+                  {index === 6 && (
+                    <li key="more-divider" className="!mt-4 !mb-2">
+                      <div className="px-3 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        {language === "ar" ? "المزيد" : "MORE"}
+                      </div>
+                    </li>
+                  )}
+                  <li key={item.path}>
                   {sidebarCollapsed ? (
                     <Tooltip>
                       <TooltipTrigger asChild>{navLink}</TooltipTrigger>
@@ -209,6 +224,7 @@ export function AppSidebar() {
                     navLink
                   )}
                 </li>
+                </>
               )
             })}
           </ul>
@@ -280,6 +296,40 @@ export function AppSidebar() {
               <Link href="/chat">
                 <Plus className="h-4 w-4 me-2" />
                 {language === "ar" ? "محادثة جديدة" : "New Chat"}
+              </Link>
+            </Button>
+          )}
+        </div>
+
+        {/* Help Icon - Always visible at bottom-left */}
+        <div className="absolute bottom-3 left-3 z-10">
+          {sidebarCollapsed ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                >
+                  <Link href="/help">
+                    <HelpCircle className="h-5 w-5" />
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side={isRTL ? "left" : "right"}>
+                <p>{language === "ar" ? "المساعدة" : "Help"}</p>
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+            >
+              <Link href="/help" title={language === "ar" ? "المساعدة" : "Help"}>
+                <HelpCircle className="h-5 w-5" />
               </Link>
             </Button>
           )}

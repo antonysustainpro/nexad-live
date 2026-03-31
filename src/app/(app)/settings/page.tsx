@@ -384,6 +384,39 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
+      {/* Butler & Personalization */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-headline flex items-center gap-2">
+            <Crown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+            {language === "ar" ? "التخصيص والخادم" : "Butler & Personalization"}
+          </CardTitle>
+          <CardDescription>
+            {language === "ar"
+              ? "خصص تجربتك مع الذكاء الاصطناعي"
+              : "Customize your AI experience"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Link
+            href="/onboarding"
+            className="flex items-center justify-between p-4 rounded-lg hover:bg-accent transition-colors group"
+          >
+            <div>
+              <p className="font-medium">
+                {language === "ar" ? "تخصيص شخصية الخادم" : "Customize your Butler persona and interests"}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {language === "ar"
+                  ? "قم بتحديث دورك واهتماماتك ونبرة الخادم"
+                  : "Update your role, interests, and Butler's tone"}
+              </p>
+            </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+          </Link>
+        </CardContent>
+      </Card>
+
       {/* Privacy & Security */}
       <Card>
         <CardHeader>

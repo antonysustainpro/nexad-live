@@ -57,7 +57,7 @@ export function OfflineBanner() {
       ) : (
         <>
           <WifiOff className="h-4 w-4" aria-hidden="true" />
-          <span>You are offline. Some features may be unavailable.</span>
+          <span>You are offline. Limited mode — some features may be slow.</span>
         </>
       )}
     </div>

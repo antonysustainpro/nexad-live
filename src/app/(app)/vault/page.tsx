@@ -549,7 +549,7 @@ export default function VaultPage() {
           </h1>
           <p className="text-muted-foreground mt-1">
             {documents.length === 0
-              ? (language === "ar" ? "خزنتك فارغة - ابدأ بالرفع" : "Your vault is empty - start uploading")
+              ? (language === "ar" ? "ارفع المستندات → يحللها الذكاء الاصطناعي → تنمو إتقان المجال" : "Upload documents → AI analyzes them → Domain mastery grows")
               : (language === "ar"
                   ? `${documents.length} مستند مشفر ومحمي`
                   : `${documents.length} documents encrypted & sovereign`)}
@@ -790,8 +790,8 @@ export default function VaultPage() {
                 </h3>
                 <p className="text-sm text-muted-foreground max-w-sm">
                   {language === "ar"
-                    ? "ارفع أول مستند لبدء حماية ملفاتك بتشفير سيادي"
-                    : "Upload your first document to start protecting your files with sovereign encryption"}
+                    ? "ارفع المستندات → يحللها الذكاء الاصطناعي → تنمو إتقان المجال"
+                    : "Upload documents → AI analyzes them → Domain mastery grows"}
                 </p>
               </div>
             ) : view === "grid" ? (
