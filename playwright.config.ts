@@ -35,7 +35,7 @@ export default defineConfig({
 
   // HTML report + JSON for CI dashboards
   reporter: [
-    ["html", { outputFolder: "test-results/html", open: "never" }],
+    ["html", { outputFolder: "playwright-report", open: "never" }],
     ["json", { outputFile: "test-results/results.json" }],
     ["list"],
   ],

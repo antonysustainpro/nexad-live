@@ -14,7 +14,7 @@
         "test:e2e:all": "npx playwright test",
         "test:e2e:ui": "npx playwright test --ui",
         "test:e2e:critical": "npx playwright test e2e/critical --project=desktop",
-        "test:e2e:report": "npx playwright show-report test-results/html"
+        "test:e2e:report": "npx playwright show-report playwright-report"
     },
     "dependencies": {
         "@radix-ui/react-accordion": "^1.2.12",
