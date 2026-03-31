@@ -151,7 +151,7 @@ export async function POST(req: NextRequest) {
     response.cookies.set("nexus-session", sessionToken, {
       httpOnly: true, // Prevent XSS access to token
       secure: process.env.NODE_ENV === "production", // HTTPS only in production
-      sameSite: "strict", // Strict CSRF protection
+      sameSite: "lax", // Changed from strict for OAuth compatibility
       path: "/",
       maxAge: SESSION_ABSOLUTE_TIMEOUT, // 24h absolute timeout (SEC-026)
     })
@@ -160,7 +160,7 @@ export async function POST(req: NextRequest) {
     response.cookies.set("nexus-session-created", String(now), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax", // Changed for OAuth compatibility
       path: "/",
       maxAge: SESSION_ABSOLUTE_TIMEOUT,
     })
@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
     response.cookies.set("nexus-last-activity", String(now), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax", // Changed for OAuth compatibility
       path: "/",
       maxAge: SESSION_IDLE_TIMEOUT, // Auto-expires after 15 min idle
     })
