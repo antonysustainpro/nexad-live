@@ -676,6 +676,17 @@ async function proxyRequest(
     console.log(`[${requestId}][DEBUG-CSRF] Validation result: ${csrfValid}`)
 
     if (!csrfValid) {
+      console.log('PROXY REJECTING:', {
+        reason: 'CSRF validation failed',
+        path: path.join("/"),
+        method,
+        hasCsrf: !!csrfHeader,
+        hasSession: !!session,
+        csrfCookieExists: !!csrfCookie,
+        csrfHeaderExists: !!csrfHeader,
+        csrfCookieLength: csrfCookie?.length,
+        csrfHeaderLength: csrfHeader?.length
+      })
       console.error(`[${requestId}] CSRF validation failed`)
       return NextResponse.json(
         { error: "CSRF validation failed", requestId },
@@ -690,6 +701,14 @@ async function proxyRequest(
   const isPublic = publicPaths.some((p) => pathStr.startsWith(p))
 
   if (!session && !isPublic) {
+    console.log('PROXY REJECTING:', {
+      reason: 'No session for non-public path',
+      path: pathStr,
+      method,
+      isPublic,
+      hasSession: !!session,
+      hasCsrf: !!req.headers.get("X-CSRF-Token")
+    })
     return NextResponse.json({ error: "Unauthorized", requestId }, { status: 401 })
   }
 
