@@ -71,6 +71,7 @@ export default async function RootLayout({
   const savedLang = cookieStore.get("nexus-language")?.value
   const lang = savedLang === "ar" ? "ar" : savedLang === "bilingual" ? "ar-en" : "en"
   const dir = savedLang === "ar" ? "rtl" : "ltr"
+  const isAr = savedLang === "ar"
 
   // Get CSRF token from cookie (set by middleware with proper security flags - SEC-001)
   // The middleware ensures the cookie exists with SameSite=Strict and Secure flags
@@ -84,6 +85,18 @@ export default async function RootLayout({
         <meta name="csrf-token" content={csrfToken} />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
+        {/*
+          A11Y: Skip link — the very first focusable element on every page.
+          Keyboard users press Tab once and then Enter to jump past the nav/sidebar
+          directly to #main-content, skipping repetitive navigation.
+          It is visually hidden until focused (sr-only + focus:not-sr-only pattern).
+        */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:start-4 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-background focus:text-foreground focus:border focus:border-nexus-jade focus:outline-none focus:ring-2 focus:ring-nexus-jade focus:ring-offset-2 focus:font-medium focus:text-sm"
+        >
+          {isAr ? "تخطى إلى المحتوى الرئيسي" : "Skip to main content"}
+        </a>
         <NexusProvider>
           <AuthProvider>
             <BillingProvider>

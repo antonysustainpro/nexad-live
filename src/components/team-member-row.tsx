@@ -36,6 +36,7 @@ export const TeamMemberRow = React.memo(({ member, onEdit, onRemove }: TeamMembe
 
   const roleInfo = roleConfig[member.role]
   const RoleIcon = roleInfo.icon
+  const roleLabel = language === "ar" ? roleInfo.labelAr : roleInfo.labelEn
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString(
@@ -51,6 +52,7 @@ export const TeamMemberRow = React.memo(({ member, onEdit, onRemove }: TeamMembe
 
   return (
     <>
+    {/* A11Y: AlertDialog traps focus inside the modal when open, preventing keyboard users from interacting with background content */}
     <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -64,11 +66,12 @@ export const TeamMemberRow = React.memo(({ member, onEdit, onRemove }: TeamMembe
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>
+          {/* A11Y: Cancel receives focus first (safer default) */}
+          <AlertDialogCancel autoFocus>
             {language === "ar" ? "إلغاء" : "Cancel"}
           </AlertDialogCancel>
           <AlertDialogAction
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:ring-destructive"
             onClick={() => onRemove(member.id)}
           >
             {language === "ar" ? "إزالة" : "Remove"}
@@ -76,11 +79,21 @@ export const TeamMemberRow = React.memo(({ member, onEdit, onRemove }: TeamMembe
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-    <tr className="border-b border-border/50 hover:bg-muted/50 transition-colors">
+    <tr
+      className="border-b border-border/50 hover:bg-muted/50 transition-colors"
+      aria-label={
+        language === "ar"
+          ? `عضو الفريق: ${member.name}، الدور: ${roleLabel}`
+          : `Team member: ${member.name}, role: ${roleLabel}`
+      }
+    >
       {/* Avatar & Name */}
-      <td className={cn("py-3 px-2 sm:px-4", "text-start")}>
-        <div className={cn("flex items-center gap-2 sm:gap-3", isRTL && "flex-row-reverse")}>
-          <div className="w-8 h-8 rounded-full bg-muted border border-border overflow-hidden flex-shrink-0">
+      <td className={cn("py-3 px-4", "text-start")}>
+        <div className={cn("flex items-center gap-3", isRTL && "flex-row-reverse")}>
+          <div
+            className="w-8 h-8 rounded-full bg-muted border border-border overflow-hidden flex-shrink-0"
+            aria-hidden="true"
+          >
             {/* SEC-UI-110: Sanitize avatar URL from API to prevent tracking/exfiltration */}
             {member.avatarUrl ? (
               <img
@@ -95,56 +108,78 @@ export const TeamMemberRow = React.memo(({ member, onEdit, onRemove }: TeamMembe
               </div>
             )}
           </div>
-          <div className="min-w-0">
-            <span className="font-medium truncate block max-w-[100px] sm:max-w-[150px]">{member.name}</span>
-            {/* Email shown inline on mobile below name */}
-            <span className="text-xs text-muted-foreground truncate block sm:hidden max-w-[100px]">{member.email}</span>
-          </div>
+          {/* A11Y: name cell is the row header for assistive technologies */}
+          <span className="font-medium truncate max-w-[150px]">{member.name}</span>
         </div>
       </td>
 
-      {/* Email — hidden on mobile, shown from sm up */}
-      <td className={cn("py-3 px-2 sm:px-4 text-sm text-muted-foreground hidden sm:table-cell", "text-start")}>
-        <span className="truncate block max-w-[160px]">{member.email}</span>
+      {/* Email */}
+      <td className={cn("py-3 px-4 text-sm text-muted-foreground", "text-start")}>
+        {member.email}
       </td>
 
       {/* Role */}
-      <td className={cn("py-3 px-2 sm:px-4", "text-start")}>
+      <td className={cn("py-3 px-4", "text-start")}>
         <div className={cn("flex items-center gap-1", isRTL && "flex-row-reverse")}>
-          <RoleIcon className={cn("h-4 w-4 flex-shrink-0", roleInfo.color)} aria-hidden="true" />
-          <span className={cn("text-sm whitespace-nowrap", roleInfo.color)}>
-            {language === "ar" ? roleInfo.labelAr : roleInfo.labelEn}
+          <RoleIcon className={cn("h-4 w-4", roleInfo.color)} aria-hidden="true" />
+          <span className={cn("text-sm", roleInfo.color)}>
+            {roleLabel}
           </span>
         </div>
       </td>
 
-      {/* Last Active — hidden on mobile */}
-      <td className={cn("py-3 px-2 sm:px-4 text-sm text-muted-foreground hidden md:table-cell", "text-start")}>
+      {/* Last Active */}
+      <td className={cn("py-3 px-4 text-sm text-muted-foreground", "text-start")}>
         {formatDate(member.lastActive)}
       </td>
 
-      {/* Usage — hidden on mobile */}
-      <td className={cn("py-3 px-2 sm:px-4 text-sm hidden lg:table-cell", "text-start")}>
-        <div className="text-xs text-muted-foreground whitespace-nowrap">
-          {formatNumber(member.apiCalls)} {language === "ar" ? "طلب" : "calls"} / {formatNumber(member.tokensUsed)} {language === "ar" ? "توكن" : "tokens"}
+      {/* Usage */}
+      <td className={cn("py-3 px-4 text-sm", "text-start")}>
+        <div className="text-xs text-muted-foreground">
+          {/* A11Y: screen-reader-friendly label wraps the numbers in context */}
+          <span className="sr-only">
+            {language === "ar"
+              ? `${formatNumber(member.apiCalls)} طلب، ${formatNumber(member.tokensUsed)} كلمة معالجة`
+              : `${formatNumber(member.apiCalls)} API calls, ${formatNumber(member.tokensUsed)} tokens`}
+          </span>
+          <span aria-hidden="true">
+            {formatNumber(member.apiCalls)} {language === "ar" ? "طلب" : "calls"} / {formatNumber(member.tokensUsed)} {language === "ar" ? "كلمة معالجة" : "tokens"}
+          </span>
         </div>
       </td>
 
       {/* Actions */}
-      <td className={cn("py-3 px-2 sm:px-4", "text-start")}>
+      <td className={cn("py-3 px-4", "text-start")}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-11 w-11 sm:h-8 sm:w-8">
+            {/* A11Y: aria-label names the specific member so context is clear */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 focus-visible:ring-2 focus-visible:ring-nexus-jade focus-visible:ring-offset-2"
+              aria-label={
+                language === "ar"
+                  ? `خيارات للعضو ${member.name}`
+                  : `Options for ${member.name}`
+              }
+            >
               <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
-              <span className="sr-only">{language === "ar" ? "خيارات" : "Options"}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align={isRTL ? "start" : "end"}>
-            <DropdownMenuItem onClick={() => onEdit(member)} className="min-h-[44px]">
+            {/* A11Y: menu items name the specific member for screen reader context */}
+            <DropdownMenuItem
+              onClick={() => onEdit(member)}
+              aria-label={language === "ar" ? `تعديل بيانات ${member.name}` : `Edit ${member.name}`}
+            >
               <Pencil className="h-4 w-4 me-2" aria-hidden="true" />
               {language === "ar" ? "تعديل" : "Edit"}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setConfirmOpen(true)} className="text-destructive min-h-[44px]">
+            <DropdownMenuItem
+              onClick={() => setConfirmOpen(true)}
+              className="text-destructive focus:text-destructive"
+              aria-label={language === "ar" ? `إزالة العضو ${member.name}` : `Remove ${member.name}`}
+            >
               <Trash2 className="h-4 w-4 me-2" aria-hidden="true" />
               {language === "ar" ? "إزالة" : "Remove"}
             </DropdownMenuItem>

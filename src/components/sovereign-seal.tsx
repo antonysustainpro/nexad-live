@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "motion/react"
-import { ShieldCheck, X, Copy, Check, Download, Share2, ExternalLink } from "lucide-react"
+import { ShieldCheck, X, Copy, Check, Download } from "lucide-react"
 import { useNexus } from "@/contexts/nexus-context"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -31,9 +31,9 @@ export function SovereignSeal({
   const { language, isRTL } = useNexus()
   const [isExpanded, setIsExpanded] = useState(false)
   const [copied, setCopied] = useState(false)
-  const [verifying, setVerifying] = useState(false)
-  const [verificationResult, setVerificationResult] = useState<"success" | "failed" | null>(null)
   const [shouldPulse, setShouldPulse] = useState(false)
+  // Hidden until backend implementation complete
+  // verifying/verificationResult removed — "Verify Proof" button previously faked results
   // SEC: Track all timeout IDs so they can be cleaned up on unmount to prevent memory leaks
   const timeoutRefs = useRef<ReturnType<typeof setTimeout>[]>([])
 
@@ -75,17 +75,15 @@ export function SovereignSeal({
     }
   }
 
-  const handleVerify = async () => {
-    setVerifying(true)
-    // Simulate Web Crypto API verification
-    await new Promise<void>(resolve => safeTimeout(() => resolve(), 1500))
-    setVerificationResult("success")
-    setVerifying(false)
-    safeTimeout(() => setVerificationResult(null), 3000)
-  }
+  // Hidden until backend implementation complete
+  // handleVerify removed — previously simulated verification, always returned "success"
+  // TODO: Implement when GET /api/v1/vault/merkle/verify is wired to real cryptographic check
+
+  // Hidden until backend implementation complete
+  // handleShareWithCounsel removed — copied link to verify.nexad.ai which does not exist
 
   const handleDownloadCertificate = () => {
-    // In production, this would generate a formal PDF certificate
+    // Generates a local JSON certificate with the known metadata (no backend needed)
     const certData = {
       timestamp: new Date().toISOString(),
       encryption: encryptionMethod,
@@ -103,16 +101,6 @@ export function SovereignSeal({
     a.download = `nexad-privacy-certificate-${Date.now()}.json`
     a.click()
     URL.revokeObjectURL(url)
-  }
-
-  // SEC-SM-001: Wrap clipboard in try/catch — permission may be denied
-  const handleShareWithCounsel = async () => {
-    try {
-      const verificationLink = `${process.env.NEXT_PUBLIC_VERIFY_URL || 'https://verify.nexad.ai'}/proof/${merkleRoot.slice(0, 16)}`
-      await navigator.clipboard.writeText(verificationLink)
-    } catch {
-      // Clipboard API denied or unavailable
-    }
   }
 
   const truncatedHash = `${merkleRoot.slice(0, 10)}...${merkleRoot.slice(-8)}`
@@ -241,7 +229,7 @@ export function SovereignSeal({
                     language={language}
                   />
                   <CertificateRow 
-                    label={language === "ar" ? "الأجزاء المعزولة" : "Shards Isolated"} 
+                    label={language === "ar" ? "الخوادم المعزولة" : "Shards Isolated"}
                     value={`${shardsIsolated} ${language === "ar" ? "من" : "of"} ${totalShards}`}
                     language={language}
                   />
@@ -286,50 +274,13 @@ export function SovereignSeal({
                   </div>
                 </div>
 
-                {/* Verification Result */}
-                <AnimatePresence>
-                  {verificationResult && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className={cn(
-                        "p-2 rounded-lg text-center text-sm font-medium",
-                        verificationResult === "success" 
-                          ? "bg-[#10B981]/20 text-[#10B981]"
-                          : "bg-[#EF4444]/20 text-[#EF4444]"
-                      )}
-                    >
-                      {verificationResult === "success"
-                        ? (language === "ar" ? "تم التحقق بنجاح" : "Verification Successful")
-                        : (language === "ar" ? "فشل التحقق" : "Verification Failed")
-                      }
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </div>
 
               {/* Footer Buttons */}
               <div className="relative p-4 border-t border-[rgba(255,255,255,0.08)] flex flex-wrap gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleVerify}
-                  disabled={verifying}
-                  className="flex-1 border-[#2563EB] text-[#2563EB] hover:bg-[#2563EB]/10"
-                >
-                  {verifying ? (
-                    <span className="flex items-center gap-2">
-                      <span className="w-3 h-3 border-2 border-[#2563EB] border-t-transparent rounded-full motion-safe:animate-spin" />
-                      {language === "ar" ? "جاري التحقق..." : "Verifying..."}
-                    </span>
-                  ) : (
-                    <>
-                      <ExternalLink className="h-3 w-3 me-1" aria-hidden="true" />
-                      {language === "ar" ? "تحقق" : "Verify Proof"}
-                    </>
-                  )}
-                </Button>
+                {/* Hidden until backend implementation complete */}
+                {/* "Verify Proof" button previously simulated verification (always returned success) — removed to avoid false assurance */}
+                {/* "Share with Counsel" previously copied a link to verify.nexad.ai which does not exist — removed */}
                 <Button
                   variant="outline"
                   size="sm"
@@ -338,15 +289,6 @@ export function SovereignSeal({
                 >
                   <Download className="h-3 w-3 me-1" aria-hidden="true" />
                   {language === "ar" ? "تحميل" : "Download"}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleShareWithCounsel}
-                  className="w-full text-[#94A3B8] hover:text-white"
-                >
-                  <Share2 className="h-3 w-3 me-1" aria-hidden="true" />
-                  {language === "ar" ? "مشاركة مع المستشار" : "Share with Counsel"}
                 </Button>
               </div>
             </motion.div>
