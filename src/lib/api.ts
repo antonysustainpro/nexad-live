@@ -281,7 +281,8 @@ export async function* streamChat(request: ChatRequest, signal?: AbortSignal): A
 }> {
   // REL-004: Retry the initial connection (not the streaming body) via resilientFetch.
   // This handles transient 502/503/504 on the initial POST to /chat.
-  const payload = { ...request, stream: true, max_tokens: request.max_tokens || 2048 }
+  // WORKAROUND: Backend has 2048 limit hardcoded, so we force it
+  const payload = { ...request, stream: true, max_tokens: Math.min(request.max_tokens || 2048, 2048) }
   console.log("[streamChat] Sending request with mode:", payload.mode, "messages:", payload.messages.length)
 
   const response = await resilientFetch(
