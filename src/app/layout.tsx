@@ -5,6 +5,7 @@ import { cookies } from "next/headers"
 import "./globals.css"
 import { NexusProvider } from "@/contexts/nexus-context"
 import { PrivacyMetricsProvider } from "@/contexts/privacy-metrics-context"
+import { AuthProvider } from "@/contexts/auth-context"
 import { CookieConsentBanner } from "@/components/cookie-consent-banner"
 import { ConditionalAnalytics } from "@/components/conditional-analytics"
 import { OfflineBanner } from "@/components/offline-banner"
@@ -83,12 +84,14 @@ export default async function RootLayout({
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <NexusProvider>
-          <PrivacyMetricsProvider>
-            <ServiceWorkerRegister />
-            <OfflineBanner />
-            {children}
-            <CookieConsentBanner />
-          </PrivacyMetricsProvider>
+          <AuthProvider>
+            <PrivacyMetricsProvider>
+              <ServiceWorkerRegister />
+              <OfflineBanner />
+              {children}
+              <CookieConsentBanner />
+            </PrivacyMetricsProvider>
+          </AuthProvider>
         </NexusProvider>
         <Toaster
           richColors

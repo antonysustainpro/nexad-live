@@ -8,13 +8,13 @@ import type {
   DeletionCertificate,
   AccessLogResponse,
   VaultInfoResponse as VaultInfoType,
+  UserProfile,
   PrivacyComparisonResponse,
   BriefingResponse,
   SovereigntyReportResponse,
   ButlerFeedResponse,
   PrivacyGlassStats,
   ButlerOnboardingData,
-  UserProfile,
   TeamMember,
   TeamInvitation,
   TeamMemberRole,
@@ -109,6 +109,36 @@ function getAuthHeadersForUpload(userId = ""): HeadersInit {
 export interface Message {
   role: "user" | "assistant" | "system"
   content: string
+}
+
+export interface Session {
+  user: {
+    id: string
+    email?: string
+    name?: string
+  }
+  expiresAt?: string
+}
+
+export interface VaultProfile {
+  user_id: string
+  entity_name: string
+  entity_type?: string
+  jurisdictions?: string[]
+  team_size?: number
+  risk_appetite?: number
+  asset_focus?: string[]
+  investment_budget_range?: string
+  time_horizon?: string
+  current_goals?: string
+  key_competitors?: string
+  open_matters?: string
+  report_style?: string
+  favorite_sections?: string[]
+  auto_include?: Record<string, boolean>
+  language_preference?: string
+  created_at?: string
+  updated_at?: string
 }
 
 export type IntelligenceMode = "standard" | "fast" | "thinking" | "pro" | "document"
@@ -1127,7 +1157,7 @@ export async function getSovereigntyReport(signal?: AbortSignal): Promise<Sovere
 
 export type { VaultInfoType }
 
-export async function getUserProfile(userId: string, signal?: AbortSignal): Promise<UserProfile | null> {
+export async function getVaultProfile(userId: string, signal?: AbortSignal): Promise<VaultProfile | null> {
   try {
     const response = await resilientFetch(
       `${API_BASE}/vault/profile/${userId}`,
@@ -1142,10 +1172,107 @@ export async function getUserProfile(userId: string, signal?: AbortSignal): Prom
   }
 }
 
-export async function updateUserProfile(userId: string, profile: Partial<UserProfile>, signal?: AbortSignal): Promise<UserProfile | null> {
+export async function updateVaultProfile(userId: string, profile: Partial<VaultProfile>, signal?: AbortSignal): Promise<VaultProfile | null> {
   try {
     const response = await resilientFetch(
       `${API_BASE}/vault/profile/${userId}`,
+      {
+        method: "PUT",
+        headers: getAuthHeaders(userId),
+        body: JSON.stringify(profile),
+        signal,
+      },
+      "user-api",
+      MUTATION_RETRY_OPTIONS
+    )
+    if (!response.ok) return null
+    return response.json()
+  } catch (err) {
+    if (isAbortError(err)) return null
+    return null
+  }
+}
+
+export async function createVaultProfile(profile: {
+  user_id: string
+  entity_name: string
+  entity_type?: string
+  jurisdictions?: string[]
+  team_size?: number
+  risk_appetite?: number
+  asset_focus?: string[]
+  investment_budget_range?: string
+  time_horizon?: string
+  current_goals?: string
+  key_competitors?: string
+  open_matters?: string
+  report_style?: string
+  favorite_sections?: string[]
+  auto_include?: Record<string, boolean>
+  language_preference?: string
+}, signal?: AbortSignal): Promise<VaultProfile | null> {
+  try {
+    const response = await resilientFetch(
+      `${API_BASE}/vault/profile`,
+      {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(profile),
+        signal,
+      },
+      "user-api",
+      MUTATION_RETRY_OPTIONS
+    )
+    if (!response.ok) return null
+    return response.json()
+  } catch (err) {
+    if (isAbortError(err)) return null
+    return null
+  }
+}
+
+// Memory Layer Integration Functions
+export type MemoryLayerStatus = {
+  layer: number
+  name: string
+  active: boolean
+  dataCount: number
+}
+
+export function getActiveMemoryLayers(profile?: VaultProfile | null): MemoryLayerStatus[] {
+  const layers: MemoryLayerStatus[] = [
+    { layer: 0, name: "Sensory Memory", active: true, dataCount: 0 }, // Always active
+    { layer: 1, name: "Working Memory", active: true, dataCount: 0 }, // Always active
+    { layer: 2, name: "Episodic Memory", active: false, dataCount: 0 }, // Not implemented yet
+    { layer: 3, name: "Semantic Memory", active: false, dataCount: 0 }, // Vault documents
+    { layer: 4, name: "Procedural Memory", active: !!profile, dataCount: profile ? 1 : 0 }, // Profile exists
+    { layer: 5, name: "Emotional Memory", active: true, dataCount: 0 }, // Emotion tracking
+    { layer: 6, name: "Meta-Cognitive", active: false, dataCount: 0 }, // Not implemented
+  ]
+
+  return layers
+}
+
+// User Profile API (for account profile, not vault profile)
+export async function getUserProfile(userId: string, signal?: AbortSignal): Promise<UserProfile | null> {
+  try {
+    const response = await resilientFetch(
+      `${API_BASE}/user/${userId}`,
+      { headers: getAuthHeaders(userId), signal },
+      "user-api"
+    )
+    if (!response.ok) return null
+    return response.json()
+  } catch (err) {
+    if (isAbortError(err)) return null
+    return null
+  }
+}
+
+export async function updateUserProfile(userId: string, profile: Partial<UserProfile>, signal?: AbortSignal): Promise<UserProfile | null> {
+  try {
+    const response = await resilientFetch(
+      `${API_BASE}/user/${userId}`,
       {
         method: "PUT",
         headers: getAuthHeaders(userId),
@@ -1293,6 +1420,26 @@ export async function triggerButlerRefresh(userId: string, signal?: AbortSignal)
       },
       "butler-api",
       MUTATION_RETRY_OPTIONS
+    )
+    if (!response.ok) return null
+    return response.json()
+  } catch (err) {
+    if (isAbortError(err)) return null
+    return null
+  }
+}
+
+// Auth API
+export async function getSession(signal?: AbortSignal): Promise<Session | null> {
+  try {
+    const response = await resilientFetch(
+      `${API_BASE}/auth/session`,
+      {
+        headers: getAuthHeaders(),
+        credentials: "include",
+        signal,
+      },
+      "auth-api"
     )
     if (!response.ok) return null
     return response.json()

@@ -19,13 +19,15 @@ import { ShardAnimation } from "@/components/shard-animation"
 import { ModeSelector, type IntelligenceMode } from "@/components/mode-selector"
 import { LanguageSelector } from "@/components/language-selector"
 import { OrchestrationPhases, type OrchestrationState, type OrchestrationPhase, type AuditorResult } from "@/components/orchestration-phases"
+import { MemoryIndicator, MemoryIndicatorCompact } from "@/components/memory-indicator"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { EMOTIONS } from "@/lib/constants"
-import { streamChat, type IntelligenceMode as APIModeType } from "@/lib/api"
+import { streamChat, type IntelligenceMode as APIModeType, getVaultProfile, getActiveMemoryLayers, type VaultProfile, type MemoryLayerStatus } from "@/lib/api"
 import { usePrivacyMetrics } from "@/contexts/privacy-metrics-context"
 import { createConversation, updateConversation, generateTitle } from "@/lib/conversations"
+import { useAuth } from "@/contexts/auth-context"
 
 // Valid modes for runtime validation
 const VALID_MODES: IntelligenceMode[] = ["standard", "fast", "thinking", "pro", "document"]
@@ -116,6 +118,7 @@ function ChatPageContent() {
   const initialMode = validateMode(searchParams.get("mode"))
   const { language, isRTL } = useNexus()
   const { recordPiiScrubbed, recordAnonymousRequest } = usePrivacyMetrics()
+  const { user } = useAuth()
   const [conversationId, setConversationId] = useState<string | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
@@ -123,6 +126,8 @@ function ChatPageContent() {
   const [shardText, setShardText] = useState("")
   const [showShard, setShowShard] = useState(false)
   const [mode, setMode] = useState<IntelligenceMode>(initialMode)
+  const [userProfile, setUserProfile] = useState<VaultProfile | null>(null)
+  const [memoryLayers, setMemoryLayers] = useState<MemoryLayerStatus[]>([])
   const [orchestrationState, setOrchestrationState] = useState<OrchestrationState>({
     mode: "standard",
     phases: [],
@@ -157,6 +162,25 @@ function ChatPageContent() {
       abortControllerRef.current?.abort()
     }
   }, [])
+
+  // Load user profile and memory layers on mount
+  useEffect(() => {
+    async function loadMemoryContext() {
+      if (user?.id) {
+        try {
+          const profile: VaultProfile | null = await getVaultProfile(user.id)
+          if (profile) {
+            setUserProfile(profile)
+            const layers = getActiveMemoryLayers(profile)
+            setMemoryLayers(layers)
+          }
+        } catch (error) {
+          console.error("Failed to load memory context:", error)
+        }
+      }
+    }
+    loadMemoryContext()
+  }, [user])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -253,6 +277,14 @@ function ChatPageContent() {
         stream: true,
         use_rag: true,
         mode: mode as APIModeType,
+        language: language as "en" | "ar" | "bilingual" | "mixed",
+        client_profile: userProfile ? {
+          entity_name: userProfile.entity_name,
+          entity_type: userProfile.entity_type,
+          report_style: userProfile.report_style,
+          language_preference: userProfile.language_preference,
+          current_goals: userProfile.current_goals,
+        } : undefined,
       }, abortControllerRef.current?.signal)
 
       let aiContent = ""
@@ -582,7 +614,7 @@ function ChatPageContent() {
 
   return (
     <div className={cn("flex h-full relative", isRTL && "flex-row-reverse")}>
-      {/* Mode Selector + Language Selector - Top Left */}
+      {/* Mode Selector + Language Selector + Memory - Top Left */}
       <div className={cn(
         "absolute top-4 z-30 flex items-center gap-2",
         isRTL ? "end-4 flex-row-reverse" : "start-4"
@@ -593,6 +625,9 @@ function ChatPageContent() {
           disabled={isLoading}
         />
         <LanguageSelector disabled={isLoading} />
+        {memoryLayers.length > 0 && (
+          <MemoryIndicatorCompact layers={memoryLayers} />
+        )}
       </div>
 
       {/* Orchestration Phases Overlay - Accessible with keyboard dismiss and focus trap */}
@@ -679,6 +714,7 @@ function ChatPageContent() {
               latency={intelligence.latency}
               isProcessing={isLoading}
               isMobile
+              memoryLayers={memoryLayers}
             />
           </div>
         </SheetContent>
@@ -814,6 +850,7 @@ function ChatPageContent() {
           tokenCount={intelligence.tokenCount}
           latency={intelligence.latency}
           isProcessing={isLoading}
+          memoryLayers={memoryLayers}
         />
       </div>
     </div>

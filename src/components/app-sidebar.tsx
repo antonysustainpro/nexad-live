@@ -22,6 +22,7 @@ import {
   Users,
   Gift,
   HelpCircle,
+  Brain,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNexus } from "@/contexts/nexus-context"
@@ -52,6 +53,7 @@ const iconMap = {
   Users,
   Gift,
   HelpCircle,
+  Brain,
 }
 
 const navItems = [
@@ -66,6 +68,7 @@ const navItems = [
   { path: "/team", labelEn: "Team", labelAr: "الفريق", icon: "Users" },
   { path: "/referral", labelEn: "Referrals", labelAr: "الإحالات", icon: "Gift" },
   { path: "/profile", labelEn: "Profile", labelAr: "الملف الشخصي", icon: "User" },
+  { path: "/memory", labelEn: "Memory", labelAr: "الذاكرة", icon: "Brain", isGold: true },
   { path: "/help", labelEn: "Help", labelAr: "المساعدة", icon: "HelpCircle" },
   { path: "/settings", labelEn: "Settings", labelAr: "الإعدادات", icon: "Settings" },
 ]

@@ -26,6 +26,8 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { EMOTIONS } from "@/lib/constants"
+import type { MemoryLayerStatus } from "@/lib/api"
+import { MemoryIndicator } from "@/components/memory-indicator"
 
 interface Specialist {
   name: string
@@ -60,6 +62,7 @@ interface IntelligencePanelProps {
   latency?: number
   isProcessing?: boolean
   isMobile?: boolean
+  memoryLayers?: MemoryLayerStatus[]
 }
 
 const domainIcons: Record<string, React.ElementType> = {
@@ -98,6 +101,7 @@ export function IntelligencePanel({
   latency,
   isProcessing,
   isMobile = false,
+  memoryLayers,
 }: IntelligencePanelProps) {
   const { language, isRTL } = useNexus()
   const [collapsed, setCollapsed] = useState(false)
@@ -123,6 +127,16 @@ export function IntelligencePanel({
             {language === "ar" ? "السياق" : "CONTEXT"}
           </p>
         </div>
+
+        {/* Memory Layers */}
+        {memoryLayers && memoryLayers.length > 0 && (
+          <section className="pb-4 border-b border-border">
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-medium">{language === "ar" ? "طبقات الذاكرة النشطة" : "Active Memory Layers"}</p>
+              <MemoryIndicator layers={memoryLayers} showLabels />
+            </div>
+          </section>
+        )}
 
         {/* Domain */}
         <section className="pb-4 border-b border-border">
