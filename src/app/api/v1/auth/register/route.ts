@@ -4,6 +4,7 @@ import { RegisterRequestSchema, validateRequestBody } from "@/lib/api-validation
 
 // Auth endpoints are mounted at root, not under /api/v1
 const BACKEND_BASE_URL = (process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || "").replace(/\/api\/v1\/?$/, "")
+const BACKEND_API_KEY = process.env.BACKEND_API_KEY || ""
 
 // Session timeout constants (SEC-026)
 const SESSION_IDLE_TIMEOUT = 15 * 60 // 15 minutes in seconds
@@ -71,9 +72,14 @@ export async function POST(req: NextRequest) {
     const effectivePassword = password ?? randomBytes(32).toString("hex")
 
     // SEC-041: Add timeout to prevent slow-loris amplification against backend
+    // NOTE: Backend requires "application/json; charset=utf-8" (not plain "application/json")
+    // otherwise it returns "Invalid JSON body". This is a backend quirk on RunPod.
     const backendResponse = await fetch(`${BACKEND_BASE_URL}/auth/register`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        ...(BACKEND_API_KEY ? { "X-API-Key": BACKEND_API_KEY } : {}),
+      },
       body: JSON.stringify({
         fullName,
         email,

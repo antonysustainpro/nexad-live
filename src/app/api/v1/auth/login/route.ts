@@ -8,6 +8,7 @@ import {
 
 // Auth endpoints are mounted at root, not under /api/v1
 const BACKEND_BASE_URL = (process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || "").replace(/\/api\/v1\/?$/, "")
+const BACKEND_API_KEY = process.env.BACKEND_API_KEY || ""
 
 // Session timeout constants (SEC-026)
 const SESSION_IDLE_TIMEOUT = 15 * 60 // 15 minutes in seconds
@@ -104,19 +105,34 @@ export async function POST(req: NextRequest) {
     const rateLimitKey = buildRateLimitKeyFromParts(clientIp, email)
 
     // SEC-041: Add timeout to prevent slow-loris amplification against backend
+    // NOTE: Backend requires "application/json; charset=utf-8" (not plain "application/json")
+    // otherwise it returns "Invalid JSON body". This is a backend quirk on RunPod.
     const backendResponse = await fetch(`${BACKEND_BASE_URL}/auth/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        ...(BACKEND_API_KEY ? { "X-API-Key": BACKEND_API_KEY } : {}),
+      },
       body: JSON.stringify({ email, password }),
       signal: AbortSignal.timeout(10_000),
     })
 
     if (!backendResponse.ok) {
       // Consume the response body but don't leak backend error details
-      await backendResponse.json().catch(() => ({}))
+      const backendError = await backendResponse.json().catch(() => ({}))
 
       // SEC-006: Record failed auth attempt for exponential backoff
       await recordFailedAuthAttempt(rateLimitKey)
+
+      // If backend says email login is not implemented, surface a helpful message
+      // so users know to use Google OAuth instead
+      const detail = typeof backendError?.detail === "string" ? backendError.detail : ""
+      if (detail.toLowerCase().includes("not implemented") || detail.toLowerCase().includes("google oauth")) {
+        return NextResponse.json(
+          { error: "Email/password login is not available. Please use Continue with Google.", useGoogleOAuth: true },
+          { status: 400 }
+        )
+      }
 
       // SEC-039: Return generic 401 for ALL auth failures.
       // Never forward backend status codes (e.g., 500, 503) as they reveal

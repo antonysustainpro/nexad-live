@@ -241,17 +241,22 @@ interface LockoutCheckResult {
 
 /**
  * Route protection middleware for NexusAD.
- * - Redirects unauthenticated users to /login for protected pages
- * - Implements rate limiting for API routes (Redis-backed for serverless)
- * - Stricter rate limiting for auth endpoints to prevent brute force
- * - Auth state is determined by httpOnly nexus-session cookie
+ *
+ * AUTH MODEL: Perimeter-based (NOT zero-trust).
+ * - PROTECTED_ROUTES require an active nexus-session httpOnly cookie
+ * - Public routes (login, register, landing, terms, privacy) are unauthenticated by design
+ * - /api/* calls are forwarded to the backend which independently validates the JWT
+ * - The backend IS the per-request auth enforcement point; this middleware is the UX gate
+ *
+ * SECURITY CONTROLS (all routes, authenticated or not):
  * - Adds security headers to all responses (SEC-002 through SEC-017, LEGAL-008)
- * - Exponential backoff for failed auth attempts (SEC-006)
- * - Rate limiting keyed by userId + IP + device fingerprint combo (SEC-022, SEC-029)
- * - Circuit breaker for Redis failures - fail closed (REL-017, SEC-023)
- * - Dynamic Retry-After headers (CODE-012)
- * - Session timeout enforcement: idle (15 min) and absolute (24h) via Redis (SEC-026, SEC-028)
+ * - Rate limiting for API routes — Redis-backed, per userId+IP+fingerprint (SEC-022, SEC-029)
+ * - Stricter rate limiting for auth endpoints to prevent brute force
+ * - Circuit breaker for Redis failures — fail closed (REL-017, SEC-023)
  * - CSRF protection with HMAC double-submit pattern (SEC-027)
+ * - Session timeout enforcement: idle (15 min) and absolute (24h) via Redis (SEC-026, SEC-028)
+ * - Exponential backoff for failed auth attempts (SEC-006)
+ * - Dynamic Retry-After headers (CODE-012)
  * - Runtime anomaly detection and security monitoring (SEC-030)
  */
 
@@ -776,7 +781,7 @@ interface HsmBoundaryStatus {
   hsmEndpoint: string | null
   keyDerivationSource: "hsm" | "environment" | "runtime-generated"
   boundaryMode: "hardware-attested" | "software-only" | "hsm-unreachable"
-  uaeDataBoundary: boolean
+  encryptionBoundary: boolean
   cryptoAlgorithms: string[]
   fipsCompliant: boolean
   verificationTimestamp: string
@@ -943,7 +948,7 @@ export async function getHsmBoundaryStatus(): Promise<HsmBoundaryStatus> {
     hsmEndpoint: hasHsmEndpoint ? "[CONFIGURED]" : null, // Don't expose actual endpoint
     keyDerivationSource: keySource,
     boundaryMode,
-    uaeDataBoundary: true, // Middleware enforces UAE routing
+    encryptionBoundary: true, // Middleware enforces encryption boundary
     cryptoAlgorithms: ["AES-256-GCM", "HMAC-SHA256", "PBKDF2", "ECDSA-P256"],
     // SEC-068: Only claim FIPS when HSM is cryptographically verified, not just configured
     fipsCompliant: boundaryMode === "hardware-attested",
@@ -1594,7 +1599,7 @@ export async function getHsmBoundaryStatusProtected(clientIp?: string): Promise<
       boundaryMode: _hsmStateMachine.currentState === "transitioning"
         ? "hsm-unreachable"
         : _hsmStateMachine.currentState,
-      uaeDataBoundary: true,
+      encryptionBoundary: true,
       cryptoAlgorithms: ["AES-256-GCM", "HMAC-SHA256", "PBKDF2", "ECDSA-P256"],
       fipsCompliant: _hsmStateMachine.currentState === "hardware-attested",
       verificationTimestamp: new Date().toISOString(),
@@ -1628,7 +1633,7 @@ export async function getHsmBoundaryStatusProtected(clientIp?: string): Promise<
       boundaryMode: _hsmStateMachine.currentState === "transitioning"
         ? "hsm-unreachable"
         : _hsmStateMachine.currentState,
-      uaeDataBoundary: true,
+      encryptionBoundary: true,
       cryptoAlgorithms: ["AES-256-GCM", "HMAC-SHA256", "PBKDF2", "ECDSA-P256"],
       fipsCompliant: _hsmStateMachine.currentState === "hardware-attested",
       verificationTimestamp: new Date().toISOString(),
@@ -1652,7 +1657,7 @@ export async function getHsmBoundaryStatusProtected(clientIp?: string): Promise<
       boundaryMode: _hsmStateMachine.currentState === "transitioning"
         ? "hsm-unreachable"
         : _hsmStateMachine.currentState,
-      uaeDataBoundary: true,
+      encryptionBoundary: true,
       cryptoAlgorithms: ["AES-256-GCM", "HMAC-SHA256", "PBKDF2", "ECDSA-P256"],
       fipsCompliant: _hsmStateMachine.currentState === "hardware-attested",
       verificationTimestamp: new Date().toISOString(),
@@ -4041,12 +4046,51 @@ async function validateCsrfToken(request: NextRequest): Promise<{ valid: boolean
   return { valid: result.valid, needsRefresh: result.usedPreviousSecret }
 }
 
-// Routes that REQUIRE authentication (sensitive routes only)
+// ═══════════════════════════════════════════════════════════════════════════════
+// SEC-AUTH-MODEL: PERIMETER-BASED ROUTE AUTHENTICATION (NOT ZERO-TRUST)
+// ═══════════════════════════════════════════════════════════════════════════════
+//
+// ARCHITECTURE NOTE (SEC-CRO-001):
+// NexusAD uses PERIMETER-BASED authentication at the frontend middleware layer.
+// This is NOT a zero-trust architecture. The distinction matters:
+//
+// PERIMETER-BASED (what we implement):
+//   - A predefined set of routes (PROTECTED_ROUTES) requires an active session
+//   - Public routes (login, register, welcome, landing, terms, privacy-policy)
+//     are intentionally unauthenticated — they must be reachable without login
+//   - API routes (/api/*) are forwarded to the backend which validates the JWT
+//     on every request — the backend IS the zero-trust enforcement point
+//   - Frontend middleware acts as a UX gate, not the sole security gate
+//
+// TRUE ZERO-TRUST would require:
+//   - Every single route/resource authenticated — impossible for login/register pages
+//   - Continuous per-request identity re-verification on the frontend — impractical
+//     in a Next.js SSR model where sessions are httpOnly cookie-based
+//
+// ACTUAL SECURITY MODEL:
+//   1. Frontend: PROTECTED_ROUTES require a valid nexus-session cookie
+//   2. Backend (RunPod): Every /api/v1/* endpoint validates the JWT independently
+//   3. Defense-in-depth: Rate limiting, CSRF, anomaly detection on ALL routes
+//   4. Client-side: PII is scrubbed from localStorage, sessionStorage, cookies
+//
+// This honest model is more accurate than claiming "zero-trust" which implies
+// that the frontend alone provides complete per-request identity verification.
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// Routes that REQUIRE authentication at the frontend middleware layer
+// NOTE: /api/* routes are forwarded to the backend which enforces auth independently
 const PROTECTED_ROUTES = new Set([
   "/billing", "/billing/pricing", "/billing/invoices", "/team",
   "/chat", "/vault", "/voice", "/domains", "/settings", "/profile",
   "/notifications", "/butler", "/sovereignty", "/referral", "/persona",
   "/briefing", "/search",
+])
+
+// Public routes explicitly allowed without authentication
+// This list documents INTENTIONALLY unauthenticated pages (not a gap)
+const PUBLIC_ROUTES = new Set([
+  "/login", "/register", "/", "/welcome",
+  "/terms", "/privacy-policy",
 ])
 
 // Auth routes that need stricter rate limiting
@@ -6152,7 +6196,10 @@ export async function middleware(request: NextRequest) {
     return applySecurityHeaders(response, cspNonce)
   }
 
-  // Only check auth for explicitly protected routes (billing, team management)
+  // SEC-AUTH-MODEL: Perimeter-based auth gate. Only PROTECTED_ROUTES require a session
+  // cookie at the frontend middleware layer. Public routes (login, register, landing,
+  // terms, privacy-policy) are intentionally reachable without auth. All /api/* calls
+  // are forwarded to the backend, which re-validates the JWT on every request.
   if (!PROTECTED_ROUTES.has(pathname)) {
     // For non-protected routes, still refresh idle timeout if session exists (SEC-026, SEC-028)
     const sessionCookie = request.cookies.get("nexus-session")?.value
@@ -6213,7 +6260,12 @@ export async function middleware(request: NextRequest) {
   const sessionCookie = request.cookies.get("nexus-session")?.value
   if (!userId && sessionCookie) {
     console.log("[Middleware] Session exists but JWT verification failed - allowing request for backend validation")
-    const response = NextResponse.next()
+    const response = createNextResponseWithNonce()
+    // SEC-CSRF-FIX: Ensure CSRF cookie is set even when JWT verification fails.
+    // Without this, users with valid sessions (whose JWT we can't verify on the frontend)
+    // would reach the chat page with no csrf-token cookie, causing all POST requests
+    // (chat, vault, etc.) to fail with "CSRF validation failed".
+    await ensureCsrfCookie(request, response)
     return applySecurityHeaders(response, cspNonce)
   }
 
