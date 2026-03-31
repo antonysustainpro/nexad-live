@@ -15,6 +15,7 @@ import {
   Loader2,
 } from "lucide-react"
 import { useNexus } from "@/contexts/nexus-context"
+import { toast } from "sonner"
 import { getKeyStatus, getShardDistribution, getSovereigntyReport, backupKey, rotateKey } from "@/lib/api"
 import type { KeyStatusResponse, ShardDistributionResponse, SovereigntyReportResponse } from "@/lib/types"
 import { SovereigntyScore } from "@/components/sovereignty-score"
@@ -85,11 +86,17 @@ export default function SovereigntyPage() {
       getKeyStatus(),
       getShardDistribution(),
       getSovereigntyReport(),
-    ]).then(([key, shards, _report]) => {
-      if (key) setKeyInfo(key)
-      if (shards) setShardData(shards)
-      setLoading(false)
-    })
+    ])
+      .then(([key, shards, _report]) => {
+        if (key) setKeyInfo(key)
+        if (shards) setShardData(shards)
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.error("Failed to load sovereignty data:", error)
+        toast.error("Failed to load sovereignty data. Please try again.")
+        setLoading(false)
+      })
   }, [])
 
   // Use real key data with fallback

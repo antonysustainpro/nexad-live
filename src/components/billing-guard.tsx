@@ -4,6 +4,7 @@ import { type ReactNode, useState, useEffect } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { Lock, Sparkles } from "lucide-react"
 import { useNexus } from "@/contexts/nexus-context"
+import { useBilling } from "@/contexts/billing-context"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -16,27 +17,10 @@ interface BillingGuardProps {
   featureAr?: string
 }
 
-// SEC WARNING: This is a client-side guard ONLY. It reads the tier from localStorage
-// which is trivially editable by the user (DevTools > Application > Storage).
-// ALL premium feature access MUST be enforced server-side via the API proxy.
-// This guard is for UX only — it hides UI, it does NOT enforce authorization.
-// TODO: Replace with server-side session/JWT tier claim when auth is production-ready.
-function useCurrentTier(): BillingTier {
-  const [tier, setTier] = useState<BillingTier>("FREE")
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("nexusad-billing-tier")
-      if (saved && ["FREE", "PRO", "ENTERPRISE"].includes(saved)) {
-        setTier(saved as BillingTier)
-      }
-    } catch {
-      // Fallback to FREE
-    }
-  }, [])
-
-  return tier
-}
+// SEC-FIXED: Now uses BillingContext which fetches tier from backend API
+// This prevents users from bypassing billing restrictions via DevTools
+// The tier is cached in context and refreshed when user changes
+// Server-side enforcement still required for API endpoints
 
 const TIER_LEVELS: Record<BillingTier, number> = {
   FREE: 0,
@@ -46,7 +30,7 @@ const TIER_LEVELS: Record<BillingTier, number> = {
 
 export function BillingGuard({ tier, children, feature, featureAr }: BillingGuardProps) {
   const { language, isRTL } = useNexus()
-  const currentTier = useCurrentTier()
+  const { tier: currentTier, loading } = useBilling()
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
 
   useEffect(() => {
@@ -56,6 +40,22 @@ export function BillingGuard({ tier, children, feature, featureAr }: BillingGuar
     mq.addEventListener("change", handler)
     return () => mq.removeEventListener("change", handler)
   }, [])
+
+  // While loading tier from backend, show loading state
+  if (loading) {
+    return (
+      <div className="relative">
+        <div className="blur-sm pointer-events-none select-none opacity-50" aria-hidden="true">
+          {children}
+        </div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-sm text-muted-foreground">
+            {language === "ar" ? "جاري التحقق من الوصول..." : "Checking access..."}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const hasAccess = TIER_LEVELS[currentTier] >= TIER_LEVELS[tier]
 

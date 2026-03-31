@@ -150,7 +150,7 @@ export default function SettingsPage() {
     document.documentElement.style.fontSize = fontSizeMap[size] || "16px"
   }
 
-  // FIX 6: Sound preview function
+  // FIX 6: Sound preview function with proper AudioContext cleanup
   const playPreviewSound = (type: "send" | "arrive" | "success") => {
     const ctx = new AudioContext()
     const osc = ctx.createOscillator()
@@ -165,6 +165,12 @@ export default function SettingsPage() {
 
     osc.start()
     osc.stop(ctx.currentTime + 0.15)
+
+    // Clean up AudioContext after the sound finishes
+    // Add small buffer to ensure the sound completes
+    setTimeout(() => {
+      ctx.close()
+    }, 200)
   }
 
   return (

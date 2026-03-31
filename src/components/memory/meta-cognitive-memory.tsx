@@ -33,8 +33,8 @@ export function MetaCognitiveMemory({ userId }: MetaCognitiveMemoryProps) {
   const [insights, setInsights] = useState<PerformanceInsight[]>([])
   const [optimizing, setOptimizing] = useState(false)
   const [showFeedback, setShowFeedback] = useState(false)
-  const [feedbackType, setFeedbackType] = useState<"positive" | "negative">("positive")
-  const [feedbackCategory, setFeedbackCategory] = useState("accuracy")
+  const [feedbackType, setFeedbackType] = useState<"positive" | "negative" | "suggestion">("positive")
+  const [feedbackCategory, setFeedbackCategory] = useState<"accuracy" | "helpfulness" | "speed" | "relevance" | "other">("accuracy")
   const [feedbackComment, setFeedbackComment] = useState("")
 
   useEffect(() => {
@@ -186,7 +186,7 @@ export function MetaCognitiveMemory({ userId }: MetaCognitiveMemoryProps) {
     try {
       await recordFeedback(userId, {
         type: feedbackType,
-        category: feedbackCategory as any,
+        category: feedbackCategory,
         comment: feedbackComment,
       })
       toast.success("Thank you for your feedback!")
@@ -342,7 +342,7 @@ export function MetaCognitiveMemory({ userId }: MetaCognitiveMemoryProps) {
 
           {showFeedback && (
             <div className="mt-4 p-4 border rounded-lg space-y-4">
-              <RadioGroup value={feedbackType} onValueChange={(v) => setFeedbackType(v as any)}>
+              <RadioGroup value={feedbackType} onValueChange={(v) => setFeedbackType(v as "positive" | "negative" | "suggestion")}>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="positive" id="positive" />
                   <Label htmlFor="positive">Positive Feedback</Label>
@@ -353,7 +353,7 @@ export function MetaCognitiveMemory({ userId }: MetaCognitiveMemoryProps) {
                 </div>
               </RadioGroup>
 
-              <RadioGroup value={feedbackCategory} onValueChange={setFeedbackCategory}>
+              <RadioGroup value={feedbackCategory} onValueChange={(value) => setFeedbackCategory(value as "accuracy" | "helpfulness" | "speed" | "relevance" | "other")}>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="accuracy" id="accuracy" />

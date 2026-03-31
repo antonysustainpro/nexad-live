@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "motion/react"
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useNexus } from "@/contexts/nexus-context"
 import { cn, sanitizeUrl } from "@/lib/utils"
 import type { Notification } from "@/lib/types"
@@ -22,7 +22,7 @@ const categoryIcons: Record<string, typeof Bell> = {
   security: Shield,
 }
 
-export function NotificationItem({ notification, onDismiss, onMarkRead }: NotificationItemProps) {
+export const NotificationItem = React.memo(({ notification, onDismiss, onMarkRead }: NotificationItemProps) => {
   const { language, isRTL } = useNexus()
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
 
@@ -117,4 +117,6 @@ export function NotificationItem({ notification, onDismiss, onMarkRead }: Notifi
       </Button>
     </motion.div>
   )
-}
+})
+
+NotificationItem.displayName = "NotificationItem"

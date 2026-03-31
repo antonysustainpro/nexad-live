@@ -6,7 +6,7 @@
  * and adapts based on feedback patterns.
  */
 
-import { getCsrfToken } from "@/lib/csrf"
+import { getHeaders as getCommonHeaders, resilientFetch, isAbortError } from "@/lib/api-common"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "/api/proxy"
 
@@ -67,19 +67,9 @@ export interface PerformanceInsight {
   detected_at: string
 }
 
-// Helper to get auth headers
-function getHeaders(userId: string): HeadersInit {
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-    "X-User-ID": userId,
-  }
-
-  const csrfToken = getCsrfToken()
-  if (csrfToken) {
-    headers["X-CSRF-Token"] = csrfToken
-  }
-
-  return headers
+// Helper to get auth headers (wraps common function)
+function getHeaders(userId?: string): HeadersInit {
+  return getCommonHeaders(userId)
 }
 
 /**
@@ -90,11 +80,14 @@ export async function getBrainHealth(
   signal?: AbortSignal
 ): Promise<BrainHealthMetrics> {
   try {
-    const response = await fetch(`${API_BASE}/brain/dashboard/summary`, {
-      headers: getHeaders(userId),
-      credentials: "include",
-      signal,
-    })
+    const response = await resilientFetch(
+      `${API_BASE}/brain/dashboard/summary`,
+      {
+        headers: getHeaders(userId),
+        signal,
+      },
+      "metacognitive-api"
+    )
 
     if (!response.ok) {
       throw new Error(`Failed to get brain health: ${response.statusText}`)
@@ -102,7 +95,7 @@ export async function getBrainHealth(
 
     return response.json()
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isAbortError(error)) {
       throw error
     }
     // Return default metrics
@@ -134,11 +127,14 @@ export async function getUserSatisfaction(
     if (timeRange?.from) params.append("from", timeRange.from)
     if (timeRange?.to) params.append("to", timeRange.to)
 
-    const response = await fetch(`${API_BASE}/brain/satisfaction/${userId}?${params}`, {
-      headers: getHeaders(userId),
-      credentials: "include",
-      signal,
-    })
+    const response = await resilientFetch(
+      `${API_BASE}/brain/satisfaction/${userId}?${params}`,
+      {
+        headers: getHeaders(userId),
+        signal,
+      },
+      "metacognitive-api"
+    )
 
     if (!response.ok) {
       throw new Error(`Failed to get satisfaction metrics: ${response.statusText}`)
@@ -146,7 +142,7 @@ export async function getUserSatisfaction(
 
     return response.json()
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isAbortError(error)) {
       throw error
     }
     // Return default metrics
@@ -185,16 +181,19 @@ export async function recordFeedback(
   signal?: AbortSignal
 ): Promise<{ feedback_id: string; impact: string }> {
   try {
-    const response = await fetch(`${API_BASE}/brain/feedback`, {
-      method: "POST",
-      headers: getHeaders(userId),
-      body: JSON.stringify({
-        user_id: userId,
-        ...feedback,
-      }),
-      credentials: "include",
-      signal,
-    })
+    const response = await resilientFetch(
+      `${API_BASE}/brain/feedback`,
+      {
+        method: "POST",
+        headers: getHeaders(userId),
+        body: JSON.stringify({
+          user_id: userId,
+          ...feedback,
+        }),
+        signal,
+      },
+      "metacognitive-api"
+    )
 
     if (!response.ok) {
       throw new Error(`Failed to record feedback: ${response.statusText}`)
@@ -202,7 +201,7 @@ export async function recordFeedback(
 
     return response.json()
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isAbortError(error)) {
       throw error
     }
     throw new Error("Failed to record feedback")
@@ -227,11 +226,14 @@ export async function getSystemAdaptations(
     if (options?.active_only !== undefined) params.append("active_only", options.active_only.toString())
     if (options?.limit) params.append("limit", options.limit.toString())
 
-    const response = await fetch(`${API_BASE}/brain/adaptations/${userId}?${params}`, {
-      headers: getHeaders(userId),
-      credentials: "include",
-      signal,
-    })
+    const response = await resilientFetch(
+      `${API_BASE}/brain/adaptations/${userId}?${params}`,
+      {
+        headers: getHeaders(userId),
+        signal,
+      },
+      "metacognitive-api"
+    )
 
     if (!response.ok) {
       throw new Error(`Failed to get adaptations: ${response.statusText}`)
@@ -239,7 +241,7 @@ export async function getSystemAdaptations(
 
     return response.json()
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isAbortError(error)) {
       throw error
     }
     return []
@@ -264,11 +266,14 @@ export async function getPerformanceInsights(
     if (options?.severity) params.append("severity", options.severity)
     if (options?.unresolved_only !== undefined) params.append("unresolved_only", options.unresolved_only.toString())
 
-    const response = await fetch(`${API_BASE}/brain/insights/${userId}?${params}`, {
-      headers: getHeaders(userId),
-      credentials: "include",
-      signal,
-    })
+    const response = await resilientFetch(
+      `${API_BASE}/brain/insights/${userId}?${params}`,
+      {
+        headers: getHeaders(userId),
+        signal,
+      },
+      "metacognitive-api"
+    )
 
     if (!response.ok) {
       throw new Error(`Failed to get insights: ${response.statusText}`)
@@ -276,7 +281,7 @@ export async function getPerformanceInsights(
 
     return response.json()
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isAbortError(error)) {
       throw error
     }
     return []
@@ -297,16 +302,19 @@ export async function triggerOptimization(
   improvements: string[]
 }> {
   try {
-    const response = await fetch(`${API_BASE}/brain/optimize`, {
-      method: "POST",
-      headers: getHeaders(userId),
-      body: JSON.stringify({
-        user_id: userId,
-        target,
-      }),
-      credentials: "include",
-      signal,
-    })
+    const response = await resilientFetch(
+      `${API_BASE}/brain/optimize`,
+      {
+        method: "POST",
+        headers: getHeaders(userId),
+        body: JSON.stringify({
+          user_id: userId,
+          target,
+        }),
+        signal,
+      },
+      "metacognitive-api"
+    )
 
     if (!response.ok) {
       throw new Error(`Failed to trigger optimization: ${response.statusText}`)
@@ -314,7 +322,7 @@ export async function triggerOptimization(
 
     return response.json()
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isAbortError(error)) {
       throw error
     }
     throw new Error("Failed to trigger optimization")
@@ -340,11 +348,14 @@ export async function getOptimizationStatus(
   error?: string
 }> {
   try {
-    const response = await fetch(`${API_BASE}/brain/optimize/${optimizationId}`, {
-      headers: getHeaders(userId),
-      credentials: "include",
-      signal,
-    })
+    const response = await resilientFetch(
+      `${API_BASE}/brain/optimize/${optimizationId}`,
+      {
+        headers: getHeaders(userId),
+        signal,
+      },
+      "metacognitive-api"
+    )
 
     if (!response.ok) {
       throw new Error(`Failed to get optimization status: ${response.statusText}`)
@@ -352,7 +363,7 @@ export async function getOptimizationStatus(
 
     return response.json()
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isAbortError(error)) {
       throw error
     }
     throw new Error("Failed to get optimization status")
@@ -372,16 +383,19 @@ export async function reindexMemory(
   layers_affected: number[]
 }> {
   try {
-    const response = await fetch(`${API_BASE}/brain/memory/reindex`, {
-      method: "POST",
-      headers: getHeaders(userId),
-      body: JSON.stringify({
-        user_id: userId,
-        layers: layers || [0, 1, 2, 3, 4, 5, 6], // All layers by default
-      }),
-      credentials: "include",
-      signal,
-    })
+    const response = await resilientFetch(
+      `${API_BASE}/brain/memory/reindex`,
+      {
+        method: "POST",
+        headers: getHeaders(userId),
+        body: JSON.stringify({
+          user_id: userId,
+          layers: layers || [0, 1, 2, 3, 4, 5, 6], // All layers by default
+        }),
+        signal,
+      },
+      "metacognitive-api"
+    )
 
     if (!response.ok) {
       throw new Error(`Failed to reindex memory: ${response.statusText}`)
@@ -389,7 +403,7 @@ export async function reindexMemory(
 
     return response.json()
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isAbortError(error)) {
       throw error
     }
     throw new Error("Failed to reindex memory")

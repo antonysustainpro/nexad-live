@@ -6,6 +6,7 @@ import "./globals.css"
 import { NexusProvider } from "@/contexts/nexus-context"
 import { PrivacyMetricsProvider } from "@/contexts/privacy-metrics-context"
 import { AuthProvider } from "@/contexts/auth-context"
+import { BillingProvider } from "@/contexts/billing-context"
 import { CookieConsentBanner } from "@/components/cookie-consent-banner"
 import { ConditionalAnalytics } from "@/components/conditional-analytics"
 import { OfflineBanner } from "@/components/offline-banner"
@@ -85,12 +86,14 @@ export default async function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <NexusProvider>
           <AuthProvider>
-            <PrivacyMetricsProvider>
-              <ServiceWorkerRegister />
-              <OfflineBanner />
-              {children}
-              <CookieConsentBanner />
-            </PrivacyMetricsProvider>
+            <BillingProvider>
+              <PrivacyMetricsProvider>
+                <ServiceWorkerRegister />
+                <OfflineBanner />
+                {children}
+                <CookieConsentBanner />
+              </PrivacyMetricsProvider>
+            </BillingProvider>
           </AuthProvider>
         </NexusProvider>
         <Toaster

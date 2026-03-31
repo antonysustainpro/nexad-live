@@ -9,6 +9,7 @@
 
 import { getCsrfToken } from "./csrf"
 import { withRetry, withCircuitBreaker, type RetryOptions } from "./resilience"
+import { getSession } from "./api"
 
 // Use server-side proxy to hide API keys from client
 const API_BASE = "/api/proxy"
@@ -56,11 +57,30 @@ function isAbortError(err: unknown): boolean {
   return err instanceof Error && err.name === "AbortError"
 }
 
-// Helper to get auth headers with CSRF protection
-function getAuthHeaders(): HeadersInit {
+// Helper to get current user ID from session
+async function getCurrentUserId(signal?: AbortSignal): Promise<string | null> {
+  try {
+    const session = await getSession(signal)
+    return session?.user?.id || null
+  } catch (error) {
+    if (!isAbortError(error)) {
+      console.error("Failed to get user ID for billing:", error)
+    }
+    return null
+  }
+}
+
+// Helper to get auth headers with CSRF protection and user ID
+function getAuthHeaders(userId?: string): HeadersInit {
   const headers: HeadersInit = {
     "Content-Type": "application/json",
   }
+
+  // Include user ID header if provided
+  if (userId) {
+    headers["X-User-ID"] = userId
+  }
+
   const csrfToken = getCsrfToken()
   if (csrfToken) {
     headers["X-CSRF-Token"] = csrfToken
@@ -115,9 +135,12 @@ export interface DowngradeRequest {
  */
 export async function getSubscription(signal?: AbortSignal): Promise<Subscription | null> {
   try {
+    const userId = await getCurrentUserId(signal)
+    if (!userId) return null
+
     const response = await billingResilientFetch(
       `${API_BASE}/billing/subscription`,
-      { headers: getAuthHeaders(), signal }
+      { headers: getAuthHeaders(userId), signal }
     )
     if (!response.ok) return null
     return response.json()
@@ -133,9 +156,12 @@ export async function getSubscription(signal?: AbortSignal): Promise<Subscriptio
  */
 export async function getUsage(signal?: AbortSignal): Promise<UsageData | null> {
   try {
+    const userId = await getCurrentUserId(signal)
+    if (!userId) return null
+
     const response = await billingResilientFetch(
       `${API_BASE}/billing/usage`,
-      { headers: getAuthHeaders(), signal }
+      { headers: getAuthHeaders(userId), signal }
     )
     if (!response.ok) return null
     return response.json()
@@ -151,9 +177,12 @@ export async function getUsage(signal?: AbortSignal): Promise<UsageData | null> 
  */
 export async function getInvoices(signal?: AbortSignal): Promise<Invoice[] | null> {
   try {
+    const userId = await getCurrentUserId(signal)
+    if (!userId) return null
+
     const response = await billingResilientFetch(
       `${API_BASE}/billing/invoices`,
-      { headers: getAuthHeaders(), signal }
+      { headers: getAuthHeaders(userId), signal }
     )
     if (!response.ok) return null
     return response.json()
@@ -170,11 +199,14 @@ export async function getInvoices(signal?: AbortSignal): Promise<Invoice[] | nul
  */
 export async function subscribe(data: SubscribeRequest, signal?: AbortSignal): Promise<{ success: boolean } | null> {
   try {
+    const userId = await getCurrentUserId(signal)
+    if (!userId) return null
+
     const response = await billingResilientFetch(
       `${API_BASE}/billing/subscribe`,
       {
         method: "POST",
-        headers: getAuthHeaders(),
+        headers: getAuthHeaders(userId),
         body: JSON.stringify(data),
         signal,
       },
@@ -195,11 +227,14 @@ export async function subscribe(data: SubscribeRequest, signal?: AbortSignal): P
  */
 export async function upgradePlan(data: UpgradeRequest, signal?: AbortSignal): Promise<{ success: boolean } | null> {
   try {
+    const userId = await getCurrentUserId(signal)
+    if (!userId) return null
+
     const response = await billingResilientFetch(
       `${API_BASE}/billing/upgrade`,
       {
         method: "POST",
-        headers: getAuthHeaders(),
+        headers: getAuthHeaders(userId),
         body: JSON.stringify(data),
         signal,
       },
@@ -220,11 +255,14 @@ export async function upgradePlan(data: UpgradeRequest, signal?: AbortSignal): P
  */
 export async function downgradePlan(data: DowngradeRequest, signal?: AbortSignal): Promise<{ success: boolean } | null> {
   try {
+    const userId = await getCurrentUserId(signal)
+    if (!userId) return null
+
     const response = await billingResilientFetch(
       `${API_BASE}/billing/downgrade`,
       {
         method: "POST",
-        headers: getAuthHeaders(),
+        headers: getAuthHeaders(userId),
         body: JSON.stringify(data),
         signal,
       },
@@ -244,11 +282,14 @@ export async function downgradePlan(data: DowngradeRequest, signal?: AbortSignal
  */
 export async function cancelSubscription(signal?: AbortSignal): Promise<{ success: boolean } | null> {
   try {
+    const userId = await getCurrentUserId(signal)
+    if (!userId) return null
+
     const response = await billingResilientFetch(
       `${API_BASE}/billing/cancel`,
       {
         method: "POST",
-        headers: getAuthHeaders(),
+        headers: getAuthHeaders(userId),
         signal,
       },
       BILLING_MUTATION_RETRY

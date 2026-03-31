@@ -53,6 +53,7 @@ export default function VoicePage() {
   const audioContextRef = useRef<AudioContext | null>(null)
   const animationFrameRef = useRef<number | null>(null)
   const fallbackIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
 
   // Check browser support
   useEffect(() => {
@@ -83,6 +84,10 @@ export default function VoicePage() {
       if (audioContextRef.current) {
         audioContextRef.current.close()
       }
+      // Stop MediaStream tracks
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop())
+      }
       window.speechSynthesis?.cancel()
     }
   }, [])
@@ -109,7 +114,16 @@ export default function VoicePage() {
   // Audio level visualization
   const startAudioVisualization = useCallback(async () => {
     try {
+      // Close existing AudioContext before creating a new one
+      if (audioContextRef.current) {
+        audioContextRef.current.close()
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+
+      // Store stream reference so we can stop tracks later
+      streamRef.current = stream
+
       audioContextRef.current = new AudioContext()
       const source = audioContextRef.current.createMediaStreamSource(stream)
       analyserRef.current = audioContextRef.current.createAnalyser()

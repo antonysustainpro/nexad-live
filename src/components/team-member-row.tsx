@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { useNexus } from "@/contexts/nexus-context"
 import { cn, sanitizeImageUrl } from "@/lib/utils"
 import type { TeamMember, TeamMemberRole } from "@/lib/types"
@@ -30,7 +30,7 @@ const roleConfig: Record<TeamMemberRole, { icon: typeof Shield; color: string; l
   viewer: { icon: Eye, color: "text-muted-foreground", labelEn: "Viewer", labelAr: "مشاهد" },
 }
 
-export function TeamMemberRow({ member, onEdit, onRemove }: TeamMemberRowProps) {
+export const TeamMemberRow = React.memo(({ member, onEdit, onRemove }: TeamMemberRowProps) => {
   const { language, isRTL } = useNexus()
   const [confirmOpen, setConfirmOpen] = useState(false)
 
@@ -150,4 +150,6 @@ export function TeamMemberRow({ member, onEdit, onRemove }: TeamMemberRowProps) 
     </tr>
     </>
   )
-}
+})
+
+TeamMemberRow.displayName = "TeamMemberRow"

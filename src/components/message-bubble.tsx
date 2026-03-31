@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { Lock, Check, X, ChevronDown, ChevronUp, Shield, RefreshCw } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 import { motion } from "motion/react"
@@ -51,7 +51,7 @@ interface MessageBubbleProps {
   onRegenerate?: () => void
 }
 
-export function MessageBubble({ message, onRegenerate }: MessageBubbleProps) {
+export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbleProps) => {
   const { language, isRTL } = useNexus()
   const [sourcesOpen, setSourcesOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -239,10 +239,12 @@ export function MessageBubble({ message, onRegenerate }: MessageBubbleProps) {
       </div>
     </motion.div>
   )
-}
+})
+
+MessageBubble.displayName = "MessageBubble";
 
 // Typing Indicator Component - Sequential phases, not looping
-export function TypingIndicator() {
+export const TypingIndicator = React.memo(() => {
   const { language } = useNexus()
   const [phase, setPhase] = useState(0)
 
@@ -300,4 +302,6 @@ export function TypingIndicator() {
       </motion.span>
     </motion.div>
   )
-}
+})
+
+TypingIndicator.displayName = "TypingIndicator"

@@ -6,7 +6,7 @@
  * capabilities for long-term conversation persistence.
  */
 
-import { getCsrfToken } from "@/lib/csrf"
+import { getHeaders as getCommonHeaders, resilientFetch, isAbortError } from "@/lib/api-common"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "/api/proxy"
 
@@ -49,19 +49,9 @@ export interface ConversationSearchResult {
   }
 }
 
-// Helper to get auth headers
+// Helper to get auth headers (wraps common function for consistency)
 function getHeaders(userId: string): HeadersInit {
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-    "X-User-ID": userId,
-  }
-
-  const csrfToken = getCsrfToken()
-  if (csrfToken) {
-    headers["X-CSRF-Token"] = csrfToken
-  }
-
-  return headers
+  return getCommonHeaders(userId)
 }
 
 /**
@@ -74,17 +64,20 @@ export async function createConversation(
   signal?: AbortSignal
 ): Promise<Conversation> {
   try {
-    const response = await fetch(`${API_BASE}/brain/conversations`, {
-      method: "POST",
-      headers: getHeaders(userId),
-      body: JSON.stringify({
-        user_id: userId,
-        title,
-        first_message: firstMessage,
-      }),
-      credentials: "include",
-      signal,
-    })
+    const response = await resilientFetch(
+      `${API_BASE}/brain/conversations`,
+      {
+        method: "POST",
+        headers: getHeaders(userId),
+        body: JSON.stringify({
+          user_id: userId,
+          title,
+          first_message: firstMessage,
+        }),
+        signal,
+      },
+      "conversations-api"
+    )
 
     if (!response.ok) {
       throw new Error(`Failed to create conversation: ${response.statusText}`)
@@ -92,7 +85,7 @@ export async function createConversation(
 
     return response.json()
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (isAbortError(error)) {
       throw error
     }
     throw new Error("Failed to create conversation")

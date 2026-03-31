@@ -477,6 +477,69 @@ export async function factCheck(claim: string, context: string, signal?: AbortSi
   return response.json()
 }
 
+/**
+ * Clarify a user's request with refinement flows
+ */
+export async function clarifyRequest(
+  message: string,
+  context: Message[],
+  signal?: AbortSignal
+): Promise<{
+  clarification_needed: boolean
+  questions: string[]
+  suggestions: string[]
+  refined_query?: string
+}> {
+  const response = await resilientFetch(
+    `${API_BASE}/chat/clarify`,
+    {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ message, context }),
+      signal,
+    },
+    "chat-api",
+    MUTATION_RETRY_OPTIONS
+  )
+  if (!response.ok) throw new Error(`Clarify error: ${response.status}`)
+  return response.json()
+}
+
+/**
+ * Query multiple AI models in parallel
+ */
+export async function multiModelQuery(
+  request: {
+    message: string
+    models: string[] // e.g., ["gpt-4", "claude-3", "gemini-pro"]
+    mode?: "consensus" | "compare" | "fastest"
+  },
+  signal?: AbortSignal
+): Promise<{
+  responses: {
+    model: string
+    response: string
+    confidence: number
+    response_time: number
+  }[]
+  consensus?: string // For consensus mode
+  best_response?: string // For compare mode
+}> {
+  const response = await resilientFetch(
+    `${API_BASE}/chat/multi-model`,
+    {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(request),
+      signal,
+    },
+    "chat-api",
+    MUTATION_RETRY_OPTIONS
+  )
+  if (!response.ok) throw new Error(`Multi-model query error: ${response.status}`)
+  return response.json()
+}
+
 // Voice API
 export async function transcribeAudio(audio: Blob, signal?: AbortSignal): Promise<{
   transcript: string
