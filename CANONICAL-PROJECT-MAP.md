@@ -172,12 +172,12 @@ GET /finance/search/{keywords}    // Ticker search
 
 ---
 
-## AUTHENTICATION FLOW
+## AUTHENTICATION FLOW (FIXED 2026-03-31)
 
 ```
 1. User enters credentials
    ↓
-2. POST /api/v1/auth/login
+2. POST /api/v1/auth/login (Note: Backend only supports Google OAuth currently)
    ↓
 3. Backend validates, returns user + token
    ↓
@@ -185,10 +185,18 @@ GET /finance/search/{keywords}    // Ticker search
    ↓
 5. All API calls include session cookie
    ↓
-6. Proxy validates session, injects X-User-Id header
+6. Proxy extracts user ID from token AND adds headers:
+   - Authorization: Bearer <token> (for backend validation)
+   - X-User-Id: <userId> (extracted from JWT payload if JWT, otherwise backend validates)
    ↓
-7. Backend trusts X-User-Id from proxy
+7. Backend trusts X-User-Id from proxy (proxy is the security boundary)
 ```
+
+**Authentication Fix Notes:**
+- Backend expects `X-User-Id` header from proxy
+- Proxy extracts userId from JWT payload (if token is JWT)
+- Proxy also sends Authorization header for backend validation
+- Email/password login returns 501 - only Google OAuth is implemented
 
 **Google OAuth Flow:**
 ```
