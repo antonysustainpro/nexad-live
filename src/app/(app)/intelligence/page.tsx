@@ -75,7 +75,7 @@ export default function IntelligencePage() {
       setRealEstate(reData)
     } catch (error) {
       console.error("Failed to load intelligence data:", error)
-      toast.error("Failed to load intelligence data")
+      toast.error("We couldn't load your intelligence data. Please try again in a moment.")
     } finally {
       setLoading(false)
     }
@@ -96,7 +96,7 @@ export default function IntelligencePage() {
       toast.success(`Found ${results.length} results`)
       // TODO: Display search results in a modal or dedicated section
     } catch (error) {
-      toast.error("Search failed")
+      toast.error("Search didn't complete. Please try again.")
     }
   }
 

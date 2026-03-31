@@ -313,7 +313,7 @@ export default function SovereigntyPage() {
                 await navigator.clipboard.writeText(displayFingerprint)
                 showToast(language === "ar" ? "تم نسخ البصمة" : "Fingerprint copied")
               } catch {
-                showToast(language === "ar" ? "فشل النسخ" : "Failed to copy")
+                showToast(language === "ar" ? "تعذّر النسخ. يرجى المحاولة مرة أخرى." : "Couldn't copy to clipboard. Please try again.")
               }
             }}>
               <Copy className="h-4 w-4 me-2" aria-hidden="true" />

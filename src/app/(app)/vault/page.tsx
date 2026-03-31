@@ -786,6 +786,33 @@ export default function VaultPage() {
             <CardContent className="p-0">
               {accessLogLoading ? (
                 <AccessLogSkeleton rows={5} />
+              ) : accessLogError ? (
+                <ErrorRetry
+                  onRetry={() => {
+                    setAccessLogError(false)
+                    setAccessLogLoading(true)
+                    getAccessLog().then(data => {
+                      if (data?.entries) {
+                        setAccessLogEntries(data.entries.map((e, i) => ({
+                          id: `log-${i}`,
+                          timestamp: e.timestamp,
+                          actor: e.actor,
+                          action: e.action,
+                          resource: e.resource,
+                        })))
+                      }
+                    }).catch(() => {
+                      setAccessLogError(true)
+                    }).finally(() => {
+                      setAccessLogLoading(false)
+                    })
+                  }}
+                  message={language === "ar"
+                    ? "تعذّر تحميل سجل الوصول. يرجى المحاولة مجدداً."
+                    : "We couldn't load the access log. Please try again."}
+                  networkError
+                  variant="card"
+                />
               ) : accessLogEntries.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <div className="p-4 rounded-full bg-muted mb-4">

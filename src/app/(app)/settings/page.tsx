@@ -519,8 +519,8 @@ export default function SettingsPage() {
                       } catch {
                         toast.error(
                           language === "ar"
-                            ? "فشل مسح البيانات من الخادم"
-                            : "Failed to clear backend data"
+                            ? "تعذّر مسح البيانات. يرجى المحاولة مرة أخرى."
+                            : "We couldn't clear your data. Please try again."
                         )
                       } finally {
                         // Always clear localStorage and redirect regardless of backend result

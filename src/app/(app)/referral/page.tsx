@@ -108,7 +108,7 @@ export default function ReferralPage() {
         creditsEarned: 0,
         referralCode: fallbackCode,
       })
-      setError(err instanceof Error ? err.message : "Failed to load referral data")
+      setError("We couldn't load your referral data. Please try again in a moment.")
     } finally {
       setLoading(false)
     }

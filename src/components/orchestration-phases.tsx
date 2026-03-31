@@ -82,41 +82,41 @@ const phaseIcons: Record<string, React.ElementType> = {
 }
 
 const phaseLabels: Record<string, { en: string; ar: string }> = {
-  init: { en: "Initializing sovereign pipeline", ar: "تهيئة خط الأنابيب السيادي" },
-  brainstorm: { en: "Analyzing your request", ar: "تحليل طلبك" },
-  enhance: { en: "Enhancing query", ar: "تحسين الاستعلام" },
-  search: { en: "Searching the web", ar: "البحث في الويب" },
-  search_done: { en: "Real-time data loaded", ar: "تم تحميل البيانات الفورية" },
-  decompose: { en: "Breaking down into specialist tasks", ar: "تقسيم إلى مهام متخصصة" },
-  shards: { en: "Consulting specialists", ar: "استشارة المتخصصين" },
-  shards_done: { en: "All specialists responded", ar: "رد جميع المتخصصين" },
-  cross_audit: { en: "Reviewing shard consistency", ar: "مراجعة اتساق الشرائح" },
-  cross_audit_done: { en: "Consistency check complete", ar: "اكتملت فحص الاتساق" },
-  merge: { en: "Synthesizing intelligence", ar: "تجميع المعلومات" },
-  audit: { en: "Multi-auditor review", ar: "مراجعة متعددة المدققين" },
-  ceo_gate: { en: "Final CEO gate", ar: "البوابة النهائية للرئيس" },
+  init: { en: "Initializing sovereign pipeline", ar: "جاري إعداد نظام السيادة..." },
+  brainstorm: { en: "Analyzing your request", ar: "نحلل طلبك..." },
+  enhance: { en: "Enhancing query", ar: "نحسّن صياغة السؤال..." },
+  search: { en: "Searching the web", ar: "نبحث في الويب..." },
+  search_done: { en: "Real-time data loaded", ar: "تم تحميل أحدث البيانات" },
+  decompose: { en: "Breaking down into specialist tasks", ar: "نوزع المهمة على المختصين..." },
+  shards: { en: "Consulting specialists", ar: "ننسق مع المختصين..." },
+  shards_done: { en: "All specialists responded", ar: "وصلت ردود جميع المختصين" },
+  cross_audit: { en: "Reviewing shard consistency", ar: "نراجع تناسق الردود..." },
+  cross_audit_done: { en: "Consistency check complete", ar: "اكتملت مراجعة الجودة" },
+  merge: { en: "Synthesizing intelligence", ar: "نجمع المعلومات في رد واحد..." },
+  audit: { en: "Multi-auditor review", ar: "مراجعة نهائية بعدة مدققين..." },
+  ceo_gate: { en: "Final CEO gate", ar: "المراجعة النهائية قبل الإجابة..." },
   complete: { en: "Report complete", ar: "اكتمل التقرير" },
-  error: { en: "Pipeline error", ar: "خطأ في خط الأنابيب" },
+  error: { en: "Pipeline error", ar: "حدث خطأ، يرجى المحاولة مجدداً" },
   // Default phases for thinking mode when backend sends generic/empty phase keys
-  analyze: { en: "Analyzing your request", ar: "تحليل الطلب" },
-  consult: { en: "Consulting AI specialists", ar: "استشارة المتخصصين" },
-  cross_examine: { en: "Cross-examining responses", ar: "الفحص المتقاطع" },
-  synthesize: { en: "Synthesizing final answer", ar: "تجميع الإجابة" },
+  analyze: { en: "Analyzing your request", ar: "نحلل طلبك..." },
+  consult: { en: "Consulting AI specialists", ar: "ننسق مع المختصين..." },
+  cross_examine: { en: "Cross-examining responses", ar: "نراجع الردود..." },
+  synthesize: { en: "Synthesizing final answer", ar: "نجمع الإجابة النهائية..." },
   // Default phases for fast mode
-  fast_analyze: { en: "Analyzing your request", ar: "تحليل الطلب" },
-  fast_generate: { en: "Generating fast response", ar: "توليد الرد السريع" },
-  fast_verify: { en: "Verifying answer", ar: "التحقق من الإجابة" },
+  fast_analyze: { en: "Analyzing your request", ar: "نحلل طلبك..." },
+  fast_generate: { en: "Generating fast response", ar: "نُعد رداً سريعاً..." },
+  fast_verify: { en: "Verifying answer", ar: "نتحقق من الإجابة..." },
 }
 
 // Positional fallback labels when phase key is missing or unrecognized
 const defaultPhaseByIndex: Array<{ en: string; ar: string }> = [
-  { en: "Analyzing your request", ar: "تحليل الطلب" },
-  { en: "Consulting AI specialists", ar: "استشارة المتخصصين" },
-  { en: "Cross-examining responses", ar: "الفحص المتقاطع" },
-  { en: "Synthesizing final answer", ar: "تجميع الإجابة" },
-  { en: "Finalizing response", ar: "إعداد الرد النهائي" },
-  { en: "Quality review", ar: "مراجعة الجودة" },
-  { en: "Completing pipeline", ar: "إكمال خط الأنابيب" },
+  { en: "Analyzing your request", ar: "نحلل طلبك..." },
+  { en: "Consulting AI specialists", ar: "ننسق مع المختصين..." },
+  { en: "Cross-examining responses", ar: "نراجع الردود..." },
+  { en: "Synthesizing final answer", ar: "نجمع الإجابة النهائية..." },
+  { en: "Finalizing response", ar: "نُعد ردك النهائي..." },
+  { en: "Quality review", ar: "مراجعة الجودة..." },
+  { en: "Completing pipeline", ar: "اللمسات الأخيرة..." },
 ]
 
 export function OrchestrationPhases({ state, isActive, onClose }: OrchestrationPhasesProps) {
@@ -193,7 +193,7 @@ export function OrchestrationPhases({ state, isActive, onClose }: OrchestrationP
           </span>
           {state.shardCount && (
             <span className="text-xs text-muted-foreground">
-              {state.shardCount} {language === "ar" ? "شرائح" : "shards"}
+              {state.shardCount} {language === "ar" ? "خوادم" : "shards"}
             </span>
           )}
         </div>
@@ -416,7 +416,7 @@ export function OrchestrationPhases({ state, isActive, onClose }: OrchestrationP
           isRTL && "flex-row-reverse"
         )}>
           {state.totalTokens && (
-            <span>{state.totalTokens.toLocaleString()} {language === "ar" ? "رمز" : "tokens"}</span>
+            <span>{state.totalTokens.toLocaleString()} {language === "ar" ? "كلمة معالجة" : "tokens"}</span>
           )}
           {state.elapsedMs && (
             <span>{(state.elapsedMs / 1000).toFixed(1)}s</span>

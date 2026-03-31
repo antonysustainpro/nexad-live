@@ -80,10 +80,10 @@ export default function DataExportPage() {
         const data = await getDataExports()
         if (data) setExportHistory(data)
       } else {
-        toast.error(language === "ar" ? "فشل طلب التصدير" : "Export request failed")
+        toast.error(language === "ar" ? "تعذّر طلب التصدير. يرجى المحاولة مرة أخرى." : "We couldn't start your export. Please try again.")
       }
     } catch {
-      toast.error(language === "ar" ? "حدث خطأ" : "An error occurred")
+      toast.error(language === "ar" ? "حدث خطأ. يرجى المحاولة مرة أخرى." : "Something went wrong. Please try again.")
     } finally {
       setIsRequesting(false)
     }

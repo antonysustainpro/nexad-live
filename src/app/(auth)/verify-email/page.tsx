@@ -90,7 +90,7 @@ function VerifyEmailContent() {
       if (result?.sent) {
         toast.success(language === "ar" ? "تم إرسال الرمز" : "Code sent successfully")
       } else {
-        toast.error(language === "ar" ? "فشل إرسال الرمز" : "Failed to send code")
+        toast.error(language === "ar" ? "تعذّر إرسال الرمز. يرجى المحاولة مرة أخرى." : "We couldn't send the code. Please try again.")
         setResendCooldown(0)
       }
     } catch {

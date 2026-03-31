@@ -68,7 +68,7 @@ export function TeamInviteModal({ open, onOpenChange, onInvite }: TeamInviteModa
       setRole("member")
       onOpenChange(false)
     } catch {
-      toast.error(language === "ar" ? "فشل إرسال الدعوة" : "Failed to send invitation")
+      toast.error(language === "ar" ? "تعذّر إرسال الدعوة. يرجى المحاولة مرة أخرى." : "We couldn't send the invitation. Please try again.")
     } finally {
       setIsInviting(false)
     }

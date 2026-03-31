@@ -275,8 +275,8 @@ export const ReasoningVisualization = memo(function ReasoningVisualization({
               onClick={togglePause}
               aria-pressed={isPaused}
               aria-label={isPaused
-                ? (language === "ar" ? "استئناف الرسوم المتحركة" : "Resume animation")
-                : (language === "ar" ? "إيقاف الرسوم المتحركة" : "Pause animation")
+                ? (language === "ar" ? "متابعة التفكير" : "Resume animation")
+                : (language === "ar" ? "إيقاف مؤقت" : "Pause animation")
               }
               className="h-6 w-6 p-0"
             >

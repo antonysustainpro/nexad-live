@@ -74,7 +74,7 @@ export function SovereigntyRibbon() {
       labelEn: `${safeShardCount} active`,
       labelAr: `${safeShardCount} نشط`,
       tooltipEn: `Your data is distributed across ${safeShardCount} encrypted shards`,
-      tooltipAr: `بياناتك موزعة على ${safeShardCount} جزء مشفر`,
+      tooltipAr: `بياناتك موزعة على ${safeShardCount} خادم مشفر`,
     },
     {
       id: "processing",

@@ -39,6 +39,7 @@ import { MemoryIndicator } from "@/components/memory-indicator"
 import { EpisodicMemory } from "@/components/memory/episodic-memory"
 import { MetaCognitiveMemory } from "@/components/memory/meta-cognitive-memory"
 import { toast } from "sonner"
+import { ErrorRetry } from "@/components/error-retry"
 
 export default function MemoryPage() {
   const router = useRouter()
@@ -46,6 +47,7 @@ export default function MemoryPage() {
   const { language } = useNexus()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [profile, setProfile] = useState<VaultProfile | null>(null)
   const [memoryLayers, setMemoryLayers] = useState<MemoryLayerStatus[]>([])
   const [formData, setFormData] = useState({
@@ -98,7 +100,7 @@ export default function MemoryPage() {
       setMemoryLayers(layers)
     } catch (error) {
       console.error("Failed to load profile:", error)
-      toast.error(language === "ar" ? "فشل تحميل الملف الشخصي" : "Failed to load profile")
+      toast.error(language === "ar" ? "تعذّر تحميل ملفك الشخصي. يرجى المحاولة مرة أخرى." : "We couldn't load your profile. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -127,11 +129,11 @@ export default function MemoryPage() {
         setMemoryLayers(layers)
         toast.success(language === "ar" ? "تم حفظ الملف الشخصي" : "Profile saved successfully")
       } else {
-        throw new Error("Failed to save profile")
+        throw new Error("We couldn't save your profile. Please try again.")
       }
     } catch (error) {
       console.error("Failed to save profile:", error)
-      toast.error(language === "ar" ? "فشل حفظ الملف الشخصي" : "Failed to save profile")
+      toast.error(language === "ar" ? "تعذّر حفظ ملفك الشخصي. يرجى المحاولة مرة أخرى." : "We couldn't save your profile. Please try again.")
     } finally {
       setSaving(false)
     }
@@ -147,6 +149,22 @@ export default function MemoryPage() {
           </p>
         </div>
       </div>
+    )
+  }
+
+  if (loadError) {
+    return (
+      <ErrorRetry
+        onRetry={() => {
+          setLoadError(false)
+          loadProfile()
+        }}
+        message={language === "ar"
+          ? "تعذّر تحميل الذاكرة. يرجى المحاولة مجدداً."
+          : "We couldn't load your memory. Please try again."}
+        networkError
+        variant="page"
+      />
     )
   }
 

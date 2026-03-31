@@ -42,11 +42,11 @@ export function ProfileDangerZone() {
         // Corrupted localStorage
       }
       if (!userId) {
-        throw new Error("No user ID")
+        throw new Error("User session not found")
       }
       const result = await deleteUserAccount(userId)
       if (!result) {
-        throw new Error("API unavailable")
+        throw new Error("Service unavailable")
       }
       // Clear localStorage
       localStorage.clear()
@@ -55,7 +55,7 @@ export function ProfileDangerZone() {
       // Redirect to goodbye/login page
       router.push("/login")
     } catch {
-      toast.error(language === "ar" ? "فشل حذف الحساب" : "Failed to delete account")
+      toast.error(language === "ar" ? "تعذّر حذف الحساب. يرجى المحاولة مرة أخرى أو التواصل مع الدعم." : "We couldn't delete your account. Please try again or contact support.")
     } finally {
       setIsDeleting(false)
     }

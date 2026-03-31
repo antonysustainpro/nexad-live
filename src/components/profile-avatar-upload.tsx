@@ -49,7 +49,7 @@ export function ProfileAvatarUpload({ currentAvatarUrl, onAvatarChange, userId }
       if (!result || !result.avatar_url) {
         // Revert preview on failure
         setPreviewUrl(null)
-        toast.error(language === "ar" ? "فشل تحميل الصورة" : "Failed to upload image")
+        toast.error(language === "ar" ? "تعذّر رفع الصورة. يرجى المحاولة مرة أخرى." : "We couldn't upload your photo. Please try again.")
         return
       }
 
@@ -61,7 +61,7 @@ export function ProfileAvatarUpload({ currentAvatarUrl, onAvatarChange, userId }
       toast.success(language === "ar" ? "تم تحديث الصورة" : "Avatar updated")
     } catch {
       setPreviewUrl(null)
-      toast.error(language === "ar" ? "فشل تحميل الصورة" : "Failed to upload image")
+      toast.error(language === "ar" ? "تعذّر رفع الصورة. يرجى المحاولة مرة أخرى." : "We couldn't upload your photo. Please try again.")
     } finally {
       setIsUploading(false)
     }

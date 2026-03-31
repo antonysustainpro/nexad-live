@@ -86,7 +86,7 @@ export default function CompliancePage() {
       setRetentionPolicies(policies)
     } catch (error) {
       console.error("Failed to load compliance data:", error)
-      toast.error("Failed to load compliance data")
+      toast.error("We couldn't load your compliance data. Please try again in a moment.")
     } finally {
       setLoading(false)
     }
@@ -109,7 +109,7 @@ export default function CompliancePage() {
 
       toast.success("Audit trail downloaded")
     } catch (error) {
-      toast.error("Failed to download audit trail")
+      toast.error("We couldn't download the audit trail. Please try again.")
     }
   }
 
@@ -126,7 +126,7 @@ export default function CompliancePage() {
 
       toast.success("Certificate downloaded")
     } catch (error) {
-      toast.error("Failed to download certificate")
+      toast.error("We couldn't download the certificate. Please try again.")
     }
   }
 
@@ -148,7 +148,7 @@ export default function CompliancePage() {
 
       toast.success("Compliance data exported")
     } catch (error) {
-      toast.error("Failed to export compliance data")
+      toast.error("We couldn't export your compliance data. Please try again.")
     }
   }
 

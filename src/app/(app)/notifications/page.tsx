@@ -47,7 +47,7 @@ export default function NotificationsPage() {
       setNotifications(data || [])
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") return
-      setError(err instanceof Error ? err.message : "Failed to load notifications")
+      setError("We couldn't load your notifications. Please try again in a moment.")
     } finally {
       setLoading(false)
     }
@@ -128,7 +128,7 @@ export default function NotificationsPage() {
     } catch {
       // Rollback on failure
       setNotifications(previousState)
-      toast.error(language === "ar" ? "فشل في تحديث الإشعارات" : "Failed to update notifications")
+      toast.error(language === "ar" ? "تعذّر تحديث الإشعارات. يرجى المحاولة مرة أخرى." : "We couldn't update your notifications. Please try again.")
     }
   }
 
@@ -146,7 +146,7 @@ export default function NotificationsPage() {
     } catch {
       // Rollback on failure
       setNotifications(previousState)
-      toast.error(language === "ar" ? "فشل في حذف الإشعار" : "Failed to dismiss notification")
+      toast.error(language === "ar" ? "تعذّر حذف الإشعار. يرجى المحاولة مرة أخرى." : "We couldn't dismiss that notification. Please try again.")
     }
   }
 
@@ -166,7 +166,7 @@ export default function NotificationsPage() {
     } catch {
       // Rollback on failure
       setNotifications(previousState)
-      toast.error(language === "ar" ? "فشل في تحديث الإشعار" : "Failed to update notification")
+      toast.error(language === "ar" ? "تعذّر تحديث الإشعار. يرجى المحاولة مرة أخرى." : "We couldn't update that notification. Please try again.")
     }
   }
 

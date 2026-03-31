@@ -21,7 +21,7 @@ export function ReferralShareCard({ referralCode }: ReferralShareCardProps) {
       await navigator.clipboard.writeText(referralLink)
       toast.success(language === "ar" ? "تم نسخ الرابط" : "Link copied")
     } catch {
-      toast.error(language === "ar" ? "فشل النسخ" : "Failed to copy")
+      toast.error(language === "ar" ? "تعذّر النسخ. يرجى المحاولة مرة أخرى." : "Couldn't copy to clipboard. Please try again.")
     }
   }
 
@@ -30,7 +30,7 @@ export function ReferralShareCard({ referralCode }: ReferralShareCardProps) {
       await navigator.clipboard.writeText(referralCode)
       toast.success(language === "ar" ? "تم نسخ الكود" : "Code copied")
     } catch {
-      toast.error(language === "ar" ? "فشل النسخ" : "Failed to copy")
+      toast.error(language === "ar" ? "تعذّر النسخ. يرجى المحاولة مرة أخرى." : "Couldn't copy to clipboard. Please try again.")
     }
   }
 

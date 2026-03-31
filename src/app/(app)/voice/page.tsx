@@ -241,10 +241,10 @@ export default function VoicePage() {
         setVoiceState("idle")
       }
     } catch (err) {
-      // Chat API error handled via UI state
+      // Voice/chat API error — show user-friendly message, no technical codes
       setError(language === "ar"
-        ? "حدث خطأ في الاتصال بالخادم"
-        : "Error connecting to server")
+        ? "تعذّر الاتصال. يرجى التحقق من اتصالك والمحاولة مرة أخرى."
+        : "We're having trouble connecting. Please check your connection and try again.")
       setVoiceState("error")
     }
   }, [isMuted, language])

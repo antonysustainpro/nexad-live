@@ -176,7 +176,7 @@ export function MetaCognitiveMemory({ userId }: MetaCognitiveMemoryProps) {
       // Reload metrics after a delay
       setTimeout(() => loadMetrics(), 5000)
     } catch (error) {
-      toast.error("Failed to start optimization")
+      toast.error("We couldn't start the optimization. Please try again in a moment.")
     } finally {
       setOptimizing(false)
     }
@@ -193,7 +193,7 @@ export function MetaCognitiveMemory({ userId }: MetaCognitiveMemoryProps) {
       setShowFeedback(false)
       setFeedbackComment("")
     } catch (error) {
-      toast.error("Failed to submit feedback")
+      toast.error("We couldn't submit your feedback. Please try again.")
     }
   }
 

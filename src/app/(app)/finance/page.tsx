@@ -95,7 +95,7 @@ export default function FinancePage() {
       const data = await getStock(symbol)
       setStockData(data)
     } catch (error) {
-      toast.error(`Failed to load ${symbol} data`)
+      toast.error(`We couldn't load ${symbol} data. Showing demo values.`)
       // Demo fallback data
       setStockData({
         symbol,
@@ -120,7 +120,7 @@ export default function FinancePage() {
       const data = await getForex(from, to)
       setForexData(data)
     } catch (error) {
-      toast.error(`Failed to load ${from}/${to} rate`)
+      toast.error(`We couldn't load the ${from}/${to} rate. Showing demo values.`)
       // Demo fallback data
       setForexData({
         from,
@@ -141,7 +141,7 @@ export default function FinancePage() {
       const data = await getCrypto(symbol)
       setCryptoData(data)
     } catch (error) {
-      toast.error(`Failed to load ${symbol} data`)
+      toast.error(`We couldn't load ${symbol} data. Showing demo values.`)
       // Demo fallback data
       setCryptoData({
         symbol,
@@ -165,7 +165,7 @@ export default function FinancePage() {
       const results = await searchFinance(searchQuery)
       setSearchResults(results)
     } catch (error) {
-      toast.error("Search failed")
+      toast.error("Search didn't complete. Please try again.")
       // Demo results
       setSearchResults([
         { symbol: "AAPL", name: "Apple Inc.", type: "stock", exchange: "NASDAQ" },

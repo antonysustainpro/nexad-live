@@ -23,7 +23,7 @@ export function BillingUsageChart({ data, metric }: BillingUsageChartProps) {
 
   const metricLabels = {
     apiCalls: { en: "API Calls", ar: "طلبات API" },
-    tokensUsed: { en: "Tokens", ar: "التوكنات" },
+    tokensUsed: { en: "Tokens", ar: "الكلمات المعالجة" },
     storageUsedMb: { en: "Storage (MB)", ar: "التخزين (ميجابايت)" },
   }
 

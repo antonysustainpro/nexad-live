@@ -85,7 +85,7 @@ export default function PersonaPage() {
     }).catch((err) => {
       if (isMounted) {
         setLoading(false)
-        setError(err instanceof Error ? err.message : "Failed to load persona")
+        setError("We couldn't load your persona settings. Please try again in a moment.")
       }
     })
 

@@ -189,7 +189,7 @@ export default function DomainsPage() {
       }
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") return
-      setError(err instanceof Error ? err.message : "Failed to load domain data")
+      setError("We couldn't load your domain data. Please try again in a moment.")
     } finally {
       setLoading(false)
     }

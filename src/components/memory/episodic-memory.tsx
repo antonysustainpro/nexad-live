@@ -128,7 +128,7 @@ export function EpisodicMemory({ userId }: EpisodicMemoryProps) {
       setConversations(conversations.filter((c) => c.id !== conversationId))
       toast.success("Conversation deleted")
     } catch (error) {
-      toast.error("Failed to delete conversation")
+      toast.error("We couldn't delete that conversation. Please try again.")
     }
   }
 

@@ -82,7 +82,7 @@ export default function CreativePage() {
       setGeneratedImages(images)
       toast.success("Images generated successfully!")
     } catch (error) {
-      toast.error("Failed to generate images")
+      toast.error("We couldn't generate your images. Please try again in a moment.")
     } finally {
       setLoading(false)
     }
@@ -106,7 +106,7 @@ export default function CreativePage() {
       setGenerated3DModel(model)
       toast.success("3D model generated successfully!")
     } catch (error) {
-      toast.error("Failed to generate 3D model")
+      toast.error("We couldn't generate the 3D model. Please try again in a moment.")
     } finally {
       setLoading(false)
     }
@@ -135,7 +135,7 @@ export default function CreativePage() {
       } else if (fileExtension === "xlsx" || fileExtension === "xls") {
         fileType = "xlsx"
       } else {
-        toast.error("Unsupported file type")
+        toast.error("This file type isn't supported. Please try a PDF, image (PNG/JPG), Word (.docx), or Excel (.xlsx) file.")
         setLoading(false)
         return
       }
@@ -149,7 +149,7 @@ export default function CreativePage() {
       setParsedDocument(result)
       toast.success("Document parsed successfully!")
     } catch (error) {
-      toast.error("Failed to parse document")
+      toast.error("We couldn't parse that document. Please try again or use a different file.")
     } finally {
       setLoading(false)
     }
@@ -172,9 +172,9 @@ export default function CreativePage() {
       console.log("Result:", result)
     } catch (error) {
       if (error instanceof SyntaxError) {
-        toast.error("Invalid JSON input")
+        toast.error("The input JSON isn't valid. Please check the format and try again.")
       } else {
-        toast.error("Failed to run model")
+        toast.error("We couldn't run the model. Please try again in a moment.")
       }
     } finally {
       setLoading(false)

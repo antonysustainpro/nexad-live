@@ -161,7 +161,7 @@ export function IntelligencePanel({
             </div>
           ) : (
             <p className="text-sm text-muted-foreground italic">
-              {language === "ar" ? "في انتظار الاستعلام..." : "Awaiting query..."}
+              {language === "ar" ? "في انتظار سؤالك..." : "Awaiting query..."}
             </p>
           )}
         </section>
@@ -232,7 +232,7 @@ export function IntelligencePanel({
               )}
               <p className="text-sm text-muted-foreground italic">
                 {isProcessing 
-                  ? (language === "ar" ? "يتم الاستشارة..." : "Consulting...")
+                  ? (language === "ar" ? "ننسق مع المختصين..." : "Consulting...")
                   : (language === "ar" ? "لا يوجد مختصون" : "No specialists")}
               </p>
             </div>
@@ -319,7 +319,7 @@ export function IntelligencePanel({
             </div>
           ) : (
             <p className="text-sm text-muted-foreground italic">
-              {language === "ar" ? "في الانتظار..." : "Awaiting..."}
+              {language === "ar" ? "بانتظار استفسارك..." : "Awaiting..."}
             </p>
           )}
         </section>
@@ -334,7 +334,7 @@ export function IntelligencePanel({
             <div className="p-2 rounded-lg bg-secondary/50">
               <p className="text-sm font-medium">{tokenCount ?? "-"}</p>
               <p className="text-caption text-muted-foreground">
-                {language === "ar" ? "الرموز" : "Tokens"}
+                {language === "ar" ? "الكلمات المعالجة" : "Tokens"}
               </p>
             </div>
             <div className="p-2 rounded-lg bg-secondary/50">

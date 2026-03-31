@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { useNexus } from "@/contexts/nexus-context"
 import { getDailyBriefing } from "@/lib/api"
+import { ErrorRetry } from "@/components/error-retry"
 import type { BriefingResponse } from "@/lib/types"
 
 // Icon map for dynamic briefing items from API
@@ -272,10 +273,12 @@ function ExpandedBriefing({
 }
 
 export default function BriefingPage() {
+  const { language } = useNexus()
   const [showExpanded, setShowExpanded] = useState(false)
   const [briefingData, setBriefingData] = useState<BriefingResponse | null>(null)
   const [currentDate, setCurrentDate] = useState(new Date())
   const [isBriefingLoading, setIsBriefingLoading] = useState(false)
+  const [briefingError, setBriefingError] = useState(false)
 
   // Format date as YYYY-MM-DD for the API
   const toDateParam = (date: Date) =>
@@ -286,7 +289,10 @@ export default function BriefingPage() {
 
   // Initial load uses no date param (backend returns today's briefing by default)
   useEffect(() => {
-    getDailyBriefing().then(data => { if (data) setBriefingData(data) })
+    setBriefingError(false)
+    getDailyBriefing()
+      .then(data => { if (data) setBriefingData(data) })
+      .catch(() => setBriefingError(true))
   }, [])
 
   // Re-fetch whenever currentDate changes (skip on first render — handled above)
@@ -297,10 +303,16 @@ export default function BriefingPage() {
     }
     const controller = new AbortController()
     setIsBriefingLoading(true)
-    getDailyBriefing(toDateParam(currentDate), controller.signal).then(data => {
-      if (data) setBriefingData(data)
-      setIsBriefingLoading(false)
-    })
+    setBriefingError(false)
+    getDailyBriefing(toDateParam(currentDate), controller.signal)
+      .then(data => {
+        if (data) setBriefingData(data)
+        setIsBriefingLoading(false)
+      })
+      .catch((err) => {
+        if (err?.name !== "AbortError") setBriefingError(true)
+        setIsBriefingLoading(false)
+      })
     return () => {
       controller.abort()
       setIsBriefingLoading(false)

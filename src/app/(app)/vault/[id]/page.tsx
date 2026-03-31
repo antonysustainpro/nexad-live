@@ -52,7 +52,7 @@ export default function VaultDocumentPage() {
       .catch((err) => {
         if (!isMounted) return
         if (err?.name === "AbortError") return
-        setError(err instanceof Error ? err.message : "Failed to load document")
+        setError("We couldn't load this document. Please try again in a moment.")
         setLoading(false)
       })
 
@@ -215,7 +215,7 @@ export default function VaultDocumentPage() {
                     await navigator.clipboard.writeText(window.location.href)
                     alert(language === "ar" ? "تم نسخ الرابط" : "Link copied to clipboard")
                   } catch {
-                    alert(language === "ar" ? "فشل النسخ" : "Failed to copy link")
+                    alert(language === "ar" ? "تعذّر النسخ. يرجى المحاولة مرة أخرى." : "Couldn't copy to clipboard. Please try again.")
                   }
                 }}
               >

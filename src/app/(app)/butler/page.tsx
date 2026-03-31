@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 import { getButlerFeed, butlerInteract, triggerButlerRefresh } from "@/lib/api"
 import type { ButlerCard as ButlerCardType } from "@/lib/types"
 import Link from "next/link"
+import { ErrorRetry } from "@/components/error-retry"
 
 /** Get the authenticated user ID from the login-stored display info.
  *  Falls back to generating a random ID only when no authenticated user exists.
@@ -71,6 +72,7 @@ export default function ButlerPage() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [selectedCard, setSelectedCard] = useState<ButlerCardType | null>(null)
+  const [butlerError, setButlerError] = useState(false)
 
   const userId = useMemo(() => {
     if (typeof window === "undefined") return "" // SSR placeholder, will be replaced on client
@@ -80,6 +82,7 @@ export default function ButlerPage() {
   // Fetch data - skip if userId is empty (SSR)
   const fetchData = useCallback(async () => {
     if (!userId) return
+    setButlerError(false)
     try {
       const feedData = await getButlerFeed(userId)
 
@@ -89,8 +92,7 @@ export default function ButlerPage() {
         setCards([])
       }
     } catch {
-      // Fallback to empty state on error
-      setCards([])
+      setButlerError(true)
     } finally {
       setLoading(false)
     }
@@ -218,7 +220,16 @@ export default function ButlerPage() {
         )}
 
         {/* Card Feed */}
-        {loading ? (
+        {butlerError ? (
+          <ErrorRetry
+            onRetry={() => { setLoading(true); fetchData() }}
+            message={language === "ar"
+              ? "تعذّر تحميل موجز الخادم. يرجى المحاولة مجدداً."
+              : "We couldn't load your Butler feed. Please try again."}
+            networkError
+            variant="card"
+          />
+        ) : loading ? (
           // Skeleton loading — uses shared ButlerCardSkeleton for consistency
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (

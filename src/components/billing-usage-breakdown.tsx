@@ -58,7 +58,7 @@ export function BillingUsageBreakdown({ data }: BillingUsageBreakdownProps) {
   const headers: Array<{ key: SortKey; labelEn: string; labelAr: string }> = [
     { key: "domain", labelEn: "Domain", labelAr: "المجال" },
     { key: "calls", labelEn: "Calls", labelAr: "الطلبات" },
-    { key: "tokens", labelEn: "Tokens", labelAr: "التوكنات" },
+    { key: "tokens", labelEn: "Tokens", labelAr: "الكلمات المعالجة" },
     { key: "costUsd", labelEn: "Cost", labelAr: "التكلفة" },
   ]
 

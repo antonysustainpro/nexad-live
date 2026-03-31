@@ -276,7 +276,7 @@ export function ShardMap({
             <TooltipContent side="top" className="bg-card border-nexus-gold/20">
               <p className="font-medium">{language === "ar" ? node.nameAr : node.name}</p>
               <p className="text-xs text-muted-foreground">
-                {node.shards} {language === "ar" ? "أجزاء نشطة" : "active shards"}
+                {node.shards} {language === "ar" ? "خوادم نشطة" : "active shards"}
               </p>
             </TooltipContent>
           </Tooltip>
@@ -286,7 +286,7 @@ export function ShardMap({
           <div className="absolute bottom-3 start-3 px-2 py-1 bg-black/60 rounded-md backdrop-blur-sm">
             <span className="text-xs text-white">
               {language === "ar"
-                ? `${totalShards} جزء عبر ${displayNodes.length} عقد إماراتية`
+                ? `${totalShards} خادم موزع عبر ${displayNodes.length} عقد إماراتية`
                 : `${totalShards} shards across ${displayNodes.length} UAE nodes`}
             </span>
           </div>

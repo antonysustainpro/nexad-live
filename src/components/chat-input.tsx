@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect, useCallback, type KeyboardEvent, type DragEvent } from "react"
-import { Paperclip, Mic, ArrowUp, X, FileText, Video, Image, Music, FileSpreadsheet, Presentation, Archive, Book, Loader2, CheckCircle2, AlertCircle, Square } from "lucide-react"
+import { Paperclip, Mic, ArrowUp, X, FileText, Video, Image, Music, FileSpreadsheet, Presentation, Archive, Book, Loader2, CheckCircle2, AlertCircle, Square, RefreshCw } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNexus } from "@/contexts/nexus-context"
 import { uploadToVault } from "@/lib/api"
@@ -266,50 +266,61 @@ export function ChatInput({
       {/* Uploading Files with Progress */}
       {uploadingFiles.length > 0 && (
         <div className="mb-3 space-y-2 max-h-[200px] overflow-y-auto">
-          {uploadingFiles.map((uploadFile) => {
-            const category = getFileCategory(uploadFile.name)
+          {uploadingFiles.map((uf) => {
+            const category = getFileCategory(uf.name)
             const IconComponent = categoryIcons[category] || FileText
 
             return (
               <div
-                key={uploadFile.id}
+                key={uf.id}
                 className={cn(
                   "flex items-center gap-3 p-2 bg-secondary rounded-lg",
-                  uploadFile.status === "error" && "bg-red-500/10 border border-red-500/20"
+                  uf.status === "error" && "bg-red-500/10 border border-red-500/20"
                 )}
               >
                 <div className={cn(
                   "p-1.5 rounded-md",
-                  uploadFile.status === "error" ? "bg-red-500/20" : "bg-muted"
+                  uf.status === "error" ? "bg-red-500/20" : "bg-muted"
                 )}>
                   <IconComponent className={cn(
                     "h-4 w-4",
-                    uploadFile.status === "error" ? "text-red-500" : "text-muted-foreground"
+                    uf.status === "error" ? "text-red-500" : "text-muted-foreground"
                   )} />
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm truncate max-w-[150px]">{uploadFile.name}</span>
-                    {getStatusIcon(uploadFile.status)}
+                    <span className="text-sm truncate max-w-[150px]">{uf.name}</span>
+                    {getStatusIcon(uf.status)}
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-xs text-muted-foreground">
-                      {formatFileSize(uploadFile.size)}
+                      {formatFileSize(uf.size)}
                     </span>
-                    {uploadFile.status === "uploading" && (
-                      <Progress value={uploadFile.progress} className="h-1 flex-1 max-w-[100px]" />
+                    {uf.status === "uploading" && (
+                      <Progress value={uf.progress} className="h-1 flex-1 max-w-[100px]" />
                     )}
-                    {uploadFile.error && (
-                      <span className="text-xs text-red-500 truncate">{uploadFile.error}</span>
+                    {uf.error && (
+                      <span className="text-xs text-red-500 truncate">{uf.error}</span>
                     )}
                   </div>
                 </div>
 
+                {/* Retry button — only shown on upload errors, not size errors */}
+                {uf.status === "error" && !uf.error?.includes("limit") && (
+                  <button
+                    onClick={() => uf.id && uf.file && uploadFile(uf.id, uf.file)}
+                    className="p-1 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-nexus-jade"
+                    aria-label={language === "ar" ? `إعادة رفع ${uf.name}` : `Retry uploading ${uf.name}`}
+                    title={language === "ar" ? "إعادة المحاولة" : "Retry upload"}
+                  >
+                    <RefreshCw className="h-3 w-3" />
+                  </button>
+                )}
                 <button
-                  onClick={() => removeFile(uploadFile.id)}
+                  onClick={() => removeFile(uf.id)}
                   className="p-1 rounded-full hover:bg-muted transition-colors"
-                  aria-label={`Remove ${uploadFile.name}`}
+                  aria-label={language === "ar" ? `إزالة ${uf.name}` : `Remove ${uf.name}`}
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -414,7 +425,7 @@ export function ChatInput({
             size="icon"
             onClick={onStop}
             className="h-8 w-8 shrink-0 rounded-full bg-red-500 hover:bg-red-600 text-white transition-all"
-            aria-label={language === "ar" ? "إيقاف التوليد" : "Stop generating"}
+            aria-label={language === "ar" ? "وقف الرد" : "Stop generating"}
           >
             <Square className="h-4 w-4 fill-current" />
           </Button>

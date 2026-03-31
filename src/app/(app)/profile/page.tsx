@@ -72,16 +72,16 @@ export default function ProfilePage() {
       // Get user ID from profile state (already loaded)
       const userId = profile.id
       if (!userId) {
-        throw new Error("No user ID")
+        throw new Error("User session not found")
       }
       const result = await updateUserProfile(userId, profile)
       if (!result) {
-        throw new Error("API unavailable")
+        throw new Error("Service unavailable")
       }
       updatePreferences({ name: profile.fullName, avatarUrl: profile.avatarUrl })
       toast.success(language === "ar" ? "تم حفظ التغييرات" : "Changes saved")
     } catch {
-      toast.error(language === "ar" ? "فشل حفظ التغييرات" : "Failed to save changes")
+      toast.error(language === "ar" ? "تعذّر حفظ التغييرات. يرجى المحاولة مرة أخرى." : "We couldn't save your changes. Please try again.")
     } finally {
       setIsSaving(false)
     }
@@ -93,7 +93,7 @@ export default function ProfilePage() {
       await navigator.clipboard.writeText(profile.apiKey)
       toast.success(language === "ar" ? "تم نسخ مفتاح API" : "API key copied")
     } catch {
-      toast.error(language === "ar" ? "فشل النسخ" : "Failed to copy")
+      toast.error(language === "ar" ? "تعذّر النسخ. يرجى المحاولة مرة أخرى." : "Couldn't copy to clipboard. Please try again.")
     }
   }
 
