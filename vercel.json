@@ -1,0 +1,13 @@
+{
+    "framework": "nextjs",
+    "buildCommand": "npm run build",
+    "outputDirectory": ".next",
+    "installCommand": "npm install",
+    "regions": ["iad1", "dub1", "sin1"],
+    "headers": [
+        {
+            "source": "/api/(.*)",
+            "headers": [{ "key": "Cache-Control", "value": "no-store, must-revalidate" }]
+        }
+    ]
+}

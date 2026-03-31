@@ -1,0 +1,547 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* NexusAD Ai Light Mode */
+  --background: #FFFFFF;
+  --foreground: #1D1D1F;
+  --card: #FFFFFF;
+  --card-foreground: #1D1D1F;
+  --popover: #FFFFFF;
+  --popover-foreground: #1D1D1F;
+  --primary: #1D1D1F;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F5F5F7;
+  --secondary-foreground: #1D1D1F;
+  --muted: #F5F5F7;
+  --muted-foreground: #5D5D63;
+  --accent: #8B7A60;
+  --accent-foreground: #FFFFFF;
+  --destructive: #D94141;
+  --destructive-foreground: #FFFFFF;
+  --border: rgba(0,0,0,0.06);
+  --input: rgba(0,0,0,0.06);
+  --ring: #8B7A60;
+  
+  /* NexusAD Ai Custom Colors - Light */
+  /* Interaction — "Majlis Sand" light mode - contrast ratio 4.54:1 for AA compliance */
+  --nexus-jade: #6B5D4C;
+  --nexus-jade-hover: #5A4D3F;
+  /* Sovereignty — "Walnut Bronze" light mode */
+  --nexus-gold: #6B5438;
+  --nexus-gold-hover: #5C4830;
+  --nexus-gold-shimmer: rgba(107,84,56,0.08);
+  --nexus-gold-glow: rgba(107,84,56,0.12);
+  --nexus-bg-primary: #FFFFFF;
+  --nexus-bg-secondary: #F5F5F7;
+  --nexus-bg-card: #FFFFFF;
+  --nexus-text-primary: #1D1D1F;
+  --nexus-text-secondary: #5D5D63;
+  
+  /* Emotion Colors */
+  --emotion-stressed: #E85D4A;
+  --emotion-excited: #F5A623;
+  --emotion-confused: #8B7EC8;
+  --emotion-sad: #5B8DEF;
+  --emotion-angry: #D94141;
+  --emotion-joyful: #4CAF50;
+  --emotion-neutral: #8E8E93;
+  
+  --radius: 0.75rem;
+  --sidebar: #F5F5F7;
+  --sidebar-foreground: #1D1D1F;
+  --sidebar-primary: #8B7A60;
+  --sidebar-primary-foreground: #1D1D1F;
+  --sidebar-accent: #F5F5F7;
+  --sidebar-accent-foreground: #1D1D1F;
+  --sidebar-border: rgba(0,0,0,0.06);
+  --sidebar-ring: #8B7A60;
+}
+
+.dark {
+  /* NexusAD Ai Dark Mode (Hero) */
+  --background: #0A0A0A;
+  --foreground: #F5F5F7;
+  --card: #1C1C1E;
+  --card-foreground: #F5F5F7;
+  --popover: #1C1C1E;
+  --popover-foreground: #F5F5F7;
+  --primary: #F5F5F7;
+  --primary-foreground: #0A0A0A;
+  --secondary: #141414;
+  --secondary-foreground: #F5F5F7;
+  --muted: #141414;
+  --muted-foreground: #A8A8AD;
+  --accent: #C6AD90;
+  --accent-foreground: #FFFFFF;
+  --destructive: #D94141;
+  --destructive-foreground: #FFFFFF;
+  --border: rgba(255,255,255,0.08);
+  --input: rgba(255,255,255,0.08);
+  --ring: #C6AD90;
+  
+  /* NexusAD Ai Custom Colors - Dark */
+  /* Interaction — "Majlis Sand" (cream silk / desert sand) */
+  --nexus-jade: #C6AD90;
+  --nexus-jade-hover: #D4C4A8;
+  /* Sovereignty — "Walnut Bronze" (aged walnut / barenia leather) */
+  /* Bumped from #9B7A58 to #B08E6A for WCAG AA 4.5:1 contrast on dark bg */
+  --nexus-gold: #B08E6A;
+  --nexus-gold-hover: #C4A27E;
+  --nexus-gold-shimmer: rgba(176,142,106,0.10);
+  --nexus-gold-glow: rgba(176,142,106,0.15);
+  --nexus-bg-primary: #0A0A0A;
+  --nexus-bg-secondary: #141414;
+  --nexus-bg-card: #1C1C1E;
+  --nexus-text-primary: #F5F5F7;
+  --nexus-text-secondary: #A8A8AD;
+  
+  --sidebar: #141414;
+  --sidebar-foreground: #F5F5F7;
+  --sidebar-primary: #C6AD90;
+  --sidebar-primary-foreground: #0A0A0A;
+  --sidebar-accent: #1C1C1E;
+  --sidebar-accent-foreground: #F5F5F7;
+  --sidebar-border: rgba(255,255,255,0.08);
+  --sidebar-ring: #C6AD90;
+}
+
+@theme inline {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', monospace;
+  --font-arabic: 'SF Arabic', 'Segoe UI', system-ui, sans-serif;
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  /* NexusAD Ai Colors */
+  --color-nexus-jade: var(--nexus-jade);
+  --color-nexus-jade-hover: var(--nexus-jade-hover);
+  --color-nexus-gold: var(--nexus-gold);
+  --color-nexus-gold-hover: var(--nexus-gold-hover);
+  --color-nexus-gold-shimmer: var(--nexus-gold-shimmer);
+  --color-nexus-gold-glow: var(--nexus-gold-glow);
+  --color-nexus-bg-primary: var(--nexus-bg-primary);
+  --color-nexus-bg-secondary: var(--nexus-bg-secondary);
+  --color-nexus-bg-card: var(--nexus-bg-card);
+  --color-nexus-text-primary: var(--nexus-text-primary);
+  --color-nexus-text-secondary: var(--nexus-text-secondary);
+  
+  /* Emotion Colors */
+  --color-emotion-stressed: var(--emotion-stressed);
+  --color-emotion-excited: var(--emotion-excited);
+  --color-emotion-confused: var(--emotion-confused);
+  --color-emotion-sad: var(--emotion-sad);
+  --color-emotion-angry: var(--emotion-angry);
+  --color-emotion-joyful: var(--emotion-joyful);
+  --color-emotion-neutral: var(--emotion-neutral);
+  
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Prevent iOS overscroll bounce on the body */
+    overscroll-behavior: none;
+    /* Improve text rendering cross-browser */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  /* Ensure all interactive elements have adequate touch targets on mobile */
+  @media (pointer: coarse) {
+    button, a, [role="button"], input, select, textarea {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    /* Exception for inline elements that don't need large targets */
+    a:not([class]), span[role="button"] {
+      min-height: auto;
+      min-width: auto;
+    }
+  }
+
+  /* RTL / Arabic language support */
+  html[dir="rtl"] body {
+    font-family: var(--font-arabic);
+  }
+  html[dir="rtl"] {
+    /* Increase line-height for Arabic script readability */
+    line-height: 1.8;
+  }
+  html[dir="rtl"] h1,
+  html[dir="rtl"] h2,
+  html[dir="rtl"] h3,
+  html[dir="rtl"] h4,
+  html[dir="rtl"] h5,
+  html[dir="rtl"] h6 {
+    line-height: 1.5;
+  }
+}
+
+/* NexusAD Ai Custom Animations */
+@keyframes pulse-sovereignty {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes shimmer-bg {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes glow-gold {
+  0%, 100% { box-shadow: 0 0 3px rgba(155,122,88,0.10); }
+  50% { box-shadow: 0 0 6px rgba(155,122,88,0.15), 0 0 12px rgba(155,122,88,0.10); }
+}
+
+@keyframes voice-ring {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 0.4; }
+}
+
+@keyframes typing-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-pulse-sovereignty {
+  animation: pulse-sovereignty 833ms ease-in-out infinite;
+}
+
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.animate-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(155,122,88,0.12) 50%, transparent 100%);
+  animation: shimmer 1.8s ease-in-out infinite;
+  transform: translateX(-100%);
+}
+
+.animate-glow-gold {
+  animation: glow-gold 833ms ease-in-out infinite;
+}
+
+/* Premium interactive gold accent - for CTAs and sovereignty elements */
+.gold-accent {
+  position: relative;
+}
+.gold-accent::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--nexus-gold) 0%, transparent 50%, var(--nexus-gold) 100%);
+  opacity: 0;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+  z-index: -1;
+}
+@media (hover: hover) {
+  .gold-accent:hover::before {
+    opacity: 0.15;
+  }
+}
+
+/* Card hover depth — touch devices get active state instead of hover */
+.card-hover {
+  @apply transition-all duration-200;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) {
+  .card-hover:hover {
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2), 0 8px 10px -6px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
+}
+.card-hover:active {
+  box-shadow: 0 4px 12px -3px rgba(0,0,0,0.15), 0 3px 6px -4px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
+}
+
+/* Button press feel */
+.btn-press {
+  @apply transition-transform duration-75;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-press:active {
+  transform: scale(0.98);
+}
+
+/* Focus visible styling - jade for actions, keyboard-only focus ring */
+:focus-visible {
+  outline: 2px solid var(--nexus-jade);
+  outline-offset: 2px;
+}
+/* Disable tap highlight on all touch devices */
+@media (pointer: coarse) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+.animate-voice-ring {
+  animation: voice-ring 1s ease-in-out infinite;
+}
+
+.animate-typing-cursor {
+  animation: typing-cursor 530ms ease-in-out infinite;
+}
+
+/* NexusAD Ai Typography */
+.text-large-title {
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.text-title-1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.text-title-2 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.text-headline {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.text-body {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.text-callout {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.text-subhead {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.text-caption {
+  font-size: 11px;
+  font-weight: 400;
+}
+
+/* Responsive typography for small screens */
+@media (max-width: 640px) {
+  .text-large-title {
+    font-size: 36px;
+  }
+  .text-title-1 {
+    font-size: 26px;
+  }
+  .text-title-2 {
+    font-size: 20px;
+  }
+  .text-headline {
+    font-size: 18px;
+  }
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-sovereignty,
+  .animate-shimmer,
+  .animate-glow-gold,
+  .animate-voice-ring,
+  .animate-typing-cursor {
+    animation: none;
+  }
+}
+
+/* Radial gradient utility — used by auth layout, not-found, billing pages */
+.bg-gradient-radial {
+  background: radial-gradient(ellipse at center, var(--tw-gradient-from, transparent), var(--tw-gradient-to, transparent));
+}
+
+/* Safari-specific: backdrop-filter vendor prefix */
+/* Tailwind 4 + postcss handles most, but explicit fallback for older Safari */
+@supports not (backdrop-filter: blur(1px)) {
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .backdrop-blur-lg,
+  .backdrop-blur-xl {
+    -webkit-backdrop-filter: blur(12px);
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  .dark .backdrop-blur-sm,
+  .dark .backdrop-blur-md,
+  .dark .backdrop-blur-lg,
+  .dark .backdrop-blur-xl {
+    background-color: rgba(10, 10, 10, 0.9);
+  }
+}
+
+/* Safari-specific: fix flex gap fallback for older Safari 14.0 */
+@supports not (gap: 1px) {
+  .flex > * + * {
+    margin-inline-start: 0.25rem;
+  }
+}
+
+/* Mobile viewport height fix — 100vh on iOS does not account for address bar */
+/* Use dvh where supported, fall back to vh */
+.h-screen-safe {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Safe area insets for notched devices (iPhone X+, Android punch-hole) */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.safe-area-pt {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.safe-area-inset {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Landscape orientation — prevent layout break with virtual keyboard */
+@media (orientation: landscape) and (max-height: 500px) {
+  .text-large-title {
+    font-size: 32px;
+  }
+  .text-title-1 {
+    font-size: 24px;
+  }
+}
+
+/* Print styles — clean output for billing/invoices/reports */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt !important;
+  }
+  /* Hide navigation, tab bars, interactive elements */
+  nav, [role="navigation"],
+  .mobile-tab-bar,
+  [data-slot="sidebar"],
+  [data-slot="sidebar-wrapper"],
+  .animate-pulse-sovereignty,
+  .animate-shimmer,
+  .animate-glow-gold,
+  .animate-voice-ring,
+  .animate-typing-cursor,
+  button:not([type="submit"]),
+  .btn-press,
+  .card-hover {
+    display: none !important;
+  }
+  /* Ensure cards have borders for print */
+  .bg-card, [class*="bg-card"] {
+    border: 1px solid #ccc !important;
+    background: white !important;
+  }
+  /* Remove shadows */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  /* Prevent page break inside cards */
+  .bg-card, [class*="rounded-2xl"] {
+    break-inside: avoid;
+  }
+  /* Show URLs for links */
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+  a[href^="/"]:after {
+    content: none;
+  }
+}
+
+/* High Contrast Mode - UAE Disability Inclusion Act 2018 Compliance */
+/* NOTE: Brand colors (nexus-jade, nexus-gold) already meet WCAG AA contrast ratios.
+   We only enhance borders and readability, NOT strip colors entirely. */
+@media (prefers-contrast: more) {
+  :root {
+    --border: rgba(0,0,0,0.5);
+    /* Keep brand colors - they already have good contrast */
+  }
+
+  .dark {
+    --border: rgba(255,255,255,0.5);
+    /* Keep brand colors - they already have good contrast */
+  }
+
+  /* High contrast visualization steps */
+  [data-slot="reasoning-step"],
+  [data-slot="merkle-node"],
+  [data-slot="encryption-flow"] {
+    border-width: 2px !important;
+    border-color: currentColor !important;
+  }
+}

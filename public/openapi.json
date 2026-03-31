@@ -1,0 +1,1233 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "NexusAD AI API",
+    "description": "Sovereign AI Platform API for UAE Enterprise. NexusAD provides secure, sovereign AI capabilities including document vault management, chat interfaces, and enterprise billing.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "NexusAD Support",
+      "email": "support@nexusad.ai",
+      "url": "https://nexusad.ai"
+    },
+    "license": {
+      "name": "Proprietary",
+      "url": "https://nexusad.ai/terms"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://nexusad.ai/api",
+      "description": "Production"
+    },
+    {
+      "url": "https://staging.nexusad.ai/api",
+      "description": "Staging"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User authentication and session management"
+    },
+    {
+      "name": "Proxy",
+      "description": "Backend API proxy with SSRF protection"
+    },
+    {
+      "name": "Vault",
+      "description": "Document vault operations"
+    },
+    {
+      "name": "Chat",
+      "description": "AI chat interface"
+    },
+    {
+      "name": "Billing",
+      "description": "Subscription and billing management"
+    }
+  ],
+  "paths": {
+    "/v1/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User login",
+        "description": "Authenticate user with email and password. Returns session token in httpOnly cookie. Implements rate limiting with exponential backoff on failed attempts (SEC-006).",
+        "operationId": "login",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              },
+              "example": {
+                "email": "user@example.com",
+                "password": "securePassword123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "headers": {
+              "Set-Cookie": {
+                "description": "Session cookies (nexus-session, nexus-session-created, nexus-last-activity)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body or validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Invalid credentials"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded (exponential backoff active)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User registration",
+        "description": "Register a new user account. Returns session token in httpOnly cookie upon successful registration.",
+        "operationId": "register",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              },
+              "example": {
+                "fullName": "John Doe",
+                "email": "john.doe@example.com",
+                "password": "securePassword123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registration successful",
+            "headers": {
+              "Set-Cookie": {
+                "description": "Session cookies (nexus-session, nexus-session-created, nexus-last-activity)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body or validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Email already registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "Email already registered"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User logout",
+        "description": "Invalidate user session and clear all session cookies (SEC-026).",
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "headers": {
+              "Set-Cookie": {
+                "description": "Cleared session cookies with maxAge=0",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogoutResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/proxy/{path}": {
+      "get": {
+        "tags": ["Proxy"],
+        "summary": "Proxy GET request to backend",
+        "description": "Proxies GET requests to the backend API with SSRF protection. Public endpoints (health, auth/login, auth/register) do not require authentication.",
+        "operationId": "proxyGet",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "description": "Backend API path (e.g., 'vault/documents', 'chat/completions')",
+            "schema": {
+              "type": "string"
+            },
+            "example": "vault/documents"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful proxy response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Response varies based on the proxied endpoint"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request path",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - session required for non-public endpoints",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - SSRF protection blocked the request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Backend unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Proxy"],
+        "summary": "Proxy POST request to backend",
+        "description": "Proxies POST requests to the backend API with CSRF validation and SSRF protection. Requires X-CSRF-Token header matching csrf-token cookie.",
+        "operationId": "proxyPost",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "description": "Backend API path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "description": "CSRF token matching the csrf-token cookie",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Request body varies based on the proxied endpoint"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful proxy response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request path or body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "CSRF validation failed or SSRF protection blocked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Backend unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Proxy"],
+        "summary": "Proxy PUT request to backend",
+        "description": "Proxies PUT requests to the backend API with CSRF validation and SSRF protection.",
+        "operationId": "proxyPut",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful proxy response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "502": {
+            "$ref": "#/components/responses/BadGateway"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Proxy"],
+        "summary": "Proxy DELETE request to backend",
+        "description": "Proxies DELETE requests to the backend API with CSRF validation and SSRF protection.",
+        "operationId": "proxyDelete",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful deletion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "502": {
+            "$ref": "#/components/responses/BadGateway"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Proxy"],
+        "summary": "Proxy PATCH request to backend",
+        "description": "Proxies PATCH requests to the backend API with CSRF validation and SSRF protection.",
+        "operationId": "proxyPatch",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "502": {
+            "$ref": "#/components/responses/BadGateway"
+          }
+        }
+      }
+    },
+    "/proxy/vault/documents": {
+      "get": {
+        "tags": ["Vault"],
+        "summary": "List vault documents",
+        "description": "Retrieve all documents stored in the user's sovereign vault.",
+        "operationId": "listVaultDocuments",
+        "responses": {
+          "200": {
+            "description": "List of vault documents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VaultDocument"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Vault"],
+        "summary": "Upload document to vault",
+        "description": "Upload a new document to the sovereign vault for processing and storage.",
+        "operationId": "uploadVaultDocument",
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VaultDocumentUpload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Document uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VaultDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/proxy/chat/completions": {
+      "post": {
+        "tags": ["Chat"],
+        "summary": "AI chat completion",
+        "description": "Send messages to the sovereign AI and receive completions. Supports streaming responses.",
+        "operationId": "chatCompletion",
+        "parameters": [
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chat completion response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/proxy/sovereignty/score": {
+      "get": {
+        "tags": ["Vault"],
+        "summary": "Get sovereignty score",
+        "description": "Retrieve the user's current sovereignty score and grade based on data residency factors.",
+        "operationId": "getSovereigntyScore",
+        "responses": {
+          "200": {
+            "description": "Sovereignty score details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SovereigntyScore"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/proxy/sovereignty/shards": {
+      "get": {
+        "tags": ["Vault"],
+        "summary": "Get shard distribution",
+        "description": "Retrieve the distribution of data shards across sovereign nodes.",
+        "operationId": "getShardDistribution",
+        "responses": {
+          "200": {
+            "description": "Shard distribution across nodes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShardDistribution"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/proxy/billing/subscription": {
+      "get": {
+        "tags": ["Billing"],
+        "summary": "Get subscription details",
+        "description": "Retrieve current subscription tier, status, and billing period.",
+        "operationId": "getSubscription",
+        "responses": {
+          "200": {
+            "description": "Subscription details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Subscription"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/proxy/health": {
+      "get": {
+        "tags": ["Proxy"],
+        "summary": "Backend health check",
+        "description": "Check backend API health status. Does not require authentication.",
+        "operationId": "healthCheck",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Backend is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "healthy"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "$ref": "#/components/responses/BadGateway"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Session token stored in httpOnly cookie (nexus-session). For API testing, the token can be passed as Bearer auth."
+      },
+      "csrfToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-Token",
+        "description": "CSRF token required for mutating requests (POST, PUT, DELETE, PATCH). Must match csrf-token cookie."
+      }
+    },
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "description": "User email address (will be lowercased and trimmed)"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "User password"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "required": ["fullName", "email", "password"],
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[a-zA-Z\\u00C0-\\u024F\\u0400-\\u04FF\\u0600-\\u06FF\\s'-]+$",
+            "description": "User's full name. Supports letters (any language), spaces, hyphens, and apostrophes."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254,
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128,
+            "description": "Password (minimum 8 characters)"
+          }
+        }
+      },
+      "RegisterResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "LogoutResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Logged out successfully"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique user identifier"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "code": {
+            "type": "string",
+            "description": "Error code (optional)"
+          }
+        },
+        "required": ["error"]
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Primary error message"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "description": "Detailed validation errors from Zod"
+          }
+        },
+        "required": ["error", "details"]
+      },
+      "VaultDocument": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique document identifier"
+          },
+          "title": {
+            "type": "string",
+            "description": "Document title"
+          },
+          "doc_type": {
+            "type": "string",
+            "description": "Document type (e.g., 'pdf', 'docx', 'txt')"
+          },
+          "language": {
+            "type": "string",
+            "description": "Document language code"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Document tags for categorization"
+          },
+          "chunks_stored": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of chunks the document was split into"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Document creation timestamp"
+          }
+        }
+      },
+      "VaultDocumentUpload": {
+        "type": "object",
+        "required": ["title", "content"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Document title"
+          },
+          "content": {
+            "type": "string",
+            "description": "Document content (base64 encoded for binary files)"
+          },
+          "doc_type": {
+            "type": "string",
+            "description": "Document type"
+          },
+          "language": {
+            "type": "string",
+            "description": "Document language code"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags for categorization"
+          }
+        }
+      },
+      "ChatMessage": {
+        "type": "object",
+        "required": ["role", "content"],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["user", "assistant", "system"],
+            "description": "Message role"
+          },
+          "content": {
+            "type": "string",
+            "description": "Message content"
+          }
+        }
+      },
+      "ChatRequest": {
+        "type": "object",
+        "required": ["messages"],
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatMessage"
+            },
+            "description": "Conversation history"
+          },
+          "stream": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enable streaming response"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4096,
+            "description": "Maximum tokens in response"
+          }
+        }
+      },
+      "ChatResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Response identifier"
+          },
+          "message": {
+            "$ref": "#/components/schemas/ChatMessage"
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "prompt_tokens": {
+                "type": "integer"
+              },
+              "completion_tokens": {
+                "type": "integer"
+              },
+              "total_tokens": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "SovereigntyScore": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Overall sovereignty score (0-100)"
+          },
+          "grade": {
+            "type": "string",
+            "description": "Letter grade (A, B, C, D, F)"
+          },
+          "factors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Factor name"
+                },
+                "score": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Factor score"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Human-readable label"
+                }
+              }
+            },
+            "description": "Individual scoring factors"
+          }
+        }
+      },
+      "ShardDistribution": {
+        "type": "object",
+        "properties": {
+          "nodes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "node_id": {
+                  "type": "string",
+                  "description": "Node identifier"
+                },
+                "location": {
+                  "type": "string",
+                  "description": "Geographic location"
+                },
+                "shard_count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Number of shards on this node"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "syncing", "offline"],
+                  "description": "Node status"
+                }
+              }
+            },
+            "description": "List of sovereign nodes"
+          },
+          "total_shards": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total number of shards across all nodes"
+          }
+        }
+      },
+      "Subscription": {
+        "type": "object",
+        "properties": {
+          "tier": {
+            "type": "string",
+            "enum": ["FREE", "PRO", "ENTERPRISE"],
+            "description": "Subscription tier"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "canceled", "past_due"],
+            "description": "Subscription status"
+          },
+          "currentPeriodStart": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Current billing period start"
+          },
+          "currentPeriodEnd": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Current billing period end"
+          },
+          "cancelAtPeriodEnd": {
+            "type": "boolean",
+            "description": "Whether subscription cancels at period end"
+          },
+          "priceUsd": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Price in USD"
+          },
+          "priceAed": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Price in AED"
+          }
+        }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Unauthorized - session required",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": "Unauthorized"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden - CSRF validation failed or SSRF protection blocked",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": "CSRF validation failed"
+            }
+          }
+        }
+      },
+      "BadGateway": {
+        "description": "Backend unavailable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": "Backend unavailable"
+            }
+          }
+        }
+      }
+    }
+  }
+}
