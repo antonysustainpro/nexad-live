@@ -5676,6 +5676,15 @@ export async function middleware(request: NextRequest) {
   // SEC-034: Generate per-request CSP nonce for all responses
   const cspNonce = generateCspNonce()
 
+  // FIX: Ensure auth pages are always accessible without authentication
+  // These routes should bypass auth checks to prevent redirect loops
+  const AUTH_BYPASS_ROUTES = ['/login', '/register', '/forgot-password', '/verify-email', '/auth/callback']
+  if (AUTH_BYPASS_ROUTES.includes(pathname)) {
+    // For auth pages, just apply security headers and continue
+    const response = NextResponse.next()
+    return applySecurityHeaders(response, cspNonce)
+  }
+
   // SEC-230: List of client-supplied headers that MUST be stripped before requests
   // are forwarded to backend microservices via Next.js rewrites.
   // Rewrites forward ALL client headers by default, which means an attacker's
