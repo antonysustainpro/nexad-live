@@ -78,6 +78,11 @@ export async function resilientFetch(
   const defaultRetry = isReadOnly ? DEFAULT_READ_RETRY : DEFAULT_MUTATION_RETRY
   const finalRetryOpts = retryOpts || defaultRetry
 
+  // SEC-RL-001: Enforce client-side rate limit before any network request.
+  // Throws RateLimitError immediately if the bucket for this URL is empty,
+  // which prevents DoS-ing the backend even from a single browser session.
+  checkRateLimit(url)
+
   return withCircuitBreaker(circuitName, () =>
     withRetry(
       async () => {

@@ -25,6 +25,7 @@ import type {
 
 import { getCsrfToken } from "./csrf"
 import { withRetry, withCircuitBreaker, type RetryOptions } from "./resilience"
+import { checkRateLimit } from "./rate-limiter"
 
 // Use server-side proxy to hide API keys from client
 const API_BASE = "/api/proxy"
@@ -57,6 +58,9 @@ async function resilientFetch(
   circuitName: string,
   retryOpts: RetryOptions = READ_RETRY_OPTIONS
 ): Promise<Response> {
+  // SEC-RL-001: Enforce client-side rate limit before any network request
+  checkRateLimit(url)
+
   return withCircuitBreaker(circuitName, () =>
     withRetry(
       async () => {
@@ -296,11 +300,12 @@ export async function* streamChat(request: ChatRequest, signal?: AbortSignal): A
   if (!response.ok) {
     const errorBody = await response.text().catch(() => "")
     console.error("[Chat API] Error response:", response.status, errorBody)
-    throw new Error(`Chat API error: ${response.status} - ${errorBody}`)
+    // Keep status in message so getFriendlyErrorMessage can map it to user text
+    throw new Error(`Chat API error: ${response.status}`)
   }
 
   const reader = response.body?.getReader()
-  if (!reader) throw new Error("No response body")
+  if (!reader) throw new Error("We couldn't start the response stream. Please try again.")
 
   const decoder = new TextDecoder()
   let buffer = ""
@@ -435,6 +440,7 @@ export async function sendChatMessage(
   )
 
   if (!response.ok) {
+    // Preserve status code so getFriendlyErrorMessage can map it
     throw new Error(`Chat API error: ${response.status}`)
   }
 
@@ -456,6 +462,7 @@ export async function detectDomain(message: string, signal?: AbortSignal): Promi
   if (!response.ok) throw new Error(`Domain detection error: ${response.status}`)
   return response.json()
 }
+
 
 export async function factCheck(claim: string, context: string, signal?: AbortSignal): Promise<{
   verified: boolean

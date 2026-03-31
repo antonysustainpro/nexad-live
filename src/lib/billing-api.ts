@@ -10,6 +10,7 @@
 import { getCsrfToken } from "./csrf"
 import { withRetry, withCircuitBreaker, type RetryOptions } from "./resilience"
 import { getSession } from "./api"
+import { checkRateLimit } from "./rate-limiter"
 
 // Use server-side proxy to hide API keys from client
 const API_BASE = "/api/proxy"
@@ -38,6 +39,9 @@ async function billingResilientFetch(
   init: RequestInit,
   retryOpts: RetryOptions = BILLING_READ_RETRY
 ): Promise<Response> {
+  // SEC-RL-001: Client-side rate limit check before dispatching
+  checkRateLimit(url)
+
   return withCircuitBreaker("billing-api", () =>
     withRetry(
       async () => {
