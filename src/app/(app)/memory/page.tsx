@@ -13,7 +13,14 @@ import {
   Target,
   Clock,
   FileText,
-  Languages
+  Languages,
+  Eye,
+  Briefcase,
+  MessageSquare,
+  Database,
+  Activity,
+  Heart,
+  Lightbulb
 } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { useNexus } from "@/contexts/nexus-context"
@@ -27,7 +34,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
 import { MemoryIndicator } from "@/components/memory-indicator"
+import { EpisodicMemory } from "@/components/memory/episodic-memory"
+import { MetaCognitiveMemory } from "@/components/memory/meta-cognitive-memory"
 import { toast } from "sonner"
 
 export default function MemoryPage() {
@@ -168,50 +178,201 @@ export default function MemoryPage() {
         </AlertDescription>
       </Alert>
 
-      {/* Profile Form */}
-      <Tabs defaultValue="basic" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="basic">
-            {language === "ar" ? "معلومات أساسية" : "Basic Info"}
+      {/* Memory Layers */}
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
+          <TabsTrigger value="overview" className="text-xs">
+            <Brain className="h-3 w-3 mr-1" />
+            Overview
           </TabsTrigger>
-          <TabsTrigger value="preferences">
-            {language === "ar" ? "التفضيلات" : "Preferences"}
+          <TabsTrigger value="layer0" className="text-xs">
+            <Eye className="h-3 w-3 mr-1" />
+            L0
           </TabsTrigger>
-          <TabsTrigger value="context">
-            {language === "ar" ? "السياق" : "Context"}
+          <TabsTrigger value="layer1" className="text-xs">
+            <Briefcase className="h-3 w-3 mr-1" />
+            L1
+          </TabsTrigger>
+          <TabsTrigger value="layer2" className="text-xs">
+            <MessageSquare className="h-3 w-3 mr-1" />
+            L2
+          </TabsTrigger>
+          <TabsTrigger value="layer3" className="text-xs">
+            <Database className="h-3 w-3 mr-1" />
+            L3
+          </TabsTrigger>
+          <TabsTrigger value="layer4" className="text-xs">
+            <Activity className="h-3 w-3 mr-1" />
+            L4
+          </TabsTrigger>
+          <TabsTrigger value="layer5" className="text-xs">
+            <Heart className="h-3 w-3 mr-1" />
+            L5
+          </TabsTrigger>
+          <TabsTrigger value="layer6" className="text-xs">
+            <Lightbulb className="h-3 w-3 mr-1" />
+            L6
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="basic" className="space-y-4">
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>7-Layer Memory System</CardTitle>
+              <CardDescription>
+                Your sovereign AI uses a sophisticated 7-layer memory architecture to provide personalized, context-aware assistance.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { id: 0, name: "Sensory Memory", icon: Eye, desc: "Real-time conversation context", active: true },
+                  { id: 1, name: "Working Memory", icon: Briefcase, desc: "Active session state", active: true },
+                  { id: 2, name: "Episodic Memory", icon: MessageSquare, desc: "Conversation history", active: false },
+                  { id: 3, name: "Semantic Memory", icon: Database, desc: "Knowledge base & documents", active: profile !== null },
+                  { id: 4, name: "Procedural Memory", icon: Activity, desc: "Behavioral patterns & preferences", active: profile !== null },
+                  { id: 5, name: "Emotional Memory", icon: Heart, desc: "Emotional context & empathy", active: false },
+                  { id: 6, name: "Meta-Cognitive Memory", icon: Lightbulb, desc: "Self-reflection & optimization", active: false },
+                ].map((layer) => (
+                  <Card key={layer.id} className={`p-4 ${layer.active ? 'border-green-500' : 'border-gray-300'}`}>
+                    <div className="flex items-start gap-3">
+                      <layer.icon className={`h-5 w-5 ${layer.active ? 'text-green-500' : 'text-gray-400'}`} />
+                      <div className="flex-1">
+                        <h4 className="font-medium">Layer {layer.id}: {layer.name}</h4>
+                        <p className="text-sm text-muted-foreground">{layer.desc}</p>
+                        <div className="mt-2">
+                          <Badge variant={layer.active ? "default" : "secondary"}>
+                            {layer.active ? "Active" : "Inactive"}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Layer 0: Sensory Memory */}
+        <TabsContent value="layer0" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                {language === "ar" ? "معلومات الكيان" : "Entity Information"}
+                <Eye className="h-5 w-5" />
+                Layer 0: Sensory Memory
               </CardTitle>
               <CardDescription>
-                {language === "ar"
-                  ? "المعلومات الأساسية عن شخصك أو مؤسستك"
-                  : "Basic information about yourself or your organization"}
+                Real-time conversation context and immediate state
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  This layer is automatically active during conversations. It processes your messages in real-time and maintains context throughout the chat session.
+                </AlertDescription>
+              </Alert>
+              <div className="mt-4 space-y-2">
+                <div className="text-sm text-muted-foreground">Features:</div>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Maintains conversation context</li>
+                  <li>Tracks topic changes</li>
+                  <li>Remembers recent references</li>
+                  <li>Processes multi-turn dialogue</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Layer 1: Working Memory */}
+        <TabsContent value="layer1" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Briefcase className="h-5 w-5" />
+                Layer 1: Working Memory
+              </CardTitle>
+              <CardDescription>
+                Active session state and temporary preferences
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  This layer maintains your session state for up to 24 hours, storing temporary preferences and context.
+                </AlertDescription>
+              </Alert>
+              <div className="mt-4 space-y-2">
+                <div className="text-sm text-muted-foreground">Session Duration:</div>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Idle timeout: 15 minutes</li>
+                  <li>Maximum duration: 24 hours</li>
+                  <li>Auto-saves progress</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Layer 2: Episodic Memory */}
+        <TabsContent value="layer2" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                Layer 2: Episodic Memory
+              </CardTitle>
+              <CardDescription>
+                Your conversation history and past interactions
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              {user?.id ? (
+                <EpisodicMemory userId={user.id} />
+              ) : (
+                <div className="p-6">
+                  <Alert>
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      Please sign in to access your conversation history.
+                    </AlertDescription>
+                  </Alert>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Layer 3: Semantic Memory - Profile */}
+        <TabsContent value="layer3" className="space-y-4">
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="h-5 w-5" />
+                Layer 3: Semantic Memory
+              </CardTitle>
+              <CardDescription>
+                Knowledge base, documents, and user profile
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="entity_name">
-                  {language === "ar" ? "الاسم" : "Name"}
-                </Label>
+                <Label htmlFor="entity_name">Name</Label>
                 <Input
                   id="entity_name"
                   value={formData.entity_name}
                   onChange={(e) => setFormData({ ...formData, entity_name: e.target.value })}
-                  placeholder={language === "ar" ? "اسمك أو اسم مؤسستك" : "Your name or organization name"}
+                  placeholder="Your name or organization name"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="entity_type">
-                  {language === "ar" ? "نوع الكيان" : "Entity Type"}
-                </Label>
+                <Label htmlFor="entity_type">Entity Type</Label>
                 <Select
                   value={formData.entity_type}
                   onValueChange={(value) => setFormData({ ...formData, entity_type: value })}
@@ -220,29 +381,17 @@ export default function MemoryPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="individual">
-                      {language === "ar" ? "فرد" : "Individual"}
-                    </SelectItem>
-                    <SelectItem value="family_office">
-                      {language === "ar" ? "مكتب عائلي" : "Family Office"}
-                    </SelectItem>
-                    <SelectItem value="corporate">
-                      {language === "ar" ? "شركة" : "Corporate"}
-                    </SelectItem>
-                    <SelectItem value="fund">
-                      {language === "ar" ? "صندوق" : "Fund"}
-                    </SelectItem>
-                    <SelectItem value="holding">
-                      {language === "ar" ? "شركة قابضة" : "Holding Company"}
-                    </SelectItem>
+                    <SelectItem value="individual">Individual</SelectItem>
+                    <SelectItem value="family_office">Family Office</SelectItem>
+                    <SelectItem value="corporate">Corporate</SelectItem>
+                    <SelectItem value="fund">Fund</SelectItem>
+                    <SelectItem value="holding">Holding Company</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label>
-                  {language === "ar" ? "حجم الفريق" : "Team Size"}
-                </Label>
+                <Label>Team Size</Label>
                 <div className="flex items-center gap-4">
                   <Slider
                     value={[formData.team_size]}
@@ -255,28 +404,44 @@ export default function MemoryPage() {
                   <span className="w-12 text-right font-medium">{formData.team_size}</span>
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="current_goals">Current Goals</Label>
+                <Textarea
+                  id="current_goals"
+                  value={formData.current_goals}
+                  onChange={(e) => setFormData({ ...formData, current_goals: e.target.value })}
+                  placeholder="What are your current strategic goals?"
+                  rows={4}
+                />
+              </div>
+
+              <Button
+                onClick={handleSave}
+                disabled={saving || !formData.entity_name}
+                className="w-full"
+              >
+                {saving ? "Saving..." : "Save Profile"}
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="preferences" className="space-y-4">
+        {/* Layer 4: Procedural Memory */}
+        <TabsContent value="layer4" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5" />
-                {language === "ar" ? "تفضيلات الاستثمار" : "Investment Preferences"}
+                <Activity className="h-5 w-5" />
+                Layer 4: Procedural Memory
               </CardTitle>
               <CardDescription>
-                {language === "ar"
-                  ? "حدد مستوى المخاطرة والتركيز الاستثماري"
-                  : "Define your risk appetite and investment focus"}
+                Behavioral patterns and preferences
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>
-                  {language === "ar" ? "مستوى المخاطرة" : "Risk Appetite"} ({formData.risk_appetite}/10)
-                </Label>
+                <Label>Risk Appetite ({formData.risk_appetite}/10)</Label>
                 <Slider
                   value={[formData.risk_appetite]}
                   onValueChange={(values) => setFormData({ ...formData, risk_appetite: values[0] })}
@@ -285,49 +450,23 @@ export default function MemoryPage() {
                   step={1}
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>{language === "ar" ? "محافظ جداً" : "Ultra-Conservative"}</span>
-                  <span>{language === "ar" ? "عدواني" : "Aggressive"}</span>
+                  <span>Ultra-Conservative</span>
+                  <span>Aggressive</span>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="budget">
-                  {language === "ar" ? "نطاق الميزانية" : "Budget Range"}
-                </Label>
+                <Label htmlFor="budget">Budget Range</Label>
                 <Input
                   id="budget"
                   value={formData.investment_budget_range}
                   onChange={(e) => setFormData({ ...formData, investment_budget_range: e.target.value })}
-                  placeholder={language === "ar" ? "مثال: $1M-$5M" : "e.g., $1M-$5M"}
+                  placeholder="e.g., $1M-$5M"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="time_horizon">
-                  {language === "ar" ? "الأفق الزمني" : "Time Horizon"}
-                </Label>
-                <Input
-                  id="time_horizon"
-                  value={formData.time_horizon}
-                  onChange={(e) => setFormData({ ...formData, time_horizon: e.target.value })}
-                  placeholder={language === "ar" ? "مثال: 3-5 سنوات" : "e.g., 3-5 years"}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Languages className="h-5 w-5" />
-                {language === "ar" ? "تفضيلات التقارير" : "Report Preferences"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="report_style">
-                  {language === "ar" ? "نمط التقرير" : "Report Style"}
-                </Label>
+                <Label htmlFor="report_style">Report Style</Label>
                 <Select
                   value={formData.report_style}
                   onValueChange={(value) => setFormData({ ...formData, report_style: value })}
@@ -336,23 +475,15 @@ export default function MemoryPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="concise">
-                      {language === "ar" ? "مختصر" : "Concise"}
-                    </SelectItem>
-                    <SelectItem value="comprehensive">
-                      {language === "ar" ? "شامل" : "Comprehensive"}
-                    </SelectItem>
-                    <SelectItem value="quantitative">
-                      {language === "ar" ? "كمي" : "Quantitative"}
-                    </SelectItem>
+                    <SelectItem value="concise">Concise</SelectItem>
+                    <SelectItem value="comprehensive">Comprehensive</SelectItem>
+                    <SelectItem value="quantitative">Quantitative</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="language_preference">
-                  {language === "ar" ? "تفضيل اللغة" : "Language Preference"}
-                </Label>
+                <Label htmlFor="language_preference">Language Preference</Label>
                 <Select
                   value={formData.language_preference}
                   onValueChange={(value) => setFormData({ ...formData, language_preference: value })}
@@ -363,105 +494,83 @@ export default function MemoryPage() {
                   <SelectContent>
                     <SelectItem value="en">English</SelectItem>
                     <SelectItem value="ar">العربية</SelectItem>
-                    <SelectItem value="bilingual">
-                      {language === "ar" ? "ثنائي اللغة" : "Bilingual"}
-                    </SelectItem>
+                    <SelectItem value="bilingual">Bilingual</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <Button
+                onClick={handleSave}
+                disabled={saving || !formData.entity_name}
+                className="w-full"
+              >
+                {saving ? "Saving..." : "Save Preferences"}
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Layer 5: Emotional Memory */}
+        <TabsContent value="layer5" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Heart className="h-5 w-5" />
+                Layer 5: Emotional Memory
+              </CardTitle>
+              <CardDescription>
+                Emotional context and empathy tracking
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Emotional memory tracking is being enhanced. This layer will analyze conversation sentiment and adapt responses based on emotional context.
+                </AlertDescription>
+              </Alert>
+              <div className="mt-4 space-y-2">
+                <div className="text-sm text-muted-foreground">Coming features:</div>
+                <ul className="list-disc list-inside space-y-1 text-sm">
+                  <li>Sentiment analysis per conversation</li>
+                  <li>Mood pattern recognition</li>
+                  <li>Empathetic response adaptation</li>
+                  <li>Emotional state tracking</li>
+                </ul>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="context" className="space-y-4">
+        {/* Layer 6: Meta-Cognitive Memory */}
+        <TabsContent value="layer6" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                {language === "ar" ? "السياق الاستراتيجي" : "Strategic Context"}
+                <Lightbulb className="h-5 w-5" />
+                Layer 6: Meta-Cognitive Memory
               </CardTitle>
               <CardDescription>
-                {language === "ar"
-                  ? "ساعد النظام على فهم أهدافك وسياقك"
-                  : "Help the system understand your goals and context"}
+                System self-reflection and performance optimization
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="current_goals">
-                  {language === "ar" ? "الأهداف الحالية" : "Current Goals"}
-                </Label>
-                <Textarea
-                  id="current_goals"
-                  value={formData.current_goals}
-                  onChange={(e) => setFormData({ ...formData, current_goals: e.target.value })}
-                  placeholder={language === "ar"
-                    ? "ما هي أهدافك الاستراتيجية الحالية؟"
-                    : "What are your current strategic goals?"}
-                  rows={4}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="key_competitors">
-                  {language === "ar" ? "المنافسون الرئيسيون" : "Key Competitors"}
-                </Label>
-                <Textarea
-                  id="key_competitors"
-                  value={formData.key_competitors}
-                  onChange={(e) => setFormData({ ...formData, key_competitors: e.target.value })}
-                  placeholder={language === "ar"
-                    ? "من هم منافسوك الرئيسيون؟"
-                    : "Who are your key competitors?"}
-                  rows={3}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="open_matters">
-                  {language === "ar" ? "المسائل المفتوحة" : "Open Matters"}
-                </Label>
-                <Textarea
-                  id="open_matters"
-                  value={formData.open_matters}
-                  onChange={(e) => setFormData({ ...formData, open_matters: e.target.value })}
-                  placeholder={language === "ar"
-                    ? "أي صفقات أو مسائل نشطة؟"
-                    : "Any active deals or open matters?"}
-                  rows={3}
-                />
-              </div>
+            <CardContent className="p-0">
+              {user?.id ? (
+                <MetaCognitiveMemory userId={user.id} />
+              ) : (
+                <div className="p-6">
+                  <Alert>
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      Please sign in to access system performance metrics.
+                    </AlertDescription>
+                  </Alert>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Save Button */}
-      <div className="flex justify-end">
-        <Button
-          onClick={handleSave}
-          disabled={saving || !formData.entity_name}
-          size="lg"
-        >
-          {saving ? (
-            <>
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                className="mr-2"
-              >
-                <Brain className="h-5 w-5" />
-              </motion.div>
-              {language === "ar" ? "جاري الحفظ..." : "Saving..."}
-            </>
-          ) : (
-            <>
-              <Save className="mr-2 h-5 w-5" />
-              {language === "ar" ? "حفظ الملف الشخصي" : "Save Profile"}
-            </>
-          )}
-        </Button>
-      </div>
     </div>
   )
 }

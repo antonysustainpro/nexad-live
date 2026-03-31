@@ -1241,13 +1241,13 @@ export type MemoryLayerStatus = {
 
 export function getActiveMemoryLayers(profile?: VaultProfile | null): MemoryLayerStatus[] {
   const layers: MemoryLayerStatus[] = [
-    { layer: 0, name: "Sensory Memory", active: true, dataCount: 0 }, // Always active
-    { layer: 1, name: "Working Memory", active: true, dataCount: 0 }, // Always active
-    { layer: 2, name: "Episodic Memory", active: false, dataCount: 0 }, // Not implemented yet
-    { layer: 3, name: "Semantic Memory", active: false, dataCount: 0 }, // Vault documents
-    { layer: 4, name: "Procedural Memory", active: !!profile, dataCount: profile ? 1 : 0 }, // Profile exists
-    { layer: 5, name: "Emotional Memory", active: true, dataCount: 0 }, // Emotion tracking
-    { layer: 6, name: "Meta-Cognitive", active: false, dataCount: 0 }, // Not implemented
+    { layer: 0, name: "Sensory Memory", active: true, dataCount: 0 }, // Always active during chat
+    { layer: 1, name: "Working Memory", active: true, dataCount: 0 }, // Session state
+    { layer: 2, name: "Episodic Memory", active: true, dataCount: 0 }, // Conversation history (now implemented)
+    { layer: 3, name: "Semantic Memory", active: !!profile, dataCount: profile ? 1 : 0 }, // Vault documents & profile
+    { layer: 4, name: "Procedural Memory", active: !!profile, dataCount: profile ? 1 : 0 }, // Preferences & patterns
+    { layer: 5, name: "Emotional Memory", active: true, dataCount: 0 }, // Emotion tracking in chat
+    { layer: 6, name: "Meta-Cognitive", active: true, dataCount: 0 }, // Self-reflection (now implemented)
   ]
 
   return layers
