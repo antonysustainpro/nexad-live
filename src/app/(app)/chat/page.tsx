@@ -20,6 +20,7 @@ import { ModeSelector, type IntelligenceMode } from "@/components/mode-selector"
 import { LanguageSelector } from "@/components/language-selector"
 import { OrchestrationPhases, type OrchestrationState, type OrchestrationPhase, type AuditorResult } from "@/components/orchestration-phases"
 import { MemoryIndicator, MemoryIndicatorCompact } from "@/components/memory-indicator"
+import { ChatSkeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
@@ -565,12 +566,28 @@ function ChatPageContent() {
         setIsLoading(false)
       }
     } catch (error) {
-      // Log actual error for debugging
+      // Log actual error for debugging (technical details stay out of user-facing messages)
       console.error("[NexusAD Chat Error]", error)
-      // Show error message to user instead of mock fallback
-      const errorMessage = error instanceof Error && error.name === "AbortError"
-        ? "Request was cancelled."
-        : `Unable to connect to NexusAD. ${error instanceof Error ? error.message : "Please check your connection and try again."}`
+      // Map to a plain-language message — no HTTP status codes or stack traces shown
+      let errorMessage = "Something went wrong. Please try again."
+      if (error instanceof Error) {
+        if (error.name === "AbortError") {
+          errorMessage = "Request was cancelled."
+        } else if (error.name === "CircuitBreakerOpenError") {
+          errorMessage = "We're having trouble connecting. Please wait a moment and try again."
+        } else {
+          const statusMatch = error.message.match(/:\s*(\d{3})/)
+          if (statusMatch) {
+            const status = parseInt(statusMatch[1], 10)
+            if (status === 401) errorMessage = "Your session has expired. Please sign in again."
+            else if (status === 403) errorMessage = "You don't have permission to use this feature."
+            else if (status === 429) errorMessage = "You're sending messages too quickly. Please wait a moment."
+            else if (status >= 500) errorMessage = "We're having trouble connecting. Please try again in a moment."
+          } else if (error instanceof TypeError) {
+            errorMessage = "Can't reach the server. Please check your internet connection and try again."
+          }
+        }
+      }
       setMessages(prev => {
         // If a streaming assistant message exists, update it with the error
         const hasStreamingMsg = prev.some(msg => msg.isStreaming)
@@ -859,7 +876,7 @@ function ChatPageContent() {
 
 export default function ChatPage() {
   return (
-    <Suspense fallback={<div className="flex h-full items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<ChatSkeleton />}>
       <ChatPageContent />
     </Suspense>
   )

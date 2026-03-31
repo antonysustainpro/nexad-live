@@ -16,9 +16,10 @@ import { BillingGuard } from "@/components/billing-guard"
 import { TeamMemberRow } from "@/components/team-member-row"
 import { TeamInviteModal } from "@/components/team-invite-modal"
 import { TeamEditRoleModal } from "@/components/team-edit-role-modal"
+import { TeamPageSkeleton } from "@/components/ui/skeleton"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Users, UserPlus, Clock, X, Loader2 } from "lucide-react"
+import { Users, UserPlus, Clock, X } from "lucide-react"
 import { toast } from "sonner"
 
 function TeamContent() {
@@ -131,11 +132,7 @@ function TeamContent() {
   }
 
   if (loading) {
-    return (
-      <div className="container max-w-5xl mx-auto px-4 pb-24 md:pb-8 flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 motion-safe:animate-spin text-muted-foreground" aria-hidden="true" />
-      </div>
-    )
+    return <TeamPageSkeleton />
   }
 
   if (error) {
@@ -243,22 +240,22 @@ function TeamContent() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    <th scope="col" className={cn("py-3 px-4 font-medium text-muted-foreground", "text-start")}>
+                    <th scope="col" className={cn("py-3 px-2 sm:px-4 font-medium text-muted-foreground", "text-start")}>
                       {language === "ar" ? "العضو" : "Member"}
                     </th>
-                    <th scope="col" className={cn("py-3 px-4 font-medium text-muted-foreground", "text-start")}>
+                    <th scope="col" className={cn("py-3 px-2 sm:px-4 font-medium text-muted-foreground hidden sm:table-cell", "text-start")}>
                       {language === "ar" ? "البريد الإلكتروني" : "Email"}
                     </th>
-                    <th scope="col" className={cn("py-3 px-4 font-medium text-muted-foreground", "text-start")}>
+                    <th scope="col" className={cn("py-3 px-2 sm:px-4 font-medium text-muted-foreground", "text-start")}>
                       {language === "ar" ? "الدور" : "Role"}
                     </th>
-                    <th scope="col" className={cn("py-3 px-4 font-medium text-muted-foreground", "text-start")}>
+                    <th scope="col" className={cn("py-3 px-2 sm:px-4 font-medium text-muted-foreground hidden md:table-cell", "text-start")}>
                       {language === "ar" ? "آخر نشاط" : "Last Active"}
                     </th>
-                    <th scope="col" className={cn("py-3 px-4 font-medium text-muted-foreground", "text-start")}>
+                    <th scope="col" className={cn("py-3 px-2 sm:px-4 font-medium text-muted-foreground hidden lg:table-cell", "text-start")}>
                       {language === "ar" ? "الاستخدام" : "Usage"}
                     </th>
-                    <th scope="col" className={cn("py-3 px-4 font-medium text-muted-foreground", "text-start")}>
+                    <th scope="col" className={cn("py-3 px-2 sm:px-4 font-medium text-muted-foreground", "text-start")}>
                       <span className="sr-only">{language === "ar" ? "إجراءات" : "Actions"}</span>
                     </th>
                   </tr>

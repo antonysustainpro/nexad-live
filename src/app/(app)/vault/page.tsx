@@ -22,11 +22,11 @@ import {
   Activity,
   User,
   Inbox,
-  Loader2,
 } from "lucide-react"
 import { useNexus } from "@/contexts/nexus-context"
 import { ShardMap } from "@/components/shard-map"
 import { DeleteCeremony } from "@/components/delete-ceremony"
+import { AccessLogSkeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -42,6 +42,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn, sanitizeFilename } from "@/lib/utils"
 import { getAccessLog, uploadToVault, listVaultDocuments } from "@/lib/api"
 import { toast } from "sonner"
+import { ErrorRetry } from "@/components/error-retry"
 
 // Document type used within vault UI
 interface VaultDoc {
@@ -150,6 +151,8 @@ export default function VaultPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [accessLogEntries, setAccessLogEntries] = useState<AccessEntry[]>([])
   const [accessLogLoading, setAccessLogLoading] = useState(true)
+  const [accessLogError, setAccessLogError] = useState(false)
+  const [docsError, setDocsError] = useState(false)
   const itemsPerPage = 5
   const totalPages = Math.max(1, Math.ceil(accessLogEntries.length / itemsPerPage))
   // SEC-BL-003: Clamp currentPage when entries are removed/changed to prevent blank page
@@ -180,7 +183,7 @@ export default function VaultPage() {
           )
         }
       } catch {
-        // API not available - empty state is fine
+        if (!cancelled) setAccessLogError(true)
       } finally {
         if (!cancelled) setAccessLogLoading(false)
       }
@@ -190,41 +193,37 @@ export default function VaultPage() {
   }, [])
 
   // Load vault documents from backend on component mount
-  useEffect(() => {
-    const abortController = new AbortController()
-    let isMounted = true
+  const loadVaultDocuments = useCallback(async (signal?: AbortSignal) => {
+    setDocsError(false)
+    try {
+      const response = await listVaultDocuments(signal)
+      if (!response) return
 
-    async function loadVaultDocuments() {
-      try {
-        const response = await listVaultDocuments(abortController.signal)
-        if (!isMounted || !response) return
+      const docs = response.map(doc => ({
+        id: doc.id,
+        name: doc.title || "Untitled",
+        type: doc.doc_type || "document",
+        size: "—",
+        sizeBytes: 0,
+        domain: "Personal",
+        shards: doc.chunks_stored || 1,
+        lastModified: doc.created_at || "Today",
+        encrypted: true,
+      }))
 
-        // Map backend response to UI format
-        const docs = response.map(doc => ({
-          id: doc.id,
-          name: doc.title || "Untitled",
-          type: doc.doc_type || "document",
-          size: "—",
-          sizeBytes: 0,
-          domain: "Personal",
-          shards: doc.chunks_stored || 1,
-          lastModified: doc.created_at || "Today",
-          encrypted: true,
-        }))
-
-        setDocuments(docs)
-      } catch (err) {
-        if (!isMounted) return
-        console.error("Failed to load vault documents:", err)
-      }
-    }
-
-    loadVaultDocuments()
-    return () => {
-      isMounted = false
-      abortController.abort()
+      setDocuments(docs)
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") return
+      console.error("Failed to load vault documents:", err)
+      setDocsError(true)
     }
   }, [])
+
+  useEffect(() => {
+    const abortController = new AbortController()
+    loadVaultDocuments(abortController.signal)
+    return () => { abortController.abort() }
+  }, [loadVaultDocuments])
 
   // Rebuild folders whenever documents change
   useEffect(() => {
@@ -603,7 +602,16 @@ export default function VaultPage() {
               {language === "ar" ? "المستندات" : "Documents"} ({filteredDocuments.length})
             </h2>
 
-            {filteredDocuments.length === 0 ? (
+            {docsError ? (
+              <ErrorRetry
+                onRetry={() => loadVaultDocuments()}
+                message={language === "ar"
+                  ? "تعذّر تحميل المستندات. يرجى المحاولة مجدداً."
+                  : "We couldn't load your documents. Please try again."}
+                networkError
+                variant="card"
+              />
+            ) : filteredDocuments.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <div className="p-4 rounded-full bg-muted mb-4">
                   <Inbox className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
@@ -777,12 +785,7 @@ export default function VaultPage() {
           <Card className="p-6">
             <CardContent className="p-0">
               {accessLogLoading ? (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <Loader2 className="h-6 w-6 text-muted-foreground motion-safe:animate-spin mb-3" aria-hidden="true" />
-                  <p className="text-sm text-muted-foreground">
-                    {language === "ar" ? "جاري تحميل سجل الوصول..." : "Loading access log..."}
-                  </p>
-                </div>
+                <AccessLogSkeleton rows={5} />
               ) : accessLogEntries.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <div className="p-4 rounded-full bg-muted mb-4">

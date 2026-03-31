@@ -11,8 +11,9 @@ import {
   dismissNotification,
 } from "@/lib/api"
 import { NotificationItem } from "@/components/notification-item"
+import { NotificationsPageSkeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
-import { Bell, CheckCheck, Inbox, Loader2 } from "lucide-react"
+import { Bell, CheckCheck, Inbox } from "lucide-react"
 import { AnimatePresence } from "motion/react"
 import { toast } from "sonner"
 
@@ -195,11 +196,7 @@ export default function NotificationsPage() {
   }
 
   if (loading) {
-    return (
-      <div className="container max-w-3xl mx-auto px-4 pb-24 md:pb-8 flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 motion-safe:animate-spin text-muted-foreground" aria-hidden="true" />
-      </div>
-    )
+    return <NotificationsPageSkeleton count={6} />
   }
 
   if (error) {

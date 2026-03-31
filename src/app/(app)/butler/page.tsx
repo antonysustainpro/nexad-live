@@ -6,6 +6,7 @@ import { useNexus } from "@/contexts/nexus-context"
 import { ButlerCard } from "@/components/butler-card"
 import { ButlerCardDetail } from "@/components/butler-card-detail"
 import { PrivacyGlass } from "@/components/privacy-glass"
+import { ButlerCardSkeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { RefreshCw, Crown, ArrowRight, Sparkles } from "lucide-react"
@@ -218,18 +219,10 @@ export default function ButlerPage() {
 
         {/* Card Feed */}
         {loading ? (
-          // Skeleton loading
+          // Skeleton loading — uses shared ButlerCardSkeleton for consistency
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-card/50 rounded-2xl p-4 motion-safe:animate-pulse">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="h-5 w-16 bg-muted rounded" />
-                  <div className="h-4 w-12 bg-muted rounded ms-auto" />
-                </div>
-                <div className="h-5 w-3/4 bg-muted rounded mb-2" />
-                <div className="h-4 w-full bg-muted rounded mb-1" />
-                <div className="h-4 w-2/3 bg-muted rounded" />
-              </div>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <ButlerCardSkeleton key={i} />
             ))}
           </div>
         ) : cards.length === 0 ? (
