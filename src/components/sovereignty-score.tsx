@@ -73,19 +73,21 @@ export function SovereigntyScore({
   }
 
   return (
-    <div 
-      className="relative p-6 bg-card rounded-2xl border-t-2 border-nexus-gold"
+    <div
+      className="relative p-4 sm:p-6 bg-card rounded-2xl border-t-2 border-nexus-gold"
       role="region"
       aria-label={language === "ar" ? "نقاط السيادة" : "Sovereignty Score"}
     >
-      <div className="flex items-start gap-6">
+      {/* Stack on very small screens; side-by-side from sm up */}
+      <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
         {/* Score Display */}
-        <div className="flex flex-col items-center">
-          <span className="text-5xl font-bold text-nexus-gold">{displayScore}</span>
-          <span className="text-xl font-semibold text-nexus-gold mt-1">{displayGrade}</span>
-          
+        <div className="flex sm:flex-col items-center gap-4 sm:gap-0">
+          <div className="flex flex-col items-center">
+            <span className="text-5xl font-bold text-nexus-gold">{displayScore}</span>
+            <span className="text-xl font-semibold text-nexus-gold mt-1">{displayGrade}</span>
+          </div>
           {/* Vault Heartbeat */}
-          <div className="mt-4 relative">
+          <div className="sm:mt-4 relative">
             <div className="w-6 h-6 rounded-full bg-nexus-gold/20 flex items-center justify-center">
               <div className="w-3 h-3 rounded-full bg-nexus-gold motion-safe:animate-pulse-sovereignty" />
             </div>
@@ -94,7 +96,7 @@ export function SovereigntyScore({
 
         {/* Factors */}
         {!compact && (
-          <div className="flex-1 space-y-3">
+          <div className="flex-1 space-y-3 min-w-0">
             {Object.entries(displayFactors).map(([key, value]) => {
               const factorKey = key as keyof typeof factorLabels
               const label = language === "ar" ? factorLabels[factorKey].ar : factorLabels[factorKey].en
@@ -102,14 +104,14 @@ export function SovereigntyScore({
 
               return (
                 <div key={key} className="space-y-1">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground flex items-center gap-1.5">
-                      {label}
+                  <div className="flex items-center justify-between text-sm gap-2">
+                    <span className="text-muted-foreground flex items-center gap-1.5 min-w-0">
+                      <span className="truncate">{label}</span>
                       {needsWarning && (
-                        <AlertCircle className="w-3.5 h-3.5 text-emotion-excited" aria-hidden="true" />
+                        <AlertCircle className="w-3.5 h-3.5 text-emotion-excited flex-shrink-0" aria-hidden="true" />
                       )}
                     </span>
-                    <span className="font-medium">{value}</span>
+                    <span className="font-medium flex-shrink-0">{value}</span>
                   </div>
                   <div className="h-1 bg-secondary rounded-full overflow-hidden">
                     <div

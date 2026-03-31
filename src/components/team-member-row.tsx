@@ -87,9 +87,9 @@ export const TeamMemberRow = React.memo(({ member, onEdit, onRemove }: TeamMembe
           : `Team member: ${member.name}, role: ${roleLabel}`
       }
     >
-      {/* Avatar & Name */}
-      <td className={cn("py-3 px-4", "text-start")}>
-        <div className={cn("flex items-center gap-3", isRTL && "flex-row-reverse")}>
+      {/* Avatar & Name — always visible */}
+      <td className={cn("py-3 px-2 sm:px-4", "text-start")}>
+        <div className={cn("flex items-center gap-2 sm:gap-3", isRTL && "flex-row-reverse")}>
           <div
             className="w-8 h-8 rounded-full bg-muted border border-border overflow-hidden flex-shrink-0"
             aria-hidden="true"
@@ -109,33 +109,37 @@ export const TeamMemberRow = React.memo(({ member, onEdit, onRemove }: TeamMembe
             )}
           </div>
           {/* A11Y: name cell is the row header for assistive technologies */}
-          <span className="font-medium truncate max-w-[150px]">{member.name}</span>
+          <div className="min-w-0">
+            <span className="font-medium truncate block max-w-[100px] sm:max-w-[150px]">{member.name}</span>
+            {/* Show email below name on mobile since email column is hidden */}
+            <span className="text-xs text-muted-foreground truncate block sm:hidden max-w-[100px]">{member.email}</span>
+          </div>
         </div>
       </td>
 
-      {/* Email */}
-      <td className={cn("py-3 px-4 text-sm text-muted-foreground", "text-start")}>
-        {member.email}
+      {/* Email — hidden on mobile, shown from sm up */}
+      <td className={cn("py-3 px-2 sm:px-4 text-sm text-muted-foreground hidden sm:table-cell", "text-start")}>
+        <span className="truncate block max-w-[160px]">{member.email}</span>
       </td>
 
-      {/* Role */}
-      <td className={cn("py-3 px-4", "text-start")}>
+      {/* Role — always visible */}
+      <td className={cn("py-3 px-2 sm:px-4", "text-start")}>
         <div className={cn("flex items-center gap-1", isRTL && "flex-row-reverse")}>
-          <RoleIcon className={cn("h-4 w-4", roleInfo.color)} aria-hidden="true" />
-          <span className={cn("text-sm", roleInfo.color)}>
+          <RoleIcon className={cn("h-4 w-4 flex-shrink-0", roleInfo.color)} aria-hidden="true" />
+          <span className={cn("text-sm whitespace-nowrap", roleInfo.color)}>
             {roleLabel}
           </span>
         </div>
       </td>
 
-      {/* Last Active */}
-      <td className={cn("py-3 px-4 text-sm text-muted-foreground", "text-start")}>
+      {/* Last Active — hidden on mobile, shown from md up */}
+      <td className={cn("py-3 px-2 sm:px-4 text-sm text-muted-foreground hidden md:table-cell", "text-start")}>
         {formatDate(member.lastActive)}
       </td>
 
-      {/* Usage */}
-      <td className={cn("py-3 px-4 text-sm", "text-start")}>
-        <div className="text-xs text-muted-foreground">
+      {/* Usage — hidden on mobile and tablet, shown from lg up */}
+      <td className={cn("py-3 px-2 sm:px-4 text-sm hidden lg:table-cell", "text-start")}>
+        <div className="text-xs text-muted-foreground whitespace-nowrap">
           {/* A11Y: screen-reader-friendly label wraps the numbers in context */}
           <span className="sr-only">
             {language === "ar"
@@ -148,15 +152,15 @@ export const TeamMemberRow = React.memo(({ member, onEdit, onRemove }: TeamMembe
         </div>
       </td>
 
-      {/* Actions */}
-      <td className={cn("py-3 px-4", "text-start")}>
+      {/* Actions — always visible, 44x44 touch target on mobile */}
+      <td className={cn("py-3 px-2 sm:px-4", "text-start")}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             {/* A11Y: aria-label names the specific member so context is clear */}
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 focus-visible:ring-2 focus-visible:ring-nexus-jade focus-visible:ring-offset-2"
+              className="h-11 w-11 sm:h-8 sm:w-8 focus-visible:ring-2 focus-visible:ring-nexus-jade focus-visible:ring-offset-2"
               aria-label={
                 language === "ar"
                   ? `خيارات للعضو ${member.name}`
@@ -170,6 +174,7 @@ export const TeamMemberRow = React.memo(({ member, onEdit, onRemove }: TeamMembe
             {/* A11Y: menu items name the specific member for screen reader context */}
             <DropdownMenuItem
               onClick={() => onEdit(member)}
+              className="min-h-[44px]"
               aria-label={language === "ar" ? `تعديل بيانات ${member.name}` : `Edit ${member.name}`}
             >
               <Pencil className="h-4 w-4 me-2" aria-hidden="true" />
@@ -177,7 +182,7 @@ export const TeamMemberRow = React.memo(({ member, onEdit, onRemove }: TeamMembe
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => setConfirmOpen(true)}
-              className="text-destructive focus:text-destructive"
+              className="text-destructive focus:text-destructive min-h-[44px]"
               aria-label={language === "ar" ? `إزالة العضو ${member.name}` : `Remove ${member.name}`}
             >
               <Trash2 className="h-4 w-4 me-2" aria-hidden="true" />

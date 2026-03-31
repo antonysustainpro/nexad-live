@@ -43,7 +43,7 @@ function TeamContent() {
       setInvitations(invitationsData || [])
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") return
-      setError(err instanceof Error ? err.message : "Failed to load team data")
+      setError("We couldn't load your team data. Please try again in a moment.")
     } finally {
       setLoading(false)
     }
@@ -63,10 +63,10 @@ function TeamContent() {
         toast.success(language === "ar" ? "تم إرسال الدعوة" : "Invitation sent")
         setIsInviteModalOpen(false)
       } else {
-        toast.error(language === "ar" ? "فشل إرسال الدعوة" : "Failed to send invitation")
+        toast.error(language === "ar" ? "تعذّر إرسال الدعوة. يرجى المحاولة مرة أخرى." : "We couldn't send the invitation. Please try again.")
       }
     } catch {
-      toast.error(language === "ar" ? "فشل إرسال الدعوة" : "Failed to send invitation")
+      toast.error(language === "ar" ? "تعذّر إرسال الدعوة. يرجى المحاولة مرة أخرى." : "We couldn't send the invitation. Please try again.")
     }
   }
 
@@ -81,10 +81,10 @@ function TeamContent() {
         setMembers((prev) => prev.map((m) => (m.id === member.id ? result : m)))
         toast.success(language === "ar" ? "تم تحديث العضو" : "Member updated")
       } else {
-        toast.error(language === "ar" ? "فشل تحديث العضو" : "Failed to update member")
+        toast.error(language === "ar" ? "تعذّر تحديث العضو. يرجى المحاولة مرة أخرى." : "We couldn't update this member. Please try again.")
       }
     } catch {
-      toast.error(language === "ar" ? "فشل تحديث العضو" : "Failed to update member")
+      toast.error(language === "ar" ? "تعذّر تحديث العضو. يرجى المحاولة مرة أخرى." : "We couldn't update this member. Please try again.")
     }
   }
 
@@ -95,10 +95,10 @@ function TeamContent() {
         setMembers((prev) => prev.filter((m) => m.id !== memberId))
         toast.success(language === "ar" ? "تم إزالة العضو" : "Member removed")
       } else {
-        toast.error(language === "ar" ? "فشل إزالة العضو" : "Failed to remove member")
+        toast.error(language === "ar" ? "تعذّر إزالة العضو. يرجى المحاولة مرة أخرى." : "We couldn't remove this member. Please try again.")
       }
     } catch {
-      toast.error(language === "ar" ? "فشل إزالة العضو" : "Failed to remove member")
+      toast.error(language === "ar" ? "تعذّر إزالة العضو. يرجى المحاولة مرة أخرى." : "We couldn't remove this member. Please try again.")
     }
   }
 
@@ -114,7 +114,7 @@ function TeamContent() {
         toast.success(language === "ar" ? "تم إلغاء الدعوة" : "Invitation cancelled")
       }
     } catch {
-      toast.error(language === "ar" ? "فشل إلغاء الدعوة" : "Failed to cancel invitation")
+      toast.error(language === "ar" ? "تعذّر إلغاء الدعوة. يرجى المحاولة مرة أخرى." : "We couldn't cancel the invitation. Please try again.")
     }
   }
 
