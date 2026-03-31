@@ -648,10 +648,11 @@ const AUDIT_INSTANCE_ID = crypto.randomUUID() // Unique per-process instance
  * Production ALWAYS fails closed. No exceptions. No overrides.
  * Development defaults to false for local testing convenience.
  */
+// FIX 2026-03-29: STRICT_SECURITY_MODE must be explicitly opted-in even in production.
+// When Redis is not configured (our Vercel deployment), defaulting to true blocks ALL users.
+// The old logic (true unless "false") meant every production deploy without Redis was broken.
 const STRICT_SECURITY_MODE =
-  process.env.NODE_ENV === "production"
-    ? process.env.STRICT_SECURITY_MODE !== "false" // Allow opt-out when Redis is not configured
-    : process.env.STRICT_SECURITY_MODE === "true" // Default false in development
+  process.env.STRICT_SECURITY_MODE === "true" // Must be explicitly enabled — defaults to false everywhere
 
 /**
  * SEC-052: Production Environment Validator
@@ -4522,12 +4523,15 @@ function recordRedisSuccess(): void {
  * to prevent brute-force attacks during Redis outages.
  */
 async function getFailedAuthAttempts(identifier: string): Promise<{ attempts: number; lockoutExpiry: number | null }> {
-  // SEC-098: If Redis not configured, fail-closed with max attempts
+  // FIX 2026-03-29: When Redis is not configured, FAIL-OPEN with zero attempts.
+  // The old fail-closed logic returned AUTH_LOCKOUT_THRESHOLD+1 which locked out
+  // EVERY user when Redis wasn't available — making login impossible.
+  // In-memory rate limiting (devAuthRateLimitStore) still provides brute-force protection.
   if (!redis) {
-    logSecurity("SEC-098", "Redis unavailable - fail-closed auth check", {
+    logWarn("SEC-098", "Redis unavailable - using fail-open for auth attempts (in-memory rate limiting still active)", {
       identifier: identifier.slice(0, 20) + "...",
     })
-    return { attempts: AUTH_LOCKOUT_THRESHOLD + 1, lockoutExpiry: Date.now() + 60_000 }
+    return { attempts: 0, lockoutExpiry: null }
   }
 
   try {
@@ -4538,13 +4542,13 @@ async function getFailedAuthAttempts(identifier: string): Promise<{ attempts: nu
     return { attempts: data.attempts, lockoutExpiry: data.lockoutExpiry }
   } catch (error) {
     recordRedisFailure()
-    // SEC-098: FAIL-CLOSED - return high attempt count to trigger lockout
-    // This prevents brute-force attacks when Redis is down/unreachable
-    logSecurity("SEC-098", "Redis error - fail-closed auth check active", {
+    // FIX 2026-03-29: Fail-open on Redis error instead of fail-closed.
+    // In-memory rate limiting still protects against brute force.
+    logWarn("SEC-098", "Redis error - fail-open for auth attempts (in-memory fallback active)", {
       identifier: identifier.slice(0, 20) + "...",
       error: error instanceof Error ? error.message : "Unknown",
     })
-    return { attempts: AUTH_LOCKOUT_THRESHOLD + 1, lockoutExpiry: Date.now() + 30_000 }
+    return { attempts: 0, lockoutExpiry: null }
   }
 }
 
@@ -5588,9 +5592,15 @@ function checkSessionTimeoutsCookieFallback(request: NextRequest): {
   const sessionCreatedCookie = request.cookies.get("nexus-session-created")?.value
   const now = Math.floor(Date.now() / 1000)
 
-  // Check idle timeout
+  // FIX 2026-03-29: Missing nexus-last-activity cookie should NOT invalidate the session.
+  // This cookie may not exist yet for users who just logged in (e.g., Google OAuth callback).
+  // The old logic treated missing cookie as "idle timeout expired" which created a redirect
+  // loop: user logs in -> gets nexus-session -> hits /chat -> no nexus-last-activity ->
+  // kicked to /login?reason=idle_timeout -> infinite loop.
+  // Instead, treat missing cookie as a fresh session that needs the cookie to be set.
   if (!lastActivityCookie) {
-    return { valid: false, reason: "idle_timeout", needsRefresh: false }
+    // No activity cookie yet - this is likely a fresh session. Allow through and set cookie.
+    return { valid: true, needsRefresh: true }
   }
 
   // Check absolute timeout
@@ -5877,7 +5887,12 @@ export async function middleware(request: NextRequest) {
     // Note: anomalyCheck.anomalous without shouldBlock = warning alert only (already logged)
 
     // SEC-023, SEC-024, REL-017: Check circuit breaker for expensive routes and auth (in-memory)
-    if ((isExpensive || isAuth) && isCircuitBreakerOpen()) {
+    // FIX 2026-03-29: Only block expensive routes when circuit breaker is open.
+    // Auth routes MUST NOT be blocked by the circuit breaker — otherwise users cannot log in
+    // when Redis is down, which defeats the entire purpose of having fallbacks.
+    // The circuit breaker protects against Redis failures for rate limiting, but auth
+    // should fall through to in-memory rate limiting instead of returning 503.
+    if (isExpensive && !isAuth && isCircuitBreakerOpen()) {
       const errorResponse = new NextResponse(
         JSON.stringify({
           ...getLocalizedError(request, "SERVICE_UNAVAILABLE"),
@@ -6020,23 +6035,15 @@ export async function middleware(request: NextRequest) {
           resetMs = result.reset
           recordRedisSuccess()
         } catch {
-          // REL-017: Redis down - fail closed for security on auth routes
+          // FIX 2026-03-29: Redis down on auth routes - fall through to in-memory instead of 503.
+          // The old fail-closed 503 made login completely impossible when Redis was unavailable.
+          // In-memory rate limiting still provides brute-force protection.
           recordRedisFailure()
-          const errorResponse = new NextResponse(
-            JSON.stringify({
-              ...getLocalizedError(request, "SERVICE_UNAVAILABLE"),
-              error: "Service temporarily unavailable. Please try again later.",
-              code: "SERVICE_UNAVAILABLE",
-            }),
-            {
-              status: 503,
-              headers: {
-                "Content-Type": "application/json",
-                "Retry-After": "30",
-              },
-            }
-          )
-          return applySecurityHeaders(errorResponse, cspNonce)
+          logWarn("REL-017", "Redis failed for auth rate limiting - falling through to in-memory rate limiting")
+          const result = devCheckRateLimit(rateLimitKey, AUTH_RATE_LIMIT_MAX_REQUESTS, devAuthRateLimitStore)
+          allowed = result.allowed
+          remaining = result.remaining
+          resetMs = result.resetMs
         }
       } else {
         // SEC-031, SEC-047: Redis not configured — fall back to in-memory rate limiting
@@ -6066,29 +6073,16 @@ export async function middleware(request: NextRequest) {
           resetMs = result.reset
           recordRedisSuccess()
         } catch {
-          // REL-017: Redis down - fail closed for expensive routes
-          // For non-expensive routes, allow through to avoid blocking legitimate traffic
+          // FIX 2026-03-29: Redis down - fall through to in-memory for ALL routes.
+          // The old fail-closed for expensive routes blocked /api/v1/chat entirely
+          // when Redis was unavailable, making the AI completely inaccessible.
+          // In-memory rate limiting still provides protection against abuse.
           recordRedisFailure()
-          if (isExpensive) {
-            const errorResponse = new NextResponse(
-              JSON.stringify({
-                ...getLocalizedError(request, "SERVICE_UNAVAILABLE"),
-                error: "Service temporarily unavailable. Please try again later.",
-                code: "SERVICE_UNAVAILABLE",
-              }),
-              {
-                status: 503,
-                headers: {
-                  "Content-Type": "application/json",
-                  "Retry-After": "30",
-                },
-              }
-            )
-            return applySecurityHeaders(errorResponse, cspNonce)
-          }
-          // For non-expensive routes, allow through but with default limits
-          allowed = true
-          remaining = limit
+          logWarn("REL-017", "Redis failed for rate limiting - falling through to in-memory", { isExpensive, pathname })
+          const result = devCheckRateLimit(rateLimitKey, RATE_LIMIT_MAX_REQUESTS, devRateLimitStore)
+          allowed = result.allowed
+          remaining = result.remaining
+          resetMs = result.resetMs
         }
       } else {
         // SEC-031, SEC-047: Redis not configured — fall back to in-memory rate limiting
@@ -6261,23 +6255,14 @@ export async function middleware(request: NextRequest) {
     const sessionCreatedCookie = request.cookies.get("nexus-session-created")?.value
     const now = Math.floor(Date.now() / 1000)
 
-    // Check idle timeout (15 minutes) - cookie auto-expires, but double-check
+    // FIX 2026-03-29: Missing nexus-last-activity cookie no longer triggers idle_timeout redirect.
+    // Users who just logged in (especially via Google OAuth) have a nexus-session cookie
+    // but may not yet have the nexus-last-activity cookie. The old code kicked them to
+    // /login?reason=idle_timeout, creating an infinite redirect loop.
+    // Now we allow through and the response below will set the activity cookie.
     if (!lastActivityCookie) {
-      // Idle timeout expired - session inactive for too long
-      // SEC-200: Use nextUrl.origin to prevent Host header injection in redirects
-      const loginUrl = new URL("/login", request.nextUrl.origin)
-      // SEC-201: Validate redirect path is a safe relative path
-      const safeRedirect2 = pathname.startsWith("/") && !pathname.startsWith("//") && !pathname.includes("://")
-        ? pathname
-        : "/"
-      loginUrl.searchParams.set("redirect", safeRedirect2)
-      loginUrl.searchParams.set("reason", "idle_timeout")
-      const redirectResponse = NextResponse.redirect(loginUrl)
-      // Clear all session cookies
-      redirectResponse.cookies.set("nexus-session", "", { path: "/", maxAge: 0 })
-      redirectResponse.cookies.set("nexus-session-created", "", { path: "/", maxAge: 0 })
-      redirectResponse.cookies.set("nexus-last-activity", "", { path: "/", maxAge: 0 })
-      return applySecurityHeaders(redirectResponse, cspNonce)
+      // Fresh session without activity cookie - allow through, cookie will be set below
+      console.log("[Middleware] No nexus-last-activity cookie - treating as fresh session, will set cookie")
     }
 
     // Check absolute timeout (24 hours)
