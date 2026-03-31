@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
-import { Zap, Brain, Crown, ChevronDown, Shield, Clock, Sparkles } from "lucide-react"
+import { Zap, Brain, Crown, ChevronDown, Sparkles, FileText } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNexus } from "@/contexts/nexus-context"
 import { Button } from "@/components/ui/button"
@@ -32,14 +32,14 @@ const modeConfig: Record<IntelligenceMode, {
   featuresAr: string[]
 }> = {
   standard: {
-    icon: Shield,
+    icon: Sparkles,
     label: "Standard",
-    labelAr: "قياسي",
-    description: "Balanced response with full features",
-    descriptionAr: "استجابة متوازنة مع جميع الميزات",
+    labelAr: "عادي",
+    description: "Balanced AI for everyday questions",
+    descriptionAr: "ذكاء متوازن للأسئلة اليومية",
     color: "text-nexus-jade",
-    features: ["PII scrubbing", "Domain routing", "RAG retrieval"],
-    featuresAr: ["حماية البيانات", "توجيه المجال", "استرجاع RAG"],
+    features: ["Smart routing", "13 providers", "Privacy-first", "End-to-end encrypted"],
+    featuresAr: ["توجيه ذكي", "13 مزوداً", "الخصوصية أولاً", "تشفير كامل"],
   },
   fast: {
     icon: Zap,
@@ -48,8 +48,8 @@ const modeConfig: Record<IntelligenceMode, {
     description: "Cerebras + Grok ultrafast debate",
     descriptionAr: "نقاش فائق السرعة مع Cerebras و Grok",
     color: "text-yellow-500",
-    features: ["Cerebras Llama-4", "Grok-3", "Sovereign synthesis", "Privacy-first"],
-    featuresAr: ["Cerebras Llama-4", "Grok-3", "تجميع سيادي", "الخصوصية أولاً"],
+    features: ["Cerebras Llama-4", "Groq", "Sovereign synthesis", "Privacy-first"],
+    featuresAr: ["Cerebras Llama-4", "Groq", "تجميع سيادي", "الخصوصية أولاً"],
   },
   thinking: {
     icon: Brain,
@@ -65,21 +65,21 @@ const modeConfig: Record<IntelligenceMode, {
     icon: Crown,
     label: "Pro",
     labelAr: "برو",
-    description: "McKinsey-grade comprehensive documents",
-    descriptionAr: "مستندات شاملة بمستوى ماكنزي",
+    description: "Comprehensive documents & deep analysis",
+    descriptionAr: "مستندات شاملة وتحليل عميق",
     color: "text-nexus-gold",
     features: ["10-page reports", "O3 strategic brain", "Section specialists", "Export PDF/DOCX"],
     featuresAr: ["تقارير 10 صفحات", "عقل O3 الاستراتيجي", "متخصصون بالأقسام", "تصدير PDF/DOCX"],
   },
   document: {
-    icon: Sparkles,
+    icon: FileText,
     label: "Document",
     labelAr: "مستند",
-    description: "Full document generation mode",
-    descriptionAr: "وضع توليد المستندات الكامل",
+    description: "McKinsey-grade document generation",
+    descriptionAr: "توليد مستندات بمستوى ماكنزي",
     color: "text-purple-500",
-    features: ["Cover page", "Table of contents", "Executive summary", "Professional styling"],
-    featuresAr: ["صفحة الغلاف", "جدول المحتويات", "ملخص تنفيذي", "تنسيق احترافي"],
+    features: ["10-page reports", "O3 strategic brain", "Section specialists", "Export PDF/DOCX"],
+    featuresAr: ["تقارير 10 صفحات", "عقل O3 الاستراتيجي", "متخصصون بالأقسام", "تصدير PDF/DOCX"],
   },
 }
 
