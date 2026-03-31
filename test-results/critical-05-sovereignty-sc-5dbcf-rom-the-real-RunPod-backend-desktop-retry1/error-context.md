@@ -1,0 +1,254 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - navigation "Sidebar navigation" [ref=e5]:
+      - generic [ref=e6]:
+        - img "NexusAD Ai" [ref=e8]
+        - button "Collapse sidebar" [ref=e9]:
+          - img
+      - button "Search... ⌘ K" [ref=e11]:
+        - img [ref=e12]
+        - generic [ref=e15]: Search...
+        - generic [ref=e16]:
+          - generic [ref=e17]: ⌘
+          - text: K
+      - navigation [ref=e18]:
+        - list [ref=e19]:
+          - listitem [ref=e20]:
+            - link "Feed" [ref=e21] [cursor=pointer]:
+              - /url: /butler
+              - img [ref=e23]
+              - generic [ref=e26]: Feed
+          - listitem [ref=e27]:
+            - link "Chat" [ref=e28] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e29]
+              - generic [ref=e31]: Chat
+          - listitem [ref=e32]:
+            - link "Vault" [ref=e33] [cursor=pointer]:
+              - /url: /vault
+              - img [ref=e35]
+              - generic [ref=e39]: Vault
+          - listitem [ref=e40]:
+            - link "Insights" [ref=e41] [cursor=pointer]:
+              - /url: /sovereignty
+              - img [ref=e42]
+              - generic [ref=e44]: Insights
+          - listitem [ref=e45]:
+            - link "Voice" [ref=e46] [cursor=pointer]:
+              - /url: /voice
+              - img [ref=e47]
+              - generic [ref=e50]: Voice
+          - listitem [ref=e51]:
+            - link "Memory" [ref=e52] [cursor=pointer]:
+              - /url: /memory
+              - img [ref=e54]
+              - generic [ref=e63]: Memory
+          - listitem [ref=e64]:
+            - generic [ref=e65]: MORE
+          - listitem [ref=e66]:
+            - link "Domains" [ref=e67] [cursor=pointer]:
+              - /url: /domains
+              - img [ref=e68]
+              - generic [ref=e71]: Domains
+          - listitem [ref=e72]:
+            - link "Help" [ref=e73] [cursor=pointer]:
+              - /url: /help
+              - img [ref=e74]
+              - generic [ref=e77]: Help
+          - listitem [ref=e78]:
+            - link "Billing" [ref=e79] [cursor=pointer]:
+              - /url: /billing
+              - img [ref=e80]
+              - generic [ref=e82]: Billing
+          - listitem [ref=e83]:
+            - link "Profile" [ref=e84] [cursor=pointer]:
+              - /url: /profile
+              - img [ref=e85]
+              - generic [ref=e88]: Profile
+          - listitem [ref=e89]:
+            - link "Settings" [ref=e90] [cursor=pointer]:
+              - /url: /settings
+              - img [ref=e91]
+              - generic [ref=e94]: Settings
+          - listitem [ref=e95]:
+            - link "Team" [ref=e96] [cursor=pointer]:
+              - /url: /team
+              - img [ref=e97]
+              - generic [ref=e102]: Team
+          - listitem [ref=e103]:
+            - link "Notifications" [ref=e104] [cursor=pointer]:
+              - /url: /notifications
+              - img [ref=e105]
+              - generic [ref=e108]: Notifications
+      - link "New Chat" [ref=e114] [cursor=pointer]:
+        - /url: /chat
+        - img
+        - text: New Chat
+      - link "Help" [ref=e116] [cursor=pointer]:
+        - /url: /help
+        - img
+    - main "Main content" [ref=e118]:
+      - generic [ref=e120]:
+        - generic [ref=e121]:
+          - heading "Sovereignty" [level=1] [ref=e122]:
+            - img [ref=e123]
+            - text: Sovereignty
+          - paragraph [ref=e125]: Your vault and keys are under your complete control
+        - generic [ref=e126]:
+          - region "Sovereignty Score" [ref=e127]:
+            - generic [ref=e128]:
+              - generic [ref=e130]:
+                - generic [ref=e131]: "0"
+                - generic [ref=e132]: "--"
+              - generic [ref=e136]:
+                - generic [ref=e138]:
+                  - generic [ref=e139]:
+                    - generic [ref=e140]: Encryption
+                    - img [ref=e141]
+                  - generic [ref=e143]: "0"
+                - generic [ref=e146]:
+                  - generic [ref=e147]:
+                    - generic [ref=e148]: Shards
+                    - img [ref=e149]
+                  - generic [ref=e151]: "0"
+                - generic [ref=e154]:
+                  - generic [ref=e155]:
+                    - generic [ref=e156]: Local Processing
+                    - img [ref=e157]
+                  - generic [ref=e159]: "0"
+                - generic [ref=e162]:
+                  - generic [ref=e163]:
+                    - generic [ref=e164]: Key Health
+                    - img [ref=e165]
+                  - generic [ref=e167]: "0"
+                - generic [ref=e170]:
+                  - generic [ref=e171]:
+                    - generic [ref=e172]: Access
+                    - img [ref=e173]
+                  - generic [ref=e175]: "0"
+            - link "Enable hardware key backup to reach 92 →" [ref=e177] [cursor=pointer]:
+              - /url: /sovereignty
+          - generic [ref=e178]:
+            - generic [ref=e180]:
+              - img [ref=e181]
+              - text: Shard Distribution
+            - generic [ref=e185]:
+              - generic "Shard map showing 12 shards across 3 nodes" [ref=e186]
+              - 'generic "Secure Node 1: 4 shards" [ref=e187] [cursor=pointer]'
+              - 'generic "Secure Node 2: 4 shards" [ref=e188] [cursor=pointer]'
+              - 'generic "Secure Node 3: 4 shards" [ref=e189] [cursor=pointer]'
+        - generic [ref=e190]:
+          - generic [ref=e191]:
+            - generic [ref=e192]:
+              - img [ref=e193]
+              - text: Encryption Key
+            - generic [ref=e197]: Your personal key for accessing your vault
+          - generic [ref=e198]:
+            - generic [ref=e199]:
+              - generic [ref=e200]:
+                - paragraph [ref=e201]: Fingerprint
+                - paragraph [ref=e202]: A7:3B:C2:D9:E4:F5
+              - generic [ref=e203]:
+                - paragraph [ref=e204]: Algorithm
+                - paragraph [ref=e205]: ECDH-P256
+              - generic [ref=e206]:
+                - paragraph [ref=e207]: Created
+                - paragraph [ref=e208]: March 15, 2026
+              - generic [ref=e209]:
+                - paragraph [ref=e210]: Backup
+                - generic [ref=e212]: QR Code
+              - generic [ref=e213]:
+                - paragraph [ref=e214]: Last Rotation
+                - paragraph [ref=e215]: Never
+            - generic [ref=e216]:
+              - button "Backup via QR" [ref=e217]:
+                - img
+                - text: Backup via QR
+              - button "Copy Fingerprint" [ref=e218]:
+                - img
+                - text: Copy Fingerprint
+              - button "Rotate Key" [ref=e219]:
+                - img
+                - text: Rotate Key
+        - generic [ref=e220]:
+          - generic [ref=e221]:
+            - generic [ref=e222]: Sovereignty Recommendations
+            - generic [ref=e223]: Follow these steps to enhance your vault security
+          - generic [ref=e224]:
+            - generic [ref=e225]:
+              - generic [ref=e226]:
+                - img [ref=e228]
+                - generic [ref=e230]:
+                  - paragraph [ref=e231]: Enable Hardware Key Backup
+                  - paragraph [ref=e232]: Protect your vault with a hardware security key
+              - generic [ref=e234]: +8 pts
+            - generic [ref=e235]:
+              - generic [ref=e236]:
+                - img [ref=e238]
+                - generic [ref=e240]:
+                  - paragraph [ref=e241]: Enable Biometric Lock
+                  - paragraph [ref=e242]: Require Face ID or Touch ID for sensitive actions
+              - generic [ref=e244]: +5 pts
+            - generic [ref=e245]:
+              - generic [ref=e246]:
+                - img [ref=e248]
+                - generic [ref=e250]:
+                  - paragraph [ref=e251]: Setup 2FA
+                  - paragraph [ref=e252]: Add an extra layer of authentication
+              - generic [ref=e254]: +4 pts
+        - generic [ref=e255]:
+          - generic [ref=e257]:
+            - img [ref=e258]
+            - text: Sharding Details
+          - generic [ref=e260]:
+            - generic [ref=e261]:
+              - generic [ref=e262]:
+                - paragraph [ref=e263]: "12"
+                - paragraph [ref=e264]: Active Shards
+              - generic [ref=e265]:
+                - paragraph [ref=e266]: "3"
+                - paragraph [ref=e267]: Nodes
+              - generic [ref=e268]:
+                - paragraph [ref=e269]: "4"
+                - paragraph [ref=e270]: Redundancy
+            - generic [ref=e271]:
+              - generic [ref=e272]:
+                - generic [ref=e273]: Network Health
+                - generic [ref=e274]: Excellent
+              - progressbar [ref=e275]
+              - paragraph [ref=e277]: All shards connected and synchronized
+        - generic [ref=e279]:
+          - img [ref=e280]
+          - paragraph [ref=e283]: Your Vault ID
+          - paragraph [ref=e284]: "Vault #00247"
+  - dialog "Cookie consent" [ref=e285]:
+    - generic [ref=e286]:
+      - generic [ref=e287]:
+        - generic [ref=e288]:
+          - img [ref=e290]
+          - generic [ref=e292]:
+            - heading "We Respect Your Privacy" [level=2] [ref=e293]
+            - paragraph [ref=e294]:
+              - text: We use essential cookies to operate our service. Analytics cookies are optional and you control them.
+              - link "Privacy Policy" [ref=e295] [cursor=pointer]:
+                - /url: /privacy-policy
+                - img [ref=e296]
+                - text: Privacy Policy
+        - button "Customize settings" [ref=e298]:
+          - text: Customize settings
+          - img [ref=e299]
+      - generic [ref=e301]:
+        - button "Essential Only" [ref=e302]
+        - button "Accept All" [ref=e303]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e311]:
+    - img [ref=e312]
+  - alert [ref=e315]
+```

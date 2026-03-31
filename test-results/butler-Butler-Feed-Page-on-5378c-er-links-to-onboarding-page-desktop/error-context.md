@@ -1,0 +1,242 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - navigation "Sidebar navigation" [ref=e5]:
+      - generic [ref=e6]:
+        - img "NexusAD Ai" [ref=e8]
+        - button "Collapse sidebar" [ref=e9]:
+          - img
+      - button "Search... ⌘ K" [ref=e11]:
+        - img [ref=e12]
+        - generic [ref=e15]: Search...
+        - generic [ref=e16]:
+          - generic [ref=e17]: ⌘
+          - text: K
+      - navigation [ref=e18]:
+        - list [ref=e19]:
+          - listitem [ref=e20]:
+            - link "Feed" [ref=e21] [cursor=pointer]:
+              - /url: /butler
+              - img [ref=e23]
+              - generic [ref=e26]: Feed
+          - listitem [ref=e27]:
+            - link "Chat" [ref=e28] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e29]
+              - generic [ref=e31]: Chat
+          - listitem [ref=e32]:
+            - link "Vault" [ref=e33] [cursor=pointer]:
+              - /url: /vault
+              - img [ref=e35]
+              - generic [ref=e39]: Vault
+          - listitem [ref=e40]:
+            - link "Insights" [ref=e41] [cursor=pointer]:
+              - /url: /sovereignty
+              - img [ref=e42]
+              - generic [ref=e44]: Insights
+          - listitem [ref=e45]:
+            - link "Voice" [ref=e46] [cursor=pointer]:
+              - /url: /voice
+              - img [ref=e47]
+              - generic [ref=e50]: Voice
+          - listitem [ref=e51]:
+            - link "Memory" [ref=e52] [cursor=pointer]:
+              - /url: /memory
+              - img [ref=e54]
+              - generic [ref=e63]: Memory
+          - listitem [ref=e64]:
+            - generic [ref=e65]: MORE
+          - listitem [ref=e66]:
+            - link "Domains" [ref=e67] [cursor=pointer]:
+              - /url: /domains
+              - img [ref=e68]
+              - generic [ref=e71]: Domains
+          - listitem [ref=e72]:
+            - link "Help" [ref=e73] [cursor=pointer]:
+              - /url: /help
+              - img [ref=e74]
+              - generic [ref=e77]: Help
+          - listitem [ref=e78]:
+            - link "Billing" [ref=e79] [cursor=pointer]:
+              - /url: /billing
+              - img [ref=e80]
+              - generic [ref=e82]: Billing
+          - listitem [ref=e83]:
+            - link "Profile" [ref=e84] [cursor=pointer]:
+              - /url: /profile
+              - img [ref=e85]
+              - generic [ref=e88]: Profile
+          - listitem [ref=e89]:
+            - link "Settings" [ref=e90] [cursor=pointer]:
+              - /url: /settings
+              - img [ref=e91]
+              - generic [ref=e94]: Settings
+          - listitem [ref=e95]:
+            - link "Team" [ref=e96] [cursor=pointer]:
+              - /url: /team
+              - img [ref=e97]
+              - generic [ref=e102]: Team
+          - listitem [ref=e103]:
+            - link "Notifications" [ref=e104] [cursor=pointer]:
+              - /url: /notifications
+              - img [ref=e105]
+              - generic [ref=e108]: Notifications
+      - link "New Chat" [ref=e114] [cursor=pointer]:
+        - /url: /chat
+        - img
+        - text: New Chat
+      - link "Help" [ref=e116] [cursor=pointer]:
+        - /url: /help
+        - img
+    - main "Main content" [ref=e118]:
+      - generic [ref=e121]:
+        - generic [ref=e123]:
+          - img [ref=e125]
+          - generic [ref=e128]:
+            - paragraph [ref=e129]: Personalize your AI
+            - paragraph [ref=e130]: Tell us your role and interests for tailored intelligence
+          - link "Get Started" [ref=e131] [cursor=pointer]:
+            - /url: /onboarding
+            - generic [ref=e132]: Get Started
+            - img
+        - generic [ref=e133]:
+          - generic [ref=e134]:
+            - img [ref=e135]
+            - heading "Good evening, friend" [level=1] [ref=e137]
+          - paragraph [ref=e138]: Your Butler found 5 items for you.
+        - button "0 anonymous requests Ready to protect your data" [ref=e140]:
+          - img [ref=e142]
+          - generic [ref=e144]:
+            - generic [ref=e146]: 0 anonymous requests
+            - paragraph [ref=e147]: Ready to protect your data
+          - img [ref=e149]
+        - generic [ref=e151]:
+          - article "50% Off Emirates Flights" [ref=e154] [cursor=pointer]:
+            - generic [ref=e155]:
+              - generic [ref=e156]:
+                - generic [ref=e157]: Deal
+                - generic [ref=e158]: 30m ago
+              - heading "50% Off Emirates Flights" [level=3] [ref=e159]
+              - paragraph [ref=e160]: Book by March 30 for half-price flights to London and Paris.
+              - generic [ref=e161]:
+                - generic [ref=e162]: AED 4,500
+                - generic [ref=e163]: AED 2,250
+                - generic [ref=e164]:
+                  - img [ref=e165]
+                  - generic [ref=e167]: "4.5"
+              - generic [ref=e168]:
+                - button "Book Now" [ref=e169]:
+                  - text: Book Now
+                  - img
+                - generic [ref=e170]: Emirates
+              - paragraph [ref=e171]: This is a sponsored deal
+            - generic:
+              - img
+            - generic:
+              - img
+          - article "Bitcoin Surges Past $90K" [ref=e174] [cursor=pointer]:
+            - generic [ref=e176]:
+              - generic [ref=e177]:
+                - generic [ref=e178]: Market
+                - generic [ref=e179]: 10m ago
+              - heading "Bitcoin Surges Past $90K" [level=3] [ref=e180]
+              - paragraph [ref=e181]: BTC hits new all-time high amid ETF inflows.
+              - generic [ref=e182]:
+                - generic [ref=e183]: BTC
+                - generic [ref=e184]: $91,250
+                - generic [ref=e185]:
+                  - img [ref=e186]
+                  - generic [ref=e189]: +2.64%
+              - generic [ref=e190]:
+                - button "View Chart" [ref=e191]:
+                  - text: View Chart
+                  - img
+                - generic [ref=e192]: CoinDesk
+            - generic:
+              - img
+            - generic:
+              - img
+          - article "DEWA Payment Due Tomorrow" [ref=e195] [cursor=pointer]:
+            - generic [ref=e197]:
+              - generic [ref=e198]:
+                - generic [ref=e199]: Alert
+                - generic [ref=e200]: 5m ago
+              - heading "DEWA Payment Due Tomorrow" [level=3] [ref=e201]
+              - paragraph [ref=e202]: Your DEWA bill of AED 850 is due tomorrow. Avoid late fees.
+              - generic [ref=e204]:
+                - img [ref=e205]
+                - text: Critical
+              - generic [ref=e208]: DEWA
+            - generic:
+              - img
+            - generic:
+              - img
+          - article "Dubai Metro Extension Approved" [ref=e211] [cursor=pointer]:
+            - generic [ref=e212]:
+              - generic [ref=e213]:
+                - generic [ref=e214]: News
+                - generic [ref=e215]: 2h ago
+              - heading "Dubai Metro Extension Approved" [level=3] [ref=e216]
+              - paragraph [ref=e217]: New Blue Line will connect Dubai Marina to Al Maktoum Airport by 2030.
+              - generic [ref=e219]: Gulf News
+            - generic:
+              - img
+            - generic:
+              - img
+          - article "Dubai Food Festival 2026" [ref=e222] [cursor=pointer]:
+            - generic [ref=e223]:
+              - generic [ref=e224]:
+                - generic [ref=e225]: Event
+                - generic [ref=e226]: 4h ago
+              - heading "Dubai Food Festival 2026" [level=3] [ref=e227]
+              - paragraph [ref=e228]: Three weeks of culinary experiences starting April 5.
+              - generic [ref=e229]:
+                - button "Learn More" [ref=e230]:
+                  - text: Learn More
+                  - img
+                - generic [ref=e231]: Visit Dubai
+            - generic:
+              - img
+            - generic:
+              - img
+        - button "Refresh feed" [ref=e233]:
+          - img
+  - dialog "Cookie consent" [ref=e234]:
+    - generic [ref=e235]:
+      - generic [ref=e236]:
+        - generic [ref=e237]:
+          - img [ref=e239]
+          - generic [ref=e241]:
+            - heading "We Respect Your Privacy" [level=2] [ref=e242]
+            - paragraph [ref=e243]:
+              - text: We use essential cookies to operate our service. Analytics cookies are optional and you control them.
+              - link "Privacy Policy" [ref=e244] [cursor=pointer]:
+                - /url: /privacy-policy
+                - img [ref=e245]
+                - text: Privacy Policy
+        - button "Customize settings" [ref=e247]:
+          - text: Customize settings
+          - img [ref=e248]
+      - generic [ref=e250]:
+        - button "Essential Only" [ref=e251]
+        - button "Accept All" [ref=e252]
+  - region "Notifications alt+T"
+  - generic [ref=e259]:
+    - button "Open Next.js Dev Tools" [ref=e260]:
+      - img [ref=e261]
+    - generic [ref=e264]:
+      - button "Open issues overlay" [ref=e265]:
+        - generic [ref=e266]:
+          - generic [ref=e267]: "1"
+          - generic [ref=e268]: "2"
+        - generic [ref=e269]: Issues
+      - button "Collapse issues badge" [ref=e270]:
+        - img [ref=e271]
+  - alert [ref=e273]
+```

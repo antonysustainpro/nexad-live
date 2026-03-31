@@ -1,0 +1,194 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - navigation "Sidebar navigation" [ref=e5]:
+      - generic [ref=e6]:
+        - img "NexusAD Ai" [ref=e8]
+        - button "Collapse sidebar" [ref=e9]:
+          - img
+      - button "Search... ⌘ K" [ref=e11]:
+        - img [ref=e12]
+        - generic [ref=e15]: Search...
+        - generic [ref=e16]:
+          - generic [ref=e17]: ⌘
+          - text: K
+      - navigation [ref=e18]:
+        - list [ref=e19]:
+          - listitem [ref=e20]:
+            - link "Feed" [ref=e21] [cursor=pointer]:
+              - /url: /butler
+              - img [ref=e23]
+              - generic [ref=e26]: Feed
+          - listitem [ref=e27]:
+            - link "Chat" [ref=e28] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e29]
+              - generic [ref=e31]: Chat
+          - listitem [ref=e32]:
+            - link "Vault" [ref=e33] [cursor=pointer]:
+              - /url: /vault
+              - img [ref=e35]
+              - generic [ref=e39]: Vault
+          - listitem [ref=e40]:
+            - link "Insights" [ref=e41] [cursor=pointer]:
+              - /url: /sovereignty
+              - img [ref=e42]
+              - generic [ref=e44]: Insights
+          - listitem [ref=e45]:
+            - link "Voice" [ref=e46] [cursor=pointer]:
+              - /url: /voice
+              - img [ref=e47]
+              - generic [ref=e50]: Voice
+          - listitem [ref=e51]:
+            - link "Memory" [ref=e52] [cursor=pointer]:
+              - /url: /memory
+              - img [ref=e54]
+              - generic [ref=e63]: Memory
+          - listitem [ref=e64]:
+            - generic [ref=e65]: MORE
+          - listitem [ref=e66]:
+            - link "Domains" [ref=e67] [cursor=pointer]:
+              - /url: /domains
+              - img [ref=e68]
+              - generic [ref=e71]: Domains
+          - listitem [ref=e72]:
+            - link "Help" [ref=e73] [cursor=pointer]:
+              - /url: /help
+              - img [ref=e74]
+              - generic [ref=e77]: Help
+          - listitem [ref=e78]:
+            - link "Billing" [ref=e79] [cursor=pointer]:
+              - /url: /billing
+              - img [ref=e80]
+              - generic [ref=e82]: Billing
+          - listitem [ref=e83]:
+            - link "Profile" [ref=e84] [cursor=pointer]:
+              - /url: /profile
+              - img [ref=e85]
+              - generic [ref=e88]: Profile
+          - listitem [ref=e89]:
+            - link "Settings" [ref=e90] [cursor=pointer]:
+              - /url: /settings
+              - img [ref=e91]
+              - generic [ref=e94]: Settings
+          - listitem [ref=e95]:
+            - link "Team" [ref=e96] [cursor=pointer]:
+              - /url: /team
+              - img [ref=e97]
+              - generic [ref=e102]: Team
+          - listitem [ref=e103]:
+            - link "Notifications" [ref=e104] [cursor=pointer]:
+              - /url: /notifications
+              - img [ref=e105]
+              - generic [ref=e108]: Notifications
+      - link "New Chat" [ref=e114] [cursor=pointer]:
+        - /url: /chat
+        - img
+        - text: New Chat
+      - link "Help" [ref=e116] [cursor=pointer]:
+        - /url: /help
+        - img
+    - main "Main content" [ref=e118]:
+      - generic [ref=e120]:
+        - generic [ref=e121]:
+          - generic [ref=e122]:
+            - heading "Your Sovereign Vault" [level=1] [ref=e123]:
+              - img [ref=e124]
+              - text: Your Sovereign Vault
+            - paragraph [ref=e127]: Upload documents → AI analyzes them → Domain mastery grows
+          - button "Upload Document" [ref=e128]:
+            - img
+            - text: Upload Document
+        - generic [ref=e129]:
+          - generic [ref=e131]:
+            - img [ref=e132]
+            - text: Shard Distribution
+          - generic [ref=e136]:
+            - generic "Shard map showing 12 shards across 3 nodes" [ref=e137]
+            - 'generic "Secure Node 1: 4 shards" [ref=e138] [cursor=pointer]'
+            - 'generic "Secure Node 2: 4 shards" [ref=e139] [cursor=pointer]'
+            - 'generic "Secure Node 3: 4 shards" [ref=e140] [cursor=pointer]'
+            - generic [ref=e141]: 12 shards across 3 secure nodes
+        - generic [ref=e142]:
+          - tablist [ref=e143]:
+            - tab "Documents" [selected] [ref=e144]:
+              - img
+              - text: Documents
+            - tab "Access Log" [ref=e145]:
+              - img
+              - text: Access Log
+          - tabpanel "Documents" [ref=e146]:
+            - generic [ref=e147]:
+              - img [ref=e148]
+              - paragraph [ref=e151]: Drag and drop files here, or
+              - button "browse" [ref=e152]
+              - paragraph [ref=e153]: Supports PDF, DOCX, XLSX, images, and more
+            - generic [ref=e154]:
+              - generic [ref=e155]:
+                - img [ref=e156]
+                - generic [ref=e159]: Search vault
+                - textbox "Search vault" [ref=e160]:
+                  - /placeholder: Search vault...
+              - button "All Domains" [ref=e161]:
+                - img
+                - text: All Domains
+              - generic [ref=e162]:
+                - button "Grid view" [ref=e163]:
+                  - img
+                - button "List view" [ref=e164]:
+                  - img
+            - generic [ref=e165]:
+              - heading "Folders" [level=2] [ref=e166]
+              - button "New Folder" [ref=e168]:
+                - img [ref=e169]
+                - generic [ref=e170]: New Folder
+            - generic [ref=e171]:
+              - heading "Documents (0)" [level=2] [ref=e172]
+              - generic [ref=e173]:
+                - img [ref=e175]
+                - heading "No documents yet" [level=3] [ref=e178]
+                - paragraph [ref=e179]: Upload documents → AI analyzes them → Domain mastery grows
+        - generic [ref=e181]:
+          - generic [ref=e182]:
+            - generic [ref=e183]: Storage Used
+            - generic [ref=e184]: 0 MB / 10 GB
+          - progressbar [ref=e185]
+  - dialog "Cookie consent" [ref=e187]:
+    - generic [ref=e188]:
+      - generic [ref=e189]:
+        - generic [ref=e190]:
+          - img [ref=e192]
+          - generic [ref=e194]:
+            - heading "We Respect Your Privacy" [level=2] [ref=e195]
+            - paragraph [ref=e196]:
+              - text: We use essential cookies to operate our service. Analytics cookies are optional and you control them.
+              - link "Privacy Policy" [ref=e197] [cursor=pointer]:
+                - /url: /privacy-policy
+                - img [ref=e198]
+                - text: Privacy Policy
+        - button "Customize settings" [ref=e200]:
+          - text: Customize settings
+          - img [ref=e201]
+      - generic [ref=e203]:
+        - button "Essential Only" [ref=e204]
+        - button "Accept All" [ref=e205]
+  - region "Notifications alt+T"
+  - generic [ref=e212]:
+    - button "Open Next.js Dev Tools" [ref=e213]:
+      - img [ref=e214]
+    - generic [ref=e217]:
+      - button "Open issues overlay" [ref=e218]:
+        - generic [ref=e219]:
+          - generic [ref=e220]: "1"
+          - generic [ref=e221]: "2"
+        - generic [ref=e222]: Issues
+      - button "Collapse issues badge" [ref=e223]:
+        - img [ref=e224]
+  - alert [ref=e226]
+```

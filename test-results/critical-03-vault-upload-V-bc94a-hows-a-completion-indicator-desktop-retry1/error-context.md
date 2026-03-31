@@ -1,0 +1,218 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - navigation "Sidebar navigation" [ref=e5]:
+      - generic [ref=e6]:
+        - img "NexusAD Ai" [ref=e8]
+        - button "Collapse sidebar" [ref=e9]:
+          - img
+      - button "Search... ⌘ K" [ref=e11]:
+        - img [ref=e12]
+        - generic [ref=e15]: Search...
+        - generic [ref=e16]:
+          - generic [ref=e17]: ⌘
+          - text: K
+      - navigation [ref=e18]:
+        - list [ref=e19]:
+          - listitem [ref=e20]:
+            - link "Feed" [ref=e21] [cursor=pointer]:
+              - /url: /butler
+              - img [ref=e23]
+              - generic [ref=e26]: Feed
+          - listitem [ref=e27]:
+            - link "Chat" [ref=e28] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e29]
+              - generic [ref=e31]: Chat
+          - listitem [ref=e32]:
+            - link "Vault" [ref=e33] [cursor=pointer]:
+              - /url: /vault
+              - img [ref=e35]
+              - generic [ref=e39]: Vault
+          - listitem [ref=e40]:
+            - link "Insights" [ref=e41] [cursor=pointer]:
+              - /url: /sovereignty
+              - img [ref=e42]
+              - generic [ref=e44]: Insights
+          - listitem [ref=e45]:
+            - link "Voice" [ref=e46] [cursor=pointer]:
+              - /url: /voice
+              - img [ref=e47]
+              - generic [ref=e50]: Voice
+          - listitem [ref=e51]:
+            - link "Memory" [ref=e52] [cursor=pointer]:
+              - /url: /memory
+              - img [ref=e54]
+              - generic [ref=e63]: Memory
+          - listitem [ref=e64]:
+            - generic [ref=e65]: MORE
+          - listitem [ref=e66]:
+            - link "Domains" [ref=e67] [cursor=pointer]:
+              - /url: /domains
+              - img [ref=e68]
+              - generic [ref=e71]: Domains
+          - listitem [ref=e72]:
+            - link "Help" [ref=e73] [cursor=pointer]:
+              - /url: /help
+              - img [ref=e74]
+              - generic [ref=e77]: Help
+          - listitem [ref=e78]:
+            - link "Billing" [ref=e79] [cursor=pointer]:
+              - /url: /billing
+              - img [ref=e80]
+              - generic [ref=e82]: Billing
+          - listitem [ref=e83]:
+            - link "Profile" [ref=e84] [cursor=pointer]:
+              - /url: /profile
+              - img [ref=e85]
+              - generic [ref=e88]: Profile
+          - listitem [ref=e89]:
+            - link "Settings" [ref=e90] [cursor=pointer]:
+              - /url: /settings
+              - img [ref=e91]
+              - generic [ref=e94]: Settings
+          - listitem [ref=e95]:
+            - link "Team" [ref=e96] [cursor=pointer]:
+              - /url: /team
+              - img [ref=e97]
+              - generic [ref=e102]: Team
+          - listitem [ref=e103]:
+            - link "Notifications" [ref=e104] [cursor=pointer]:
+              - /url: /notifications
+              - img [ref=e105]
+              - generic [ref=e108]: Notifications
+      - link "New Chat" [ref=e114] [cursor=pointer]:
+        - /url: /chat
+        - img
+        - text: New Chat
+      - link "Help" [ref=e116] [cursor=pointer]:
+        - /url: /help
+        - img
+    - main "Main content" [ref=e118]:
+      - generic [ref=e120]:
+        - generic [ref=e121]:
+          - generic [ref=e122]:
+            - heading "Your Sovereign Vault" [level=1] [ref=e123]:
+              - img [ref=e124]
+              - text: Your Sovereign Vault
+            - paragraph [ref=e127]: 2 documents encrypted & sovereign
+          - button "Upload Document" [ref=e128]:
+            - img
+            - text: Upload Document
+        - generic [ref=e129]:
+          - generic [ref=e131]:
+            - img [ref=e132]
+            - text: Shard Distribution
+          - generic [ref=e136]:
+            - generic "Shard map showing 12 shards across 3 nodes" [ref=e137]
+            - 'generic "Secure Node 1: 4 shards" [ref=e138] [cursor=pointer]'
+            - 'generic "Secure Node 2: 4 shards" [ref=e139] [cursor=pointer]'
+            - 'generic "Secure Node 3: 4 shards" [ref=e140] [cursor=pointer]'
+            - generic [ref=e141]: 12 shards across 3 secure nodes
+        - generic [ref=e142]:
+          - tablist [ref=e143]:
+            - tab "Documents" [selected] [ref=e144]:
+              - img
+              - text: Documents
+            - tab "Access Log" [ref=e145]:
+              - img
+              - text: Access Log
+          - tabpanel "Documents" [ref=e146]:
+            - generic [ref=e149]:
+              - img [ref=e151]
+              - generic [ref=e153]:
+                - paragraph [ref=e154]: Secured
+                - progressbar [ref=e155]
+              - generic [ref=e157]: 100%
+            - generic [ref=e158]:
+              - img [ref=e159]
+              - paragraph [ref=e162]: Drag and drop files here, or
+              - button "browse" [ref=e163]
+              - paragraph [ref=e164]: Supports PDF, DOCX, XLSX, images, and more
+            - generic [ref=e165]:
+              - generic [ref=e166]:
+                - img [ref=e167]
+                - generic [ref=e170]: Search vault
+                - textbox "Search vault" [ref=e171]:
+                  - /placeholder: Search vault...
+              - button "All Domains" [ref=e172]:
+                - img
+                - text: All Domains
+              - generic [ref=e173]:
+                - button "Grid view" [ref=e174]:
+                  - img
+                - button "List view" [ref=e175]:
+                  - img
+            - generic [ref=e176]:
+              - heading "Folders" [level=2] [ref=e177]
+              - generic [ref=e178]:
+                - button "Personal - 2 items" [ref=e179] [cursor=pointer]:
+                  - img [ref=e180]
+                  - generic [ref=e182]:
+                    - paragraph [ref=e183]: Personal
+                    - paragraph [ref=e184]: 2 items
+                - button "New Folder" [ref=e185]:
+                  - img [ref=e186]
+                  - generic [ref=e187]: New Folder
+            - generic [ref=e188]:
+              - heading "Documents (2)" [level=2] [ref=e189]
+              - generic [ref=e190]:
+                - generic [ref=e192]:
+                  - generic [ref=e193]:
+                    - img [ref=e195]
+                    - button "More options" [ref=e198]:
+                      - img
+                  - paragraph [ref=e199]: e2e-test-document.pdf
+                  - generic [ref=e200]:
+                    - generic [ref=e201]: 299 B
+                    - generic [ref=e202]: ·
+                    - generic [ref=e203]: Personal
+                  - generic [ref=e204]:
+                    - img [ref=e205]
+                    - generic [ref=e208]: 3 shards
+                    - generic [ref=e209]: ·
+                    - generic [ref=e210]: Just now
+                - generic [ref=e212]:
+                  - generic [ref=e213]:
+                    - img [ref=e215]
+                    - button "More options" [ref=e218]:
+                      - img
+                  - paragraph [ref=e219]: Untitled
+                  - generic [ref=e220]:
+                    - generic [ref=e221]: —
+                    - generic [ref=e222]: ·
+                    - generic [ref=e223]: Personal
+                  - generic [ref=e224]:
+                    - img [ref=e225]
+                    - generic [ref=e228]: 1 shards
+                    - generic [ref=e229]: ·
+                    - generic [ref=e230]: Today
+        - generic [ref=e232]:
+          - generic [ref=e233]:
+            - generic [ref=e234]: Storage Used
+            - generic [ref=e235]: 0 MB / 10 GB
+          - progressbar [ref=e236]
+  - region "Notifications alt+T" [ref=e238]:
+    - list [ref=e239]:
+      - listitem [ref=e240]:
+        - img [ref=e242]
+        - generic [ref=e245]: Document uploaded successfully
+  - generic [ref=e252]:
+    - button "Open Next.js Dev Tools" [ref=e253]:
+      - img [ref=e254]
+    - generic [ref=e257]:
+      - button "Open issues overlay" [ref=e258]:
+        - generic [ref=e259]:
+          - generic [ref=e260]: "1"
+          - generic [ref=e261]: "2"
+        - generic [ref=e262]: Issues
+      - button "Collapse issues badge" [ref=e263]:
+        - img [ref=e264]
+  - alert [ref=e266]
+```

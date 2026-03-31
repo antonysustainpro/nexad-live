@@ -1,0 +1,106 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - button "التبديل إلى العربية" [ref=e8]:
+      - img
+      - text: العربية
+    - main [ref=e9]:
+      - link "NexusAD Home" [ref=e10] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e12]: NexusAD
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - generic [ref=e16]: Create Account
+          - generic [ref=e17]: Join NexusAD and start your journey
+        - generic [ref=e19]:
+          - generic [ref=e20]:
+            - generic [ref=e21]: Full Name
+            - generic [ref=e22]:
+              - img [ref=e23]
+              - textbox "Full Name" [ref=e26]:
+                - /placeholder: Enter your full name
+                - text: Test User
+          - generic [ref=e27]:
+            - generic [ref=e28]: Email
+            - generic [ref=e29]:
+              - img [ref=e30]
+              - textbox "Email" [ref=e33]:
+                - /placeholder: name@example.com
+                - text: existing@example.com
+          - generic [ref=e34]:
+            - generic [ref=e35]: Password
+            - generic [ref=e36]:
+              - img [ref=e37]
+              - textbox "Password" [ref=e40]:
+                - /placeholder: ••••••••
+                - text: SecurePass1!
+              - button "Show password" [ref=e41]:
+                - img [ref=e42]
+            - generic [ref=e45]:
+              - progressbar [ref=e46]
+              - paragraph [ref=e48]: Strong
+          - generic [ref=e49]:
+            - generic [ref=e50]: Confirm Password
+            - generic [ref=e51]:
+              - img [ref=e52]
+              - textbox "Confirm Password" [ref=e55]:
+                - /placeholder: ••••••••
+                - text: SecurePass1!
+              - button "Show password" [ref=e56]:
+                - img [ref=e57]
+          - generic [ref=e60]:
+            - checkbox "I agree to the Terms of Service and Privacy Policy" [checked] [ref=e61]:
+              - generic:
+                - img
+            - checkbox [checked] [ref=e62]
+            - generic [ref=e63] [cursor=pointer]:
+              - text: I agree to the
+              - link "Terms of Service" [ref=e64]:
+                - /url: /terms
+              - text: and
+              - link "Privacy Policy" [ref=e65]:
+                - /url: /privacy
+          - button "Create Account" [ref=e66]
+        - paragraph [ref=e68]:
+          - text: Already have an account?
+          - link "Sign In" [ref=e69] [cursor=pointer]:
+            - /url: /login
+    - contentinfo [ref=e70]:
+      - paragraph [ref=e71]: © 2026 NexusAD. All rights reserved.
+  - dialog "Cookie consent" [ref=e72]:
+    - generic [ref=e73]:
+      - generic [ref=e74]:
+        - generic [ref=e75]:
+          - img [ref=e77]
+          - generic [ref=e79]:
+            - heading "We Respect Your Privacy" [level=2] [ref=e80]
+            - paragraph [ref=e81]:
+              - text: We use essential cookies to operate our service. Analytics cookies are optional and you control them.
+              - link "Privacy Policy" [ref=e82] [cursor=pointer]:
+                - /url: /privacy-policy
+                - img [ref=e83]
+                - text: Privacy Policy
+        - button "Customize settings" [ref=e85]:
+          - text: Customize settings
+          - img [ref=e86]
+      - generic [ref=e88]:
+        - button "Essential Only" [ref=e89]
+        - button "Accept All" [ref=e90]
+  - region "Notifications alt+T"
+  - generic [ref=e97]:
+    - button "Open Next.js Dev Tools" [ref=e98]:
+      - img [ref=e99]
+    - generic [ref=e102]:
+      - button "Open issues overlay" [ref=e103]:
+        - generic [ref=e104]:
+          - generic [ref=e105]: "0"
+          - generic [ref=e106]: "1"
+        - generic [ref=e107]: Issue
+      - button "Collapse issues badge" [ref=e108]:
+        - img [ref=e109]
+  - alert [ref=e111]
+```

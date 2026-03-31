@@ -1,0 +1,66 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - button "التبديل إلى العربية" [ref=e8]:
+      - img
+      - text: العربية
+    - main [ref=e9]:
+      - link "NexusAD Home" [ref=e10] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e12]: NexusAD
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - generic [ref=e16]: Sign In
+          - generic [ref=e17]: Enter your credentials to continue
+        - generic [ref=e18]:
+          - generic [ref=e19]:
+            - generic [ref=e20]:
+              - generic [ref=e21]: Email
+              - generic [ref=e22]:
+                - img [ref=e23]
+                - textbox "Email" [ref=e26]:
+                  - /placeholder: name@example.com
+            - generic [ref=e27]:
+              - generic [ref=e28]:
+                - generic [ref=e29]: Password
+                - link "Forgot password?" [ref=e30] [cursor=pointer]:
+                  - /url: /forgot-password
+              - generic [ref=e31]:
+                - img [ref=e32]
+                - textbox "Password" [ref=e35]:
+                  - /placeholder: ••••••••
+                - button "Show password" [ref=e36]:
+                  - img [ref=e37]
+            - generic [ref=e40]:
+              - checkbox "Remember me" [ref=e41]
+              - checkbox [ref=e42]
+              - generic [ref=e43] [cursor=pointer]: Remember me
+            - button "Sign In" [ref=e44]
+          - generic [ref=e49]: or
+          - button "Continue with Google" [ref=e50]:
+            - img
+            - text: Continue with Google
+        - paragraph [ref=e52]:
+          - text: Don't have an account?
+          - link "Sign Up" [ref=e53] [cursor=pointer]:
+            - /url: /register
+    - contentinfo [ref=e54]:
+      - paragraph [ref=e55]: © 2026 NexusAD. All rights reserved.
+  - region "Notifications alt+T"
+  - generic [ref=e62]:
+    - button "Open Next.js Dev Tools" [ref=e63]:
+      - img [ref=e64]
+    - generic [ref=e67]:
+      - button "Open issues overlay" [ref=e68]:
+        - generic [ref=e69]:
+          - generic [ref=e70]: "0"
+          - generic [ref=e71]: "1"
+        - generic [ref=e72]: Issue
+      - button "Collapse issues badge" [ref=e73]:
+        - img [ref=e74]
+  - alert [ref=e76]
+```

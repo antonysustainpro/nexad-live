@@ -1,0 +1,216 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - navigation "Sidebar navigation" [ref=e5]:
+      - generic [ref=e6]:
+        - img "NexusAD Ai" [ref=e8]
+        - button "Collapse sidebar" [ref=e9]:
+          - img
+      - button "Search... ⌘ K" [ref=e11]:
+        - img [ref=e12]
+        - generic [ref=e15]: Search...
+        - generic [ref=e16]:
+          - generic [ref=e17]: ⌘
+          - text: K
+      - navigation [ref=e18]:
+        - list [ref=e19]:
+          - listitem [ref=e20]:
+            - link "Feed" [ref=e21] [cursor=pointer]:
+              - /url: /butler
+              - img [ref=e23]
+              - generic [ref=e26]: Feed
+          - listitem [ref=e27]:
+            - link "Chat" [ref=e28] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e29]
+              - generic [ref=e31]: Chat
+          - listitem [ref=e32]:
+            - link "Vault" [ref=e33] [cursor=pointer]:
+              - /url: /vault
+              - img [ref=e35]
+              - generic [ref=e39]: Vault
+          - listitem [ref=e40]:
+            - link "Insights" [ref=e41] [cursor=pointer]:
+              - /url: /sovereignty
+              - img [ref=e42]
+              - generic [ref=e44]: Insights
+          - listitem [ref=e45]:
+            - link "Voice" [ref=e46] [cursor=pointer]:
+              - /url: /voice
+              - img [ref=e47]
+              - generic [ref=e50]: Voice
+          - listitem [ref=e51]:
+            - link "Memory" [ref=e52] [cursor=pointer]:
+              - /url: /memory
+              - img [ref=e54]
+              - generic [ref=e63]: Memory
+          - listitem [ref=e64]:
+            - generic [ref=e65]: MORE
+          - listitem [ref=e66]:
+            - link "Domains" [ref=e67] [cursor=pointer]:
+              - /url: /domains
+              - img [ref=e68]
+              - generic [ref=e71]: Domains
+          - listitem [ref=e72]:
+            - link "Help" [ref=e73] [cursor=pointer]:
+              - /url: /help
+              - img [ref=e74]
+              - generic [ref=e77]: Help
+          - listitem [ref=e78]:
+            - link "Billing" [ref=e79] [cursor=pointer]:
+              - /url: /billing
+              - img [ref=e80]
+              - generic [ref=e82]: Billing
+          - listitem [ref=e83]:
+            - link "Profile" [ref=e84] [cursor=pointer]:
+              - /url: /profile
+              - img [ref=e85]
+              - generic [ref=e88]: Profile
+          - listitem [ref=e89]:
+            - link "Settings" [ref=e90] [cursor=pointer]:
+              - /url: /settings
+              - img [ref=e91]
+              - generic [ref=e94]: Settings
+          - listitem [ref=e95]:
+            - link "Team" [ref=e96] [cursor=pointer]:
+              - /url: /team
+              - img [ref=e97]
+              - generic [ref=e102]: Team
+          - listitem [ref=e103]:
+            - link "Notifications" [ref=e104] [cursor=pointer]:
+              - /url: /notifications
+              - img [ref=e105]
+              - generic [ref=e108]: Notifications
+      - generic [ref=e113]:
+        - heading "Today" [level=3] [ref=e114]
+        - list [ref=e115]:
+          - listitem [ref=e116]:
+            - link "Hello NexusAD" [ref=e117] [cursor=pointer]:
+              - /url: /chat/ba8d44e6-5c23-4aba-8780-0ff2606eb1de
+              - generic [ref=e118]: Hello NexusAD
+              - img [ref=e119]
+      - link "New Chat" [ref=e123] [cursor=pointer]:
+        - /url: /chat
+        - img
+        - text: New Chat
+      - link "Help" [ref=e125] [cursor=pointer]:
+        - /url: /help
+        - img
+    - main "Main content" [ref=e127]:
+      - generic [ref=e129]:
+        - generic [ref=e130]:
+          - button "Select intelligence mode" [ref=e131]:
+            - img
+            - generic [ref=e132]: Standard
+            - img
+          - button "Select language" [ref=e133]:
+            - img
+            - generic [ref=e134]: EN
+            - img
+        - generic:
+          - generic:
+            - generic: Hello
+          - generic:
+            - generic: NexusAD
+        - generic [ref=e135]:
+          - log "Conversation log" [ref=e139]:
+            - article "Your message" [ref=e141]:
+              - paragraph [ref=e143]: Hello NexusAD
+              - img [ref=e144]
+            - article "Assistant response" [ref=e148]:
+              - paragraph [ref=e150]: Hello! I am NexusAD, your sovereign AI assistant. How can I help you today?
+              - button "Regenerate response" [ref=e152]:
+                - img [ref=e153]
+                - generic [ref=e158]: Regenerate
+              - img [ref=e159]
+          - generic [ref=e163]:
+            - button "Attach file" [ref=e164]:
+              - img
+            - textbox "Ask anything..." [ref=e165]
+            - button "Send" [disabled]:
+              - img
+        - generic [ref=e166]:
+          - button "Collapse panel" [ref=e167]:
+            - img
+          - complementary [ref=e168]:
+            - generic [ref=e172]:
+              - paragraph [ref=e174]: CONTEXT
+              - generic [ref=e175]:
+                - heading "Domain" [level=3] [ref=e176]:
+                  - img [ref=e177]
+                  - text: Domain
+                - generic [ref=e180]:
+                  - img [ref=e181]
+                  - generic [ref=e184]:
+                    - paragraph [ref=e185]: General
+                    - progressbar [ref=e186]
+                  - generic [ref=e188]: 87%
+              - generic [ref=e189]:
+                - heading "Emotion" [level=3] [ref=e190]:
+                  - img [ref=e191]
+                  - text: Emotion
+                - generic [ref=e194]:
+                  - generic [ref=e196]: Joyful
+                  - generic [ref=e197]: 82%
+              - paragraph [ref=e199]: SPECIALISTS
+              - generic [ref=e202]:
+                - generic [ref=e203]:
+                  - generic [ref=e204]: General Assistant
+                  - generic [ref=e205]: 100%
+                - progressbar [ref=e206]
+              - generic [ref=e208]:
+                - heading "Sources" [level=3] [ref=e209]:
+                  - img [ref=e210]
+                  - text: Sources
+                - paragraph [ref=e213]: Upload documents to Vault for AI-sourced answers
+              - paragraph [ref=e215]: INFRASTRUCTURE
+              - generic [ref=e216]:
+                - heading "Active Nodes" [level=3] [ref=e217]:
+                  - img [ref=e218]
+                  - text: Active Nodes
+                - generic [ref=e221]:
+                  - generic [ref=e223]:
+                    - generic [ref=e224]: 🔒
+                    - text: Secure Node 1
+                  - generic [ref=e227]:
+                    - generic [ref=e228]: 🔒
+                    - text: Secure Node 2
+                  - generic [ref=e231]:
+                    - generic [ref=e232]: 🔒
+                    - text: Secure Node 3
+              - generic [ref=e234]:
+                - heading "Sovereign Brain" [level=3] [ref=e235]:
+                  - img [ref=e236]
+                  - text: Sovereign Brain
+                - paragraph [ref=e240]: Sovereign Brain
+              - generic [ref=e241]:
+                - heading "Usage" [level=3] [ref=e242]:
+                  - img [ref=e243]
+                  - text: Usage
+                - generic [ref=e245]:
+                  - generic [ref=e246]:
+                    - paragraph [ref=e247]: "-"
+                    - paragraph [ref=e248]: Tokens
+                  - generic [ref=e249]:
+                    - paragraph [ref=e250]: "-"
+                    - paragraph [ref=e251]: Latency
+  - region "Notifications alt+T"
+  - generic [ref=e258]:
+    - button "Open Next.js Dev Tools" [ref=e259]:
+      - img [ref=e260]
+    - generic [ref=e263]:
+      - button "Open issues overlay" [ref=e264]:
+        - generic [ref=e265]:
+          - generic [ref=e266]: "1"
+          - generic [ref=e267]: "2"
+        - generic [ref=e268]: Issues
+      - button "Collapse issues badge" [ref=e269]:
+        - img [ref=e270]
+  - alert [ref=e272]
+```

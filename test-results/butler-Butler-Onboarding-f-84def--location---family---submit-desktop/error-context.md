@@ -1,0 +1,170 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - navigation "Sidebar navigation" [ref=e5]:
+      - generic [ref=e6]:
+        - img "NexusAD Ai" [ref=e8]
+        - button "Collapse sidebar" [ref=e9]:
+          - img
+      - button "Search... ⌘ K" [ref=e11]:
+        - img [ref=e12]
+        - generic [ref=e15]: Search...
+        - generic [ref=e16]:
+          - generic [ref=e17]: ⌘
+          - text: K
+      - navigation [ref=e18]:
+        - list [ref=e19]:
+          - listitem [ref=e20]:
+            - link "Feed" [ref=e21] [cursor=pointer]:
+              - /url: /butler
+              - img [ref=e23]
+              - generic [ref=e26]: Feed
+          - listitem [ref=e27]:
+            - link "Chat" [ref=e28] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e29]
+              - generic [ref=e31]: Chat
+          - listitem [ref=e32]:
+            - link "Vault" [ref=e33] [cursor=pointer]:
+              - /url: /vault
+              - img [ref=e35]
+              - generic [ref=e39]: Vault
+          - listitem [ref=e40]:
+            - link "Insights" [ref=e41] [cursor=pointer]:
+              - /url: /sovereignty
+              - img [ref=e42]
+              - generic [ref=e44]: Insights
+          - listitem [ref=e45]:
+            - link "Voice" [ref=e46] [cursor=pointer]:
+              - /url: /voice
+              - img [ref=e47]
+              - generic [ref=e50]: Voice
+          - listitem [ref=e51]:
+            - link "Memory" [ref=e52] [cursor=pointer]:
+              - /url: /memory
+              - img [ref=e54]
+              - generic [ref=e63]: Memory
+          - listitem [ref=e64]:
+            - generic [ref=e65]: MORE
+          - listitem [ref=e66]:
+            - link "Domains" [ref=e67] [cursor=pointer]:
+              - /url: /domains
+              - img [ref=e68]
+              - generic [ref=e71]: Domains
+          - listitem [ref=e72]:
+            - link "Help" [ref=e73] [cursor=pointer]:
+              - /url: /help
+              - img [ref=e74]
+              - generic [ref=e77]: Help
+          - listitem [ref=e78]:
+            - link "Billing" [ref=e79] [cursor=pointer]:
+              - /url: /billing
+              - img [ref=e80]
+              - generic [ref=e82]: Billing
+          - listitem [ref=e83]:
+            - link "Profile" [ref=e84] [cursor=pointer]:
+              - /url: /profile
+              - img [ref=e85]
+              - generic [ref=e88]: Profile
+          - listitem [ref=e89]:
+            - link "Settings" [ref=e90] [cursor=pointer]:
+              - /url: /settings
+              - img [ref=e91]
+              - generic [ref=e94]: Settings
+          - listitem [ref=e95]:
+            - link "Team" [ref=e96] [cursor=pointer]:
+              - /url: /team
+              - img [ref=e97]
+              - generic [ref=e102]: Team
+          - listitem [ref=e103]:
+            - link "Notifications" [ref=e104] [cursor=pointer]:
+              - /url: /notifications
+              - img [ref=e105]
+              - generic [ref=e108]: Notifications
+      - link "New Chat" [ref=e114] [cursor=pointer]:
+        - /url: /chat
+        - img
+        - text: New Chat
+      - link "Help" [ref=e116] [cursor=pointer]:
+        - /url: /help
+        - img
+    - main "Main content" [ref=e118]:
+      - generic [ref=e120]:
+        - generic [ref=e122]:
+          - generic [ref=e123]:
+            - button "Back" [ref=e124]:
+              - img [ref=e125]
+              - text: Back
+            - generic [ref=e127]: Step 2 of 5
+          - progressbar "Step 2 of 5" [ref=e128]
+        - generic [ref=e135]:
+          - generic [ref=e136]:
+            - heading "What matters to you?" [level=2] [ref=e137]
+            - paragraph [ref=e138]: Select the categories you want to follow
+          - generic [ref=e139]:
+            - button "Deals" [pressed] [ref=e140]
+            - button "Markets" [ref=e141]
+            - button "Crypto" [ref=e142]
+            - button "News" [ref=e143]
+            - button "Health" [pressed] [ref=e144]
+            - button "Education" [pressed] [ref=e145]
+            - button "Events" [pressed] [ref=e146]
+            - button "Restaurants" [ref=e147]
+            - button "Travel" [active] [pressed] [ref=e148]
+            - button "Fitness" [ref=e149]
+            - button "Tech" [ref=e150]
+            - button "Fashion" [ref=e151]
+            - button "Real Estate" [ref=e152]
+            - button "Art" [ref=e153]
+            - button "Sports" [ref=e154]
+            - button "Automotive" [ref=e155]
+            - button "Gaming" [ref=e156]
+            - button "Pets" [ref=e157]
+            - button "Gardening" [ref=e158]
+            - button "Home" [ref=e159]
+            - button "Beauty" [ref=e160]
+            - button "Entertainment" [pressed] [ref=e161]
+            - button "Regulatory" [ref=e162]
+            - button "Investment" [ref=e163]
+        - button "Next" [ref=e167]:
+          - text: Next
+          - img
+  - dialog "Cookie consent" [ref=e168]:
+    - generic [ref=e169]:
+      - generic [ref=e170]:
+        - generic [ref=e171]:
+          - img [ref=e173]
+          - generic [ref=e175]:
+            - heading "We Respect Your Privacy" [level=2] [ref=e176]
+            - paragraph [ref=e177]:
+              - text: We use essential cookies to operate our service. Analytics cookies are optional and you control them.
+              - link "Privacy Policy" [ref=e178] [cursor=pointer]:
+                - /url: /privacy-policy
+                - img [ref=e179]
+                - text: Privacy Policy
+        - button "Customize settings" [ref=e181]:
+          - text: Customize settings
+          - img [ref=e182]
+      - generic [ref=e184]:
+        - button "Essential Only" [ref=e185]
+        - button "Accept All" [ref=e186]
+  - region "Notifications alt+T"
+  - generic [ref=e193]:
+    - button "Open Next.js Dev Tools" [ref=e194]:
+      - img [ref=e195]
+    - generic [ref=e198]:
+      - button "Open issues overlay" [ref=e199]:
+        - generic [ref=e200]:
+          - generic [ref=e201]: "1"
+          - generic [ref=e202]: "2"
+        - generic [ref=e203]: Issues
+      - button "Collapse issues badge" [ref=e204]:
+        - img [ref=e205]
+  - alert [ref=e207]
+```

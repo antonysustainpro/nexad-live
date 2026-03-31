@@ -1,0 +1,296 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "تخطي إلى المحتوى" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - navigation "الشريط الجانبي" [ref=e5]:
+      - generic [ref=e6]:
+        - img "NexusAD Ai" [ref=e8]
+        - button "Collapse sidebar" [ref=e9]:
+          - img
+      - button "بحث... ⌘ K" [ref=e11]:
+        - img [ref=e12]
+        - generic [ref=e15]: بحث...
+        - generic [ref=e16]:
+          - generic [ref=e17]: ⌘
+          - text: K
+      - navigation [ref=e18]:
+        - list [ref=e19]:
+          - listitem [ref=e20]:
+            - link "الخادم" [ref=e21] [cursor=pointer]:
+              - /url: /butler
+              - img [ref=e23]
+              - generic [ref=e26]: الخادم
+          - listitem [ref=e27]:
+            - link "المحادثة" [ref=e28] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e29]
+              - generic [ref=e31]: المحادثة
+          - listitem [ref=e32]:
+            - link "الخزنة" [ref=e33] [cursor=pointer]:
+              - /url: /vault
+              - img [ref=e35]
+              - generic [ref=e39]: الخزنة
+          - listitem [ref=e40]:
+            - link "رؤى" [ref=e41] [cursor=pointer]:
+              - /url: /sovereignty
+              - img [ref=e42]
+              - generic [ref=e44]: رؤى
+          - listitem [ref=e45]:
+            - link "الصوت" [ref=e46] [cursor=pointer]:
+              - /url: /voice
+              - img [ref=e47]
+              - generic [ref=e50]: الصوت
+          - listitem [ref=e51]:
+            - link "الذاكرة" [ref=e52] [cursor=pointer]:
+              - /url: /memory
+              - img [ref=e54]
+              - generic [ref=e63]: الذاكرة
+          - listitem [ref=e64]:
+            - generic [ref=e65]: المزيد
+          - listitem [ref=e66]:
+            - link "المجالات" [ref=e67] [cursor=pointer]:
+              - /url: /domains
+              - img [ref=e68]
+              - generic [ref=e71]: المجالات
+          - listitem [ref=e72]:
+            - link "المساعدة" [ref=e73] [cursor=pointer]:
+              - /url: /help
+              - img [ref=e74]
+              - generic [ref=e77]: المساعدة
+          - listitem [ref=e78]:
+            - link "الفواتير" [ref=e79] [cursor=pointer]:
+              - /url: /billing
+              - img [ref=e80]
+              - generic [ref=e82]: الفواتير
+          - listitem [ref=e83]:
+            - link "الملف الشخصي" [ref=e84] [cursor=pointer]:
+              - /url: /profile
+              - img [ref=e85]
+              - generic [ref=e88]: الملف الشخصي
+          - listitem [ref=e89]:
+            - link "الإعدادات" [ref=e90] [cursor=pointer]:
+              - /url: /settings
+              - img [ref=e91]
+              - generic [ref=e94]: الإعدادات
+          - listitem [ref=e95]:
+            - link "الفريق" [ref=e96] [cursor=pointer]:
+              - /url: /team
+              - img [ref=e97]
+              - generic [ref=e102]: الفريق
+          - listitem [ref=e103]:
+            - link "الإشعارات" [ref=e104] [cursor=pointer]:
+              - /url: /notifications
+              - img [ref=e105]
+              - generic [ref=e108]: الإشعارات
+      - link "محادثة جديدة" [ref=e114] [cursor=pointer]:
+        - /url: /chat
+        - img
+        - text: محادثة جديدة
+      - link "المساعدة" [ref=e116] [cursor=pointer]:
+        - /url: /help
+        - img
+    - main "Main content" [ref=e118]:
+      - generic [ref=e120]:
+        - generic [ref=e121]:
+          - region "نقاط السيادة" [ref=e122]:
+            - generic [ref=e123]:
+              - generic [ref=e125]:
+                - generic [ref=e126]: "0"
+                - generic [ref=e127]: "--"
+              - generic [ref=e131]:
+                - generic [ref=e133]:
+                  - generic [ref=e134]:
+                    - generic [ref=e135]: التشفير
+                    - img [ref=e136]
+                  - generic [ref=e138]: "0"
+                - generic [ref=e142]:
+                  - generic [ref=e143]:
+                    - generic [ref=e144]: توزيع البيانات
+                    - img [ref=e145]
+                  - generic [ref=e147]: "0"
+                - generic [ref=e151]:
+                  - generic [ref=e152]:
+                    - generic [ref=e153]: المعالجة المحلية
+                    - img [ref=e154]
+                  - generic [ref=e156]: "0"
+                - generic [ref=e160]:
+                  - generic [ref=e161]:
+                    - generic [ref=e162]: صحة المفتاح
+                    - img [ref=e163]
+                  - generic [ref=e165]: "0"
+                - generic [ref=e169]:
+                  - generic [ref=e170]:
+                    - generic [ref=e171]: الوصول
+                    - img [ref=e172]
+                  - generic [ref=e174]: "0"
+            - link "تفعيل نسخ المفتاح الاحتياطي للوصول إلى 92 ←" [ref=e177] [cursor=pointer]:
+              - /url: /sovereignty
+          - 'link "Shard map showing 12 shards across 3 nodes Secure Node 1: 4 shards Secure Node 2: 4 shards Secure Node 3: 4 shards 12 خادم موزع عبر 3 عقد آمنة" [ref=e178] [cursor=pointer]':
+            - /url: /vault
+            - generic [ref=e179]:
+              - generic "Shard map showing 12 shards across 3 nodes" [ref=e180]
+              - 'generic "Secure Node 1: 4 shards" [ref=e181]'
+              - 'generic "Secure Node 2: 4 shards" [ref=e182]'
+              - 'generic "Secure Node 3: 4 shards" [ref=e183]'
+              - generic [ref=e184]: 12 خادم موزع عبر 3 عقد آمنة
+        - generic [ref=e185]:
+          - generic [ref=e187]:
+            - heading "مساء النور" [level=1] [ref=e188]
+            - paragraph [ref=e189]: الثلاثاء، 31 مارس 2026
+          - generic [ref=e190]:
+            - paragraph [ref=e191]: ثلاثة أمور تتطلب انتباهك.
+            - generic [ref=e192]:
+              - generic [ref=e193]:
+                - img [ref=e195]
+                - generic [ref=e203]:
+                  - paragraph [ref=e204]: مرحباً بك في NexusAD
+                  - paragraph [ref=e205]: ابدأ محادثة لبناء ذكائك
+              - generic [ref=e206]:
+                - img [ref=e208]
+                - generic [ref=e211]:
+                  - paragraph [ref=e212]: ابنِ خزنتك
+                  - paragraph [ref=e213]: ارفع المستندات لفتح إتقان المجالات
+              - generic [ref=e214]:
+                - img [ref=e216]
+                - generic [ref=e219]:
+                  - paragraph [ref=e220]: إحاطات مخصصة
+                  - paragraph [ref=e221]: ستظهر رؤاك اليومية هنا
+            - link "عرض الكل" [ref=e222] [cursor=pointer]:
+              - /url: /briefing
+              - text: عرض الكل
+              - img [ref=e223]
+        - generic [ref=e225]:
+          - link "محادثة جديدة" [ref=e226] [cursor=pointer]:
+            - /url: /chat
+            - img
+            - text: محادثة جديدة
+          - link "الوضع الصوتي" [ref=e227] [cursor=pointer]:
+            - /url: /voice
+            - img
+            - text: الوضع الصوتي
+          - link "رفع إلى الخزنة" [ref=e228] [cursor=pointer]:
+            - /url: /vault
+            - img
+            - text: رفع إلى الخزنة
+          - link "فحص الأسواق" [ref=e229] [cursor=pointer]:
+            - /url: /domains/financial
+            - img
+            - text: فحص الأسواق
+        - generic [ref=e230]:
+          - generic [ref=e232]: المحادثات الأخيرة
+          - generic [ref=e234]:
+            - img [ref=e236]
+            - paragraph [ref=e238]: لا توجد محادثات بعد
+            - paragraph [ref=e239]: ابدأ محادثة جديدة لتظهر هنا
+            - link "ابدأ محادثة" [ref=e240] [cursor=pointer]:
+              - /url: /chat
+              - img
+              - text: ابدأ محادثة
+        - generic [ref=e241]:
+          - generic [ref=e242]:
+            - generic [ref=e243]: نظرة عامة على المجالات
+            - link "عرض الكل" [ref=e244] [cursor=pointer]:
+              - /url: /domains
+              - text: عرض الكل
+              - img [ref=e245]
+          - generic [ref=e248]:
+            - link "المالية الإتقان 0%" [ref=e249] [cursor=pointer]:
+              - /url: /domains/financial
+              - img [ref=e250]
+              - generic [ref=e252]: المالية
+              - generic [ref=e253]:
+                - generic [ref=e254]:
+                  - generic [ref=e255]: الإتقان
+                  - generic [ref=e256]: 0%
+                - progressbar [ref=e257]
+            - link "القانونية الإتقان 0%" [ref=e259] [cursor=pointer]:
+              - /url: /domains/legal
+              - img [ref=e260]
+              - generic [ref=e264]: القانونية
+              - generic [ref=e265]:
+                - generic [ref=e266]:
+                  - generic [ref=e267]: الإتقان
+                  - generic [ref=e268]: 0%
+                - progressbar [ref=e269]
+            - link "حكومة الإمارات الإتقان 0%" [ref=e271] [cursor=pointer]:
+              - /url: /domains/uae
+              - img [ref=e272]
+              - generic [ref=e274]: حكومة الإمارات
+              - generic [ref=e275]:
+                - generic [ref=e276]:
+                  - generic [ref=e277]: الإتقان
+                  - generic [ref=e278]: 0%
+                - progressbar [ref=e279]
+            - link "الصحة الإتقان 0%" [ref=e281] [cursor=pointer]:
+              - /url: /domains/health
+              - img [ref=e282]
+              - generic [ref=e284]: الصحة
+              - generic [ref=e285]:
+                - generic [ref=e286]:
+                  - generic [ref=e287]: الإتقان
+                  - generic [ref=e288]: 0%
+                - progressbar [ref=e289]
+            - link "التقنية الإتقان 0%" [ref=e291] [cursor=pointer]:
+              - /url: /domains/technical
+              - img [ref=e292]
+              - generic [ref=e295]: التقنية
+              - generic [ref=e296]:
+                - generic [ref=e297]:
+                  - generic [ref=e298]: الإتقان
+                  - generic [ref=e299]: 0%
+                - progressbar [ref=e300]
+        - generic [ref=e302]:
+          - generic [ref=e304]:
+            - img [ref=e305]
+            - text: ملخص الخزنة
+          - generic [ref=e309]:
+            - paragraph [ref=e310]:
+              - text: 0 مستند · 0 جزء
+              - img [ref=e311]
+              - text: · ابدأ بالرفع
+            - generic [ref=e314]:
+              - img [ref=e315]
+              - generic [ref=e318]: البحث في الخزنة
+              - textbox "البحث في الخزنة" [ref=e319]:
+                - /placeholder: البحث في الخزنة...
+        - paragraph [ref=e321]:
+          - img [ref=e322]
+          - text: مدعوم بـ 28 خدمة ذكاء اصطناعي · جميع البيانات مشفرة
+  - dialog "موافقة ملفات تعريف الارتباط" [ref=e325]:
+    - generic [ref=e326]:
+      - generic [ref=e327]:
+        - generic [ref=e328]:
+          - img [ref=e330]
+          - generic [ref=e332]:
+            - heading "نحن نحترم خصوصيتك" [level=2] [ref=e333]
+            - paragraph [ref=e334]:
+              - text: نستخدم ملفات تعريف الارتباط الأساسية فقط لتشغيل الخدمة. ملفات تعريف الارتباط التحليلية اختيارية ويمكنك التحكم فيها.
+              - link "سياسة الخصوصية" [ref=e335] [cursor=pointer]:
+                - /url: /privacy-policy
+                - img [ref=e336]
+                - text: سياسة الخصوصية
+        - button "تخصيص الإعدادات" [ref=e338]:
+          - text: تخصيص الإعدادات
+          - img [ref=e339]
+      - generic [ref=e341]:
+        - button "الأساسية فقط" [ref=e342]
+        - button "قبول الكل" [ref=e343]
+  - region "Notifications alt+T"
+  - generic [ref=e350]:
+    - button "Open Next.js Dev Tools" [ref=e351]:
+      - img [ref=e352]
+    - generic [ref=e355]:
+      - button "Open issues overlay" [ref=e356]:
+        - generic [ref=e357]:
+          - generic [ref=e358]: "1"
+          - generic [ref=e359]: "2"
+        - generic [ref=e360]: Issues
+      - button "Collapse issues badge" [ref=e361]:
+        - img [ref=e362]
+  - alert [ref=e364]
+```

@@ -1,0 +1,122 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - main "Main content" [ref=e6]:
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - generic [ref=e10]:
+              - heading "Your Sovereign Vault" [level=1] [ref=e11]:
+                - img [ref=e12]
+                - text: Your Sovereign Vault
+              - paragraph [ref=e15]: Upload documents → AI analyzes them → Domain mastery grows
+            - button "Upload Document" [ref=e16]:
+              - img
+              - text: Upload Document
+          - generic [ref=e17]:
+            - generic [ref=e19]:
+              - img [ref=e20]
+              - text: Shard Distribution
+            - generic [ref=e24]:
+              - generic "Shard map showing 12 shards across 3 nodes" [ref=e25]
+              - 'generic "Secure Node 1: 4 shards" [ref=e26] [cursor=pointer]'
+              - 'generic "Secure Node 2: 4 shards" [ref=e27] [cursor=pointer]'
+              - 'generic "Secure Node 3: 4 shards" [ref=e28] [cursor=pointer]'
+              - generic [ref=e29]: 12 shards across 3 secure nodes
+          - generic [ref=e30]:
+            - tablist [ref=e31]:
+              - tab "Documents" [selected] [ref=e32]:
+                - img
+                - text: Documents
+              - tab "Access Log" [ref=e33]:
+                - img
+                - text: Access Log
+            - tabpanel "Documents" [ref=e34]:
+              - generic [ref=e35]:
+                - img [ref=e36]
+                - paragraph [ref=e39]: Drag and drop files here, or
+                - button "browse" [ref=e40]
+                - paragraph [ref=e41]: Supports PDF, DOCX, XLSX, images, and more
+              - generic [ref=e42]:
+                - generic [ref=e43]:
+                  - img [ref=e44]
+                  - generic [ref=e47]: Search vault
+                  - textbox "Search vault" [ref=e48]:
+                    - /placeholder: Search vault...
+                - button "All Domains" [ref=e49]:
+                  - img
+                  - text: All Domains
+                - generic [ref=e50]:
+                  - button "Grid view" [ref=e51]:
+                    - img
+                  - button "List view" [ref=e52]:
+                    - img
+              - generic [ref=e53]:
+                - heading "Folders" [level=2] [ref=e54]
+                - button "New Folder" [ref=e56]:
+                  - img [ref=e57]
+                  - generic [ref=e58]: New Folder
+              - generic [ref=e59]:
+                - heading "Documents (0)" [level=2] [ref=e60]
+                - generic [ref=e61]:
+                  - img [ref=e63]
+                  - heading "No documents yet" [level=3] [ref=e66]
+                  - paragraph [ref=e67]: Upload documents → AI analyzes them → Domain mastery grows
+          - generic [ref=e69]:
+            - generic [ref=e70]:
+              - generic [ref=e71]: Storage Used
+              - generic [ref=e72]: 0 MB / 10 GB
+            - progressbar [ref=e73]
+      - navigation "Main navigation" [ref=e75]:
+        - generic:
+          - img
+        - list [ref=e76]:
+          - listitem [ref=e77]:
+            - link "Butler" [ref=e78] [cursor=pointer]:
+              - /url: /butler
+              - img [ref=e81]
+              - generic [ref=e83]: Butler
+          - listitem [ref=e84]:
+            - link "Dashboard" [ref=e85] [cursor=pointer]:
+              - /url: /
+              - img [ref=e87]
+              - generic [ref=e90]: Dashboard
+          - listitem [ref=e91]:
+            - link "Chat" [ref=e92] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e94]
+              - generic [ref=e96]: Chat
+          - listitem [ref=e97]:
+            - link "Voice" [ref=e98] [cursor=pointer]:
+              - /url: /voice
+              - img [ref=e100]
+              - generic [ref=e103]: Voice
+          - listitem [ref=e104]:
+            - link "Vault" [ref=e105] [cursor=pointer]:
+              - /url: /vault
+              - img [ref=e109]
+              - generic [ref=e113]: Vault
+          - listitem [ref=e114]:
+            - button "More" [ref=e115]:
+              - img [ref=e117]
+              - generic [ref=e121]: More
+  - region "Notifications alt+T"
+  - generic [ref=e129]:
+    - button "Open Next.js Dev Tools" [ref=e130]:
+      - img [ref=e131]
+    - generic [ref=e134]:
+      - button "Open issues overlay" [ref=e135]:
+        - generic [ref=e136]:
+          - generic [ref=e137]: "1"
+          - generic [ref=e138]: "2"
+        - generic [ref=e139]: Issues
+      - button "Collapse issues badge" [ref=e140]:
+        - img [ref=e141]
+  - alert [ref=e143]
+```

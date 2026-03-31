@@ -1,0 +1,277 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - navigation "Sidebar navigation" [ref=e5]:
+      - generic [ref=e6]:
+        - img "NexusAD Ai" [ref=e8]
+        - button "Collapse sidebar" [ref=e9]:
+          - img
+      - button "Search... ⌘ K" [ref=e11]:
+        - img [ref=e12]
+        - generic [ref=e15]: Search...
+        - generic [ref=e16]:
+          - generic [ref=e17]: ⌘
+          - text: K
+      - navigation [ref=e18]:
+        - list [ref=e19]:
+          - listitem [ref=e20]:
+            - link "Feed" [ref=e21] [cursor=pointer]:
+              - /url: /butler
+              - img [ref=e23]
+              - generic [ref=e26]: Feed
+          - listitem [ref=e27]:
+            - link "Chat" [ref=e28] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e29]
+              - generic [ref=e31]: Chat
+          - listitem [ref=e32]:
+            - link "Vault" [ref=e33] [cursor=pointer]:
+              - /url: /vault
+              - img [ref=e35]
+              - generic [ref=e39]: Vault
+          - listitem [ref=e40]:
+            - link "Insights" [ref=e41] [cursor=pointer]:
+              - /url: /sovereignty
+              - img [ref=e42]
+              - generic [ref=e44]: Insights
+          - listitem [ref=e45]:
+            - link "Voice" [ref=e46] [cursor=pointer]:
+              - /url: /voice
+              - img [ref=e47]
+              - generic [ref=e50]: Voice
+          - listitem [ref=e51]:
+            - link "Memory" [ref=e52] [cursor=pointer]:
+              - /url: /memory
+              - img [ref=e54]
+              - generic [ref=e63]: Memory
+          - listitem [ref=e64]:
+            - generic [ref=e65]: MORE
+          - listitem [ref=e66]:
+            - link "Domains" [ref=e67] [cursor=pointer]:
+              - /url: /domains
+              - img [ref=e68]
+              - generic [ref=e71]: Domains
+          - listitem [ref=e72]:
+            - link "Help" [ref=e73] [cursor=pointer]:
+              - /url: /help
+              - img [ref=e74]
+              - generic [ref=e77]: Help
+          - listitem [ref=e78]:
+            - link "Billing" [ref=e79] [cursor=pointer]:
+              - /url: /billing
+              - img [ref=e80]
+              - generic [ref=e82]: Billing
+          - listitem [ref=e83]:
+            - link "Profile" [ref=e84] [cursor=pointer]:
+              - /url: /profile
+              - img [ref=e85]
+              - generic [ref=e88]: Profile
+          - listitem [ref=e89]:
+            - link "Settings" [ref=e90] [cursor=pointer]:
+              - /url: /settings
+              - img [ref=e91]
+              - generic [ref=e94]: Settings
+          - listitem [ref=e95]:
+            - link "Team" [ref=e96] [cursor=pointer]:
+              - /url: /team
+              - img [ref=e97]
+              - generic [ref=e102]: Team
+          - listitem [ref=e103]:
+            - link "Notifications" [ref=e104] [cursor=pointer]:
+              - /url: /notifications
+              - img [ref=e105]
+              - generic [ref=e108]: Notifications
+      - link "New Chat" [ref=e114] [cursor=pointer]:
+        - /url: /chat
+        - img
+        - text: New Chat
+      - link "Help" [ref=e116] [cursor=pointer]:
+        - /url: /help
+        - img
+    - main "Main content" [ref=e118]:
+      - generic [ref=e120]:
+        - generic [ref=e121]:
+          - region "Sovereignty Score" [ref=e122]:
+            - generic [ref=e123]:
+              - generic [ref=e125]:
+                - generic [ref=e126]: "0"
+                - generic [ref=e127]: "--"
+              - generic [ref=e131]:
+                - generic [ref=e133]:
+                  - generic [ref=e134]:
+                    - generic [ref=e135]: Encryption
+                    - img [ref=e136]
+                  - generic [ref=e138]: "0"
+                - generic [ref=e142]:
+                  - generic [ref=e143]:
+                    - generic [ref=e144]: Shards
+                    - img [ref=e145]
+                  - generic [ref=e147]: "0"
+                - generic [ref=e151]:
+                  - generic [ref=e152]:
+                    - generic [ref=e153]: Local Processing
+                    - img [ref=e154]
+                  - generic [ref=e156]: "0"
+                - generic [ref=e160]:
+                  - generic [ref=e161]:
+                    - generic [ref=e162]: Key Health
+                    - img [ref=e163]
+                  - generic [ref=e165]: "0"
+                - generic [ref=e169]:
+                  - generic [ref=e170]:
+                    - generic [ref=e171]: Access
+                    - img [ref=e172]
+                  - generic [ref=e174]: "0"
+            - link "Enable hardware key backup to reach 92 →" [ref=e177] [cursor=pointer]:
+              - /url: /sovereignty
+          - 'link "Shard map showing 12 shards across 3 nodes Secure Node 1: 4 shards Secure Node 2: 4 shards Secure Node 3: 4 shards 12 shards across 3 secure nodes" [ref=e178] [cursor=pointer]':
+            - /url: /vault
+            - generic [ref=e179]:
+              - generic "Shard map showing 12 shards across 3 nodes" [ref=e180]
+              - 'generic "Secure Node 1: 4 shards" [ref=e181]'
+              - 'generic "Secure Node 2: 4 shards" [ref=e182]'
+              - 'generic "Secure Node 3: 4 shards" [ref=e183]'
+              - generic [ref=e184]: 12 shards across 3 secure nodes
+        - generic [ref=e185]:
+          - generic [ref=e187]:
+            - heading "Good evening" [level=1] [ref=e188]
+            - paragraph [ref=e189]: Tuesday, March 31, 2026
+          - generic [ref=e190]:
+            - paragraph [ref=e191]: Three things require your attention.
+            - generic [ref=e192]:
+              - generic [ref=e193]:
+                - img [ref=e195]
+                - generic [ref=e203]:
+                  - paragraph [ref=e204]: Welcome to NexusAD
+                  - paragraph [ref=e205]: Start a conversation to build your intelligence
+              - generic [ref=e206]:
+                - img [ref=e208]
+                - generic [ref=e211]:
+                  - paragraph [ref=e212]: Build Your Vault
+                  - paragraph [ref=e213]: Upload documents to unlock domain mastery
+              - generic [ref=e214]:
+                - img [ref=e216]
+                - generic [ref=e219]:
+                  - paragraph [ref=e220]: Personalized Briefings
+                  - paragraph [ref=e221]: Your daily insights will appear here
+            - link "View All" [ref=e222] [cursor=pointer]:
+              - /url: /briefing
+              - text: View All
+              - img [ref=e223]
+        - generic [ref=e225]:
+          - link "New Conversation" [ref=e226] [cursor=pointer]:
+            - /url: /chat
+            - img
+            - text: New Conversation
+          - link "Voice Mode" [ref=e227] [cursor=pointer]:
+            - /url: /voice
+            - img
+            - text: Voice Mode
+          - link "Upload to Vault" [ref=e228] [cursor=pointer]:
+            - /url: /vault
+            - img
+            - text: Upload to Vault
+          - link "Check Markets" [ref=e229] [cursor=pointer]:
+            - /url: /domains/financial
+            - img
+            - text: Check Markets
+        - generic [ref=e230]:
+          - generic [ref=e232]: Recent Conversations
+          - generic [ref=e234]:
+            - img [ref=e236]
+            - paragraph [ref=e238]: No conversations yet
+            - paragraph [ref=e239]: Start a new conversation and it will appear here
+            - link "Start a Conversation" [ref=e240] [cursor=pointer]:
+              - /url: /chat
+              - img
+              - text: Start a Conversation
+        - generic [ref=e241]:
+          - generic [ref=e242]:
+            - generic [ref=e243]: Domain Overview
+            - link "View All Domains" [ref=e244] [cursor=pointer]:
+              - /url: /domains
+              - text: View All Domains
+              - img [ref=e245]
+          - generic [ref=e248]:
+            - link "Financial Mastery 0%" [ref=e249] [cursor=pointer]:
+              - /url: /domains/financial
+              - img [ref=e250]
+              - generic [ref=e252]: Financial
+              - generic [ref=e253]:
+                - generic [ref=e254]:
+                  - generic [ref=e255]: Mastery
+                  - generic [ref=e256]: 0%
+                - progressbar [ref=e257]
+            - link "Legal Mastery 0%" [ref=e259] [cursor=pointer]:
+              - /url: /domains/legal
+              - img [ref=e260]
+              - generic [ref=e264]: Legal
+              - generic [ref=e265]:
+                - generic [ref=e266]:
+                  - generic [ref=e267]: Mastery
+                  - generic [ref=e268]: 0%
+                - progressbar [ref=e269]
+            - link "UAE Government Mastery 0%" [ref=e271] [cursor=pointer]:
+              - /url: /domains/uae
+              - img [ref=e272]
+              - generic [ref=e274]: UAE Government
+              - generic [ref=e275]:
+                - generic [ref=e276]:
+                  - generic [ref=e277]: Mastery
+                  - generic [ref=e278]: 0%
+                - progressbar [ref=e279]
+            - link "Health Mastery 0%" [ref=e281] [cursor=pointer]:
+              - /url: /domains/health
+              - img [ref=e282]
+              - generic [ref=e284]: Health
+              - generic [ref=e285]:
+                - generic [ref=e286]:
+                  - generic [ref=e287]: Mastery
+                  - generic [ref=e288]: 0%
+                - progressbar [ref=e289]
+            - link "Technical Mastery 0%" [ref=e291] [cursor=pointer]:
+              - /url: /domains/technical
+              - img [ref=e292]
+              - generic [ref=e295]: Technical
+              - generic [ref=e296]:
+                - generic [ref=e297]:
+                  - generic [ref=e298]: Mastery
+                  - generic [ref=e299]: 0%
+                - progressbar [ref=e300]
+        - generic [ref=e302]:
+          - generic [ref=e304]:
+            - img [ref=e305]
+            - text: Vault Summary
+          - generic [ref=e309]:
+            - paragraph [ref=e310]:
+              - text: 0 documents · 0 shards
+              - img [ref=e311]
+              - text: · Start uploading
+            - generic [ref=e314]:
+              - img [ref=e315]
+              - generic [ref=e318]: Search Vault
+              - textbox "Search Vault" [ref=e319]:
+                - /placeholder: Search Vault...
+        - paragraph [ref=e321]:
+          - img [ref=e322]
+          - text: Powered by 28 AI services · All data encrypted
+  - region "Notifications alt+T"
+  - generic [ref=e331]:
+    - button "Open Next.js Dev Tools" [ref=e332]:
+      - img [ref=e333]
+    - generic [ref=e336]:
+      - button "Open issues overlay" [ref=e337]:
+        - generic [ref=e338]:
+          - generic [ref=e339]: "1"
+          - generic [ref=e340]: "2"
+        - generic [ref=e341]: Issues
+      - button "Collapse issues badge" [ref=e342]:
+        - img [ref=e343]
+  - alert [ref=e345]
+```

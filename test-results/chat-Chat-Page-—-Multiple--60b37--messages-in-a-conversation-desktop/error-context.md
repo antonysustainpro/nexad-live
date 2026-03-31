@@ -1,0 +1,222 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - navigation "Sidebar navigation" [ref=e5]:
+      - generic [ref=e6]:
+        - img "NexusAD Ai" [ref=e8]
+        - button "Collapse sidebar" [ref=e9]:
+          - img
+      - button "Search... ⌘ K" [ref=e11]:
+        - img [ref=e12]
+        - generic [ref=e15]: Search...
+        - generic [ref=e16]:
+          - generic [ref=e17]: ⌘
+          - text: K
+      - navigation [ref=e18]:
+        - list [ref=e19]:
+          - listitem [ref=e20]:
+            - link "Feed" [ref=e21] [cursor=pointer]:
+              - /url: /butler
+              - img [ref=e23]
+              - generic [ref=e26]: Feed
+          - listitem [ref=e27]:
+            - link "Chat" [ref=e28] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e29]
+              - generic [ref=e31]: Chat
+          - listitem [ref=e32]:
+            - link "Vault" [ref=e33] [cursor=pointer]:
+              - /url: /vault
+              - img [ref=e35]
+              - generic [ref=e39]: Vault
+          - listitem [ref=e40]:
+            - link "Insights" [ref=e41] [cursor=pointer]:
+              - /url: /sovereignty
+              - img [ref=e42]
+              - generic [ref=e44]: Insights
+          - listitem [ref=e45]:
+            - link "Voice" [ref=e46] [cursor=pointer]:
+              - /url: /voice
+              - img [ref=e47]
+              - generic [ref=e50]: Voice
+          - listitem [ref=e51]:
+            - link "Memory" [ref=e52] [cursor=pointer]:
+              - /url: /memory
+              - img [ref=e54]
+              - generic [ref=e63]: Memory
+          - listitem [ref=e64]:
+            - generic [ref=e65]: MORE
+          - listitem [ref=e66]:
+            - link "Domains" [ref=e67] [cursor=pointer]:
+              - /url: /domains
+              - img [ref=e68]
+              - generic [ref=e71]: Domains
+          - listitem [ref=e72]:
+            - link "Help" [ref=e73] [cursor=pointer]:
+              - /url: /help
+              - img [ref=e74]
+              - generic [ref=e77]: Help
+          - listitem [ref=e78]:
+            - link "Billing" [ref=e79] [cursor=pointer]:
+              - /url: /billing
+              - img [ref=e80]
+              - generic [ref=e82]: Billing
+          - listitem [ref=e83]:
+            - link "Profile" [ref=e84] [cursor=pointer]:
+              - /url: /profile
+              - img [ref=e85]
+              - generic [ref=e88]: Profile
+          - listitem [ref=e89]:
+            - link "Settings" [ref=e90] [cursor=pointer]:
+              - /url: /settings
+              - img [ref=e91]
+              - generic [ref=e94]: Settings
+          - listitem [ref=e95]:
+            - link "Team" [ref=e96] [cursor=pointer]:
+              - /url: /team
+              - img [ref=e97]
+              - generic [ref=e102]: Team
+          - listitem [ref=e103]:
+            - link "Notifications" [ref=e104] [cursor=pointer]:
+              - /url: /notifications
+              - img [ref=e105]
+              - generic [ref=e108]: Notifications
+      - generic [ref=e113]:
+        - heading "Today" [level=3] [ref=e114]
+        - list [ref=e115]:
+          - listitem [ref=e116]:
+            - link "First question" [ref=e117] [cursor=pointer]:
+              - /url: /chat/89ab4b14-5423-453d-b5c5-5f79429ede84
+              - generic [ref=e118]: First question
+              - img [ref=e119]
+      - link "New Chat" [ref=e123] [cursor=pointer]:
+        - /url: /chat
+        - img
+        - text: New Chat
+      - link "Help" [ref=e125] [cursor=pointer]:
+        - /url: /help
+        - img
+    - main "Main content" [ref=e127]:
+      - generic [ref=e129]:
+        - generic [ref=e130]:
+          - button "Select intelligence mode" [ref=e131]:
+            - img
+            - generic [ref=e132]: Standard
+            - img
+          - button "Select language" [ref=e133]:
+            - img
+            - generic [ref=e134]: EN
+            - img
+        - generic:
+          - generic:
+            - generic: Second
+          - generic:
+            - generic: question
+        - generic [ref=e135]:
+          - log "Conversation log" [ref=e139]:
+            - article "Your message" [ref=e141]:
+              - paragraph [ref=e143]: First question
+              - img [ref=e144]
+            - article "Assistant response" [ref=e148]:
+              - paragraph [ref=e150]: First AI response.
+              - img [ref=e151]
+            - article "Your message" [ref=e155]:
+              - paragraph [ref=e157]: Second question
+              - img [ref=e158]
+            - article "Assistant response" [ref=e162]:
+              - paragraph [ref=e164]: Second AI response.
+              - button "Regenerate response" [ref=e166]:
+                - img [ref=e167]
+                - generic [ref=e172]: Regenerate
+              - img [ref=e173]
+          - generic [ref=e177]:
+            - button "Attach file" [ref=e178]:
+              - img
+            - textbox "Ask anything..." [ref=e179]
+            - button "Send" [disabled]:
+              - img
+        - generic [ref=e180]:
+          - button "Collapse panel" [ref=e181]:
+            - img
+          - complementary [ref=e182]:
+            - generic [ref=e186]:
+              - paragraph [ref=e188]: CONTEXT
+              - generic [ref=e189]:
+                - heading "Domain" [level=3] [ref=e190]:
+                  - img [ref=e191]
+                  - text: Domain
+                - generic [ref=e194]:
+                  - img [ref=e195]
+                  - generic [ref=e198]:
+                    - paragraph [ref=e199]: General
+                    - progressbar [ref=e200]
+                  - generic [ref=e202]: 87%
+              - generic [ref=e203]:
+                - heading "Emotion" [level=3] [ref=e204]:
+                  - img [ref=e205]
+                  - text: Emotion
+                - generic [ref=e208]:
+                  - generic [ref=e210]: Neutral
+                  - generic [ref=e211]: 82%
+              - paragraph [ref=e213]: SPECIALISTS
+              - generic [ref=e216]:
+                - generic [ref=e217]:
+                  - generic [ref=e218]: General Assistant
+                  - generic [ref=e219]: 100%
+                - progressbar [ref=e220]
+              - generic [ref=e222]:
+                - heading "Sources" [level=3] [ref=e223]:
+                  - img [ref=e224]
+                  - text: Sources
+                - paragraph [ref=e227]: Upload documents to Vault for AI-sourced answers
+              - paragraph [ref=e229]: INFRASTRUCTURE
+              - generic [ref=e230]:
+                - heading "Active Nodes" [level=3] [ref=e231]:
+                  - img [ref=e232]
+                  - text: Active Nodes
+                - generic [ref=e235]:
+                  - generic [ref=e237]:
+                    - generic [ref=e238]: 🔒
+                    - text: Secure Node 1
+                  - generic [ref=e241]:
+                    - generic [ref=e242]: 🔒
+                    - text: Secure Node 2
+                  - generic [ref=e245]:
+                    - generic [ref=e246]: 🔒
+                    - text: Secure Node 3
+              - generic [ref=e248]:
+                - heading "Sovereign Brain" [level=3] [ref=e249]:
+                  - img [ref=e250]
+                  - text: Sovereign Brain
+                - paragraph [ref=e254]: Sovereign Brain
+              - generic [ref=e255]:
+                - heading "Usage" [level=3] [ref=e256]:
+                  - img [ref=e257]
+                  - text: Usage
+                - generic [ref=e259]:
+                  - generic [ref=e260]:
+                    - paragraph [ref=e261]: "-"
+                    - paragraph [ref=e262]: Tokens
+                  - generic [ref=e263]:
+                    - paragraph [ref=e264]: "-"
+                    - paragraph [ref=e265]: Latency
+  - region "Notifications alt+T"
+  - generic [ref=e272]:
+    - button "Open Next.js Dev Tools" [ref=e273]:
+      - img [ref=e274]
+    - generic [ref=e277]:
+      - button "Open issues overlay" [ref=e278]:
+        - generic [ref=e279]:
+          - generic [ref=e280]: "1"
+          - generic [ref=e281]: "2"
+        - generic [ref=e282]: Issues
+      - button "Collapse issues badge" [ref=e283]:
+        - img [ref=e284]
+  - alert [ref=e286]
+```

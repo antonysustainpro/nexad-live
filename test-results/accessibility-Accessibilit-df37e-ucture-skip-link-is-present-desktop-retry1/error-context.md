@@ -1,0 +1,208 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - navigation "Sidebar navigation" [ref=e5]:
+      - generic [ref=e6]:
+        - img "NexusAD Ai" [ref=e8]
+        - button "Collapse sidebar" [ref=e9]:
+          - img
+      - button "Search... ⌘ K" [ref=e11]:
+        - img [ref=e12]
+        - generic [ref=e15]: Search...
+        - generic [ref=e16]:
+          - generic [ref=e17]: ⌘
+          - text: K
+      - navigation [ref=e18]:
+        - list [ref=e19]:
+          - listitem [ref=e20]:
+            - link "Feed" [ref=e21] [cursor=pointer]:
+              - /url: /butler
+              - img [ref=e23]
+              - generic [ref=e26]: Feed
+          - listitem [ref=e27]:
+            - link "Chat" [ref=e28] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e29]
+              - generic [ref=e31]: Chat
+          - listitem [ref=e32]:
+            - link "Vault" [ref=e33] [cursor=pointer]:
+              - /url: /vault
+              - img [ref=e35]
+              - generic [ref=e39]: Vault
+          - listitem [ref=e40]:
+            - link "Insights" [ref=e41] [cursor=pointer]:
+              - /url: /sovereignty
+              - img [ref=e42]
+              - generic [ref=e44]: Insights
+          - listitem [ref=e45]:
+            - link "Voice" [ref=e46] [cursor=pointer]:
+              - /url: /voice
+              - img [ref=e47]
+              - generic [ref=e50]: Voice
+          - listitem [ref=e51]:
+            - link "Memory" [ref=e52] [cursor=pointer]:
+              - /url: /memory
+              - img [ref=e54]
+              - generic [ref=e63]: Memory
+          - listitem [ref=e64]:
+            - generic [ref=e65]: MORE
+          - listitem [ref=e66]:
+            - link "Domains" [ref=e67] [cursor=pointer]:
+              - /url: /domains
+              - img [ref=e68]
+              - generic [ref=e71]: Domains
+          - listitem [ref=e72]:
+            - link "Help" [ref=e73] [cursor=pointer]:
+              - /url: /help
+              - img [ref=e74]
+              - generic [ref=e77]: Help
+          - listitem [ref=e78]:
+            - link "Billing" [ref=e79] [cursor=pointer]:
+              - /url: /billing
+              - img [ref=e80]
+              - generic [ref=e82]: Billing
+          - listitem [ref=e83]:
+            - link "Profile" [ref=e84] [cursor=pointer]:
+              - /url: /profile
+              - img [ref=e85]
+              - generic [ref=e88]: Profile
+          - listitem [ref=e89]:
+            - link "Settings" [ref=e90] [cursor=pointer]:
+              - /url: /settings
+              - img [ref=e91]
+              - generic [ref=e94]: Settings
+          - listitem [ref=e95]:
+            - link "Team" [ref=e96] [cursor=pointer]:
+              - /url: /team
+              - img [ref=e97]
+              - generic [ref=e102]: Team
+          - listitem [ref=e103]:
+            - link "Notifications" [ref=e104] [cursor=pointer]:
+              - /url: /notifications
+              - img [ref=e105]
+              - generic [ref=e108]: Notifications
+      - link "New Chat" [ref=e114] [cursor=pointer]:
+        - /url: /chat
+        - img
+        - text: New Chat
+      - link "Help" [ref=e116] [cursor=pointer]:
+        - /url: /help
+        - img
+    - main "Main content" [ref=e118]:
+      - generic [ref=e120]:
+        - generic [ref=e121]:
+          - button "Select intelligence mode" [ref=e122]:
+            - img
+            - generic [ref=e123]: Standard
+            - img
+          - button "Select language" [ref=e124]:
+            - img
+            - generic [ref=e125]: EN
+            - img
+        - generic [ref=e126]:
+          - generic [ref=e130]:
+            - img [ref=e132]
+            - heading "Start your first conversation" [level=1] [ref=e134]
+            - paragraph [ref=e135]: Your first conversation begins a sovereign record. Every message is encrypted and protected.
+            - generic [ref=e137]:
+              - img [ref=e138]
+              - generic [ref=e141]: End-to-end encrypted
+          - generic [ref=e143]:
+            - button "Attach file" [ref=e144]:
+              - img
+            - textbox "Ask anything..." [ref=e145]
+            - button "Send" [disabled]:
+              - img
+        - generic [ref=e146]:
+          - button "Collapse panel" [ref=e147]:
+            - img
+          - complementary [ref=e148]:
+            - generic [ref=e152]:
+              - paragraph [ref=e154]: CONTEXT
+              - generic [ref=e155]:
+                - heading "Domain" [level=3] [ref=e156]:
+                  - img [ref=e157]
+                  - text: Domain
+                - paragraph [ref=e160]: Awaiting query...
+              - generic [ref=e161]:
+                - heading "Emotion" [level=3] [ref=e162]:
+                  - img [ref=e163]
+                  - text: Emotion
+                - paragraph [ref=e166]: Not detected
+              - paragraph [ref=e168]: SPECIALISTS
+              - paragraph [ref=e171]: Specialists activate as you chat about specific domains
+              - generic [ref=e172]:
+                - heading "Sources" [level=3] [ref=e173]:
+                  - img [ref=e174]
+                  - text: Sources
+                - paragraph [ref=e177]: Upload documents to Vault for AI-sourced answers
+              - paragraph [ref=e179]: INFRASTRUCTURE
+              - generic [ref=e180]:
+                - heading "Active Nodes" [level=3] [ref=e181]:
+                  - img [ref=e182]
+                  - text: Active Nodes
+                - generic [ref=e185]:
+                  - generic [ref=e187]:
+                    - generic [ref=e188]: 🔒
+                    - text: Secure Node 1
+                  - generic [ref=e191]:
+                    - generic [ref=e192]: 🔒
+                    - text: Secure Node 2
+                  - generic [ref=e195]:
+                    - generic [ref=e196]: 🔒
+                    - text: Secure Node 3
+              - generic [ref=e198]:
+                - heading "Sovereign Brain" [level=3] [ref=e199]:
+                  - img [ref=e200]
+                  - text: Sovereign Brain
+                - paragraph [ref=e203]: Awaiting...
+              - generic [ref=e204]:
+                - heading "Usage" [level=3] [ref=e205]:
+                  - img [ref=e206]
+                  - text: Usage
+                - generic [ref=e208]:
+                  - generic [ref=e209]:
+                    - paragraph [ref=e210]: "-"
+                    - paragraph [ref=e211]: Tokens
+                  - generic [ref=e212]:
+                    - paragraph [ref=e213]: "-"
+                    - paragraph [ref=e214]: Latency
+  - dialog "Cookie consent" [ref=e215]:
+    - generic [ref=e216]:
+      - generic [ref=e217]:
+        - generic [ref=e218]:
+          - img [ref=e220]
+          - generic [ref=e222]:
+            - heading "We Respect Your Privacy" [level=2] [ref=e223]
+            - paragraph [ref=e224]:
+              - text: We use essential cookies to operate our service. Analytics cookies are optional and you control them.
+              - link "Privacy Policy" [ref=e225] [cursor=pointer]:
+                - /url: /privacy-policy
+                - img [ref=e226]
+                - text: Privacy Policy
+        - button "Customize settings" [ref=e228]:
+          - text: Customize settings
+          - img [ref=e229]
+      - generic [ref=e231]:
+        - button "Essential Only" [ref=e232]
+        - button "Accept All" [ref=e233]
+  - region "Notifications alt+T"
+  - generic [ref=e240]:
+    - button "Open Next.js Dev Tools" [ref=e241]:
+      - img [ref=e242]
+    - generic [ref=e245]:
+      - button "Open issues overlay" [ref=e246]:
+        - generic [ref=e247]:
+          - generic [ref=e248]: "1"
+          - generic [ref=e249]: "2"
+        - generic [ref=e250]: Issues
+      - button "Collapse issues badge" [ref=e251]:
+        - img [ref=e252]
+  - alert [ref=e254]
+```

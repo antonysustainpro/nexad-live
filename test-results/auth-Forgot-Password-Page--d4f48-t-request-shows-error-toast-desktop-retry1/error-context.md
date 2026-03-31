@@ -1,0 +1,61 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - button "التبديل إلى العربية" [ref=e8]:
+      - img
+      - text: العربية
+    - main [ref=e9]:
+      - link "NexusAD Home" [ref=e10] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e12]: NexusAD
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - img [ref=e18]
+          - generic [ref=e21]: Check Your Email
+          - generic [ref=e22]: We've sent a password reset link to test@example.com
+        - generic [ref=e23]:
+          - paragraph [ref=e24]: If you don't see the email, check your spam folder.
+          - button "Send Another Link" [ref=e25]
+        - link "Back to Sign In" [ref=e27] [cursor=pointer]:
+          - /url: /login
+          - img [ref=e28]
+          - text: Back to Sign In
+    - contentinfo [ref=e30]:
+      - paragraph [ref=e31]: © 2026 NexusAD. All rights reserved.
+  - dialog "Cookie consent" [ref=e32]:
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - img [ref=e37]
+          - generic [ref=e39]:
+            - heading "We Respect Your Privacy" [level=2] [ref=e40]
+            - paragraph [ref=e41]:
+              - text: We use essential cookies to operate our service. Analytics cookies are optional and you control them.
+              - link "Privacy Policy" [ref=e42] [cursor=pointer]:
+                - /url: /privacy-policy
+                - img [ref=e43]
+                - text: Privacy Policy
+        - button "Customize settings" [ref=e45]:
+          - text: Customize settings
+          - img [ref=e46]
+      - generic [ref=e48]:
+        - button "Essential Only" [ref=e49]
+        - button "Accept All" [ref=e50]
+  - region "Notifications alt+T"
+  - generic [ref=e57]:
+    - button "Open Next.js Dev Tools" [ref=e58]:
+      - img [ref=e59]
+    - generic [ref=e62]:
+      - button "Open issues overlay" [ref=e63]:
+        - generic [ref=e64]:
+          - generic [ref=e65]: "0"
+          - generic [ref=e66]: "1"
+        - generic [ref=e67]: Issue
+      - button "Collapse issues badge" [ref=e68]:
+        - img [ref=e69]
+  - alert [ref=e71]
+```

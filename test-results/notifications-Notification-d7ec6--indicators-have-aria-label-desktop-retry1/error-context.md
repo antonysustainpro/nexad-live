@@ -1,0 +1,193 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - navigation "Sidebar navigation" [ref=e5]:
+      - generic [ref=e6]:
+        - img "NexusAD Ai" [ref=e8]
+        - button "Collapse sidebar" [ref=e9]:
+          - img
+      - button "Search... ⌘ K" [ref=e11]:
+        - img [ref=e12]
+        - generic [ref=e15]: Search...
+        - generic [ref=e16]:
+          - generic [ref=e17]: ⌘
+          - text: K
+      - navigation [ref=e18]:
+        - list [ref=e19]:
+          - listitem [ref=e20]:
+            - link "Feed" [ref=e21] [cursor=pointer]:
+              - /url: /butler
+              - img [ref=e23]
+              - generic [ref=e26]: Feed
+          - listitem [ref=e27]:
+            - link "Chat" [ref=e28] [cursor=pointer]:
+              - /url: /chat
+              - img [ref=e29]
+              - generic [ref=e31]: Chat
+          - listitem [ref=e32]:
+            - link "Vault" [ref=e33] [cursor=pointer]:
+              - /url: /vault
+              - img [ref=e35]
+              - generic [ref=e39]: Vault
+          - listitem [ref=e40]:
+            - link "Insights" [ref=e41] [cursor=pointer]:
+              - /url: /sovereignty
+              - img [ref=e42]
+              - generic [ref=e44]: Insights
+          - listitem [ref=e45]:
+            - link "Voice" [ref=e46] [cursor=pointer]:
+              - /url: /voice
+              - img [ref=e47]
+              - generic [ref=e50]: Voice
+          - listitem [ref=e51]:
+            - link "Memory" [ref=e52] [cursor=pointer]:
+              - /url: /memory
+              - img [ref=e54]
+              - generic [ref=e63]: Memory
+          - listitem [ref=e64]:
+            - generic [ref=e65]: MORE
+          - listitem [ref=e66]:
+            - link "Domains" [ref=e67] [cursor=pointer]:
+              - /url: /domains
+              - img [ref=e68]
+              - generic [ref=e71]: Domains
+          - listitem [ref=e72]:
+            - link "Help" [ref=e73] [cursor=pointer]:
+              - /url: /help
+              - img [ref=e74]
+              - generic [ref=e77]: Help
+          - listitem [ref=e78]:
+            - link "Billing" [ref=e79] [cursor=pointer]:
+              - /url: /billing
+              - img [ref=e80]
+              - generic [ref=e82]: Billing
+          - listitem [ref=e83]:
+            - link "Profile" [ref=e84] [cursor=pointer]:
+              - /url: /profile
+              - img [ref=e85]
+              - generic [ref=e88]: Profile
+          - listitem [ref=e89]:
+            - link "Settings" [ref=e90] [cursor=pointer]:
+              - /url: /settings
+              - img [ref=e91]
+              - generic [ref=e94]: Settings
+          - listitem [ref=e95]:
+            - link "Team" [ref=e96] [cursor=pointer]:
+              - /url: /team
+              - img [ref=e97]
+              - generic [ref=e102]: Team
+          - listitem [ref=e103]:
+            - link "Notifications" [ref=e104] [cursor=pointer]:
+              - /url: /notifications
+              - img [ref=e105]
+              - generic [ref=e108]: Notifications
+      - link "New Chat" [ref=e114] [cursor=pointer]:
+        - /url: /chat
+        - img
+        - text: New Chat
+      - link "Help" [ref=e116] [cursor=pointer]:
+        - /url: /help
+        - img
+    - main "Main content" [ref=e118]:
+      - generic [ref=e120]:
+        - generic [ref=e121]:
+          - generic [ref=e122]:
+            - img [ref=e123]
+            - heading "Notifications" [level=1] [ref=e126]
+            - generic [ref=e127]: "2"
+          - button "Mark all read" [ref=e128]:
+            - img
+            - text: Mark all read
+        - generic [ref=e129]:
+          - button "All" [ref=e130]
+          - button "Alerts" [ref=e131]
+          - button "Butler" [ref=e132]
+          - button "Billing" [ref=e133]
+          - button "Security" [ref=e134]
+        - generic [ref=e135]:
+          - generic [ref=e136]:
+            - heading "Today" [level=3] [ref=e137]
+            - 'article "Alert: CPU usage high, Unread, Server alpha-3 is running at 95% CPU utilisation., Mar 31, 10:25 PM" [ref=e138]':
+              - img [ref=e141]
+              - generic [ref=e143]:
+                - 'heading "Alert: CPU usage high" [level=4] [ref=e144]'
+                - paragraph [ref=e145]: Server alpha-3 is running at 95% CPU utilisation.
+                - generic [ref=e146]:
+                  - time [ref=e147]: Mar 31, 10:25 PM
+                  - 'link "View Alerts — Alert: CPU usage high" [ref=e148] [cursor=pointer]':
+                    - /url: /alerts
+                    - text: View Alerts
+              - 'button "Dismiss notification: Alert: CPU usage high" [ref=e149]':
+                - img
+            - article "Butler reminder, Unread, Your meeting starts in 15 minutes., Mar 31, 09:25 PM" [ref=e150]:
+              - img [ref=e153]
+              - generic [ref=e155]:
+                - heading "Butler reminder" [level=4] [ref=e156]
+                - paragraph [ref=e157]: Your meeting starts in 15 minutes.
+                - generic [ref=e158]:
+                  - time [ref=e159]: Mar 31, 09:25 PM
+                  - link "View Alerts — Butler reminder" [ref=e160] [cursor=pointer]:
+                    - /url: /alerts
+                    - text: View Alerts
+              - 'button "Dismiss notification: Butler reminder" [ref=e161]':
+                - img
+            - article "Payment received, Your subscription payment was processed., Mar 31, 07:25 PM" [ref=e162]:
+              - img [ref=e164]
+              - generic [ref=e166]:
+                - heading "Payment received" [level=4] [ref=e167]
+                - paragraph [ref=e168]: Your subscription payment was processed.
+                - generic [ref=e169]:
+                  - time [ref=e170]: Mar 31, 07:25 PM
+                  - link "View Alerts — Payment received" [ref=e171] [cursor=pointer]:
+                    - /url: /alerts
+                    - text: View Alerts
+              - 'button "Dismiss notification: Payment received" [ref=e172]':
+                - img
+          - generic [ref=e173]:
+            - heading "This Week" [level=3] [ref=e174]
+            - article "New login detected, A new login was detected from Dubai, UAE., Mar 28, 10:25 PM" [ref=e175]:
+              - img [ref=e177]
+              - generic [ref=e179]:
+                - heading "New login detected" [level=4] [ref=e180]
+                - paragraph [ref=e181]: A new login was detected from Dubai, UAE.
+                - generic [ref=e182]:
+                  - time [ref=e183]: Mar 28, 10:25 PM
+                  - link "View Alerts — New login detected" [ref=e184] [cursor=pointer]:
+                    - /url: /alerts
+                    - text: View Alerts
+              - 'button "Dismiss notification: New login detected" [ref=e185]':
+                - img
+          - generic [ref=e186]:
+            - heading "Earlier" [level=3] [ref=e187]
+            - article "System maintenance complete, Scheduled maintenance finished., Mar 21, 10:25 PM" [ref=e188]:
+              - img [ref=e190]
+              - generic [ref=e192]:
+                - heading "System maintenance complete" [level=4] [ref=e193]
+                - paragraph [ref=e194]: Scheduled maintenance finished.
+                - generic [ref=e195]:
+                  - time [ref=e196]: Mar 21, 10:25 PM
+                  - link "View Alerts — System maintenance complete" [ref=e197] [cursor=pointer]:
+                    - /url: /alerts
+                    - text: View Alerts
+              - 'button "Dismiss notification: System maintenance complete" [ref=e198]':
+                - img
+  - region "Notifications alt+T"
+  - generic [ref=e205]:
+    - button "Open Next.js Dev Tools" [ref=e206]:
+      - img [ref=e207]
+    - generic [ref=e210]:
+      - button "Open issues overlay" [ref=e211]:
+        - generic [ref=e212]:
+          - generic [ref=e213]: "1"
+          - generic [ref=e214]: "2"
+        - generic [ref=e215]: Issues
+      - button "Collapse issues badge" [ref=e216]:
+        - img [ref=e217]
+  - alert [ref=e219]
+```

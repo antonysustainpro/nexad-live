@@ -1,0 +1,85 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - button "Switch to English" [active] [ref=e8]:
+      - img
+      - text: English
+    - main [ref=e9]:
+      - link "NexusAD Home" [ref=e10] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e12]: NexusAD
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - generic [ref=e16]: تسجيل الدخول
+          - generic [ref=e17]: أدخل بيانات حسابك للمتابعة
+        - generic [ref=e18]:
+          - generic [ref=e19]:
+            - generic [ref=e20]:
+              - generic [ref=e21]: البريد الإلكتروني
+              - generic [ref=e22]:
+                - img [ref=e23]
+                - textbox "البريد الإلكتروني" [ref=e26]:
+                  - /placeholder: name@example.com
+            - generic [ref=e27]:
+              - generic [ref=e28]:
+                - generic [ref=e29]: كلمة المرور
+                - link "نسيت كلمة المرور؟" [ref=e30] [cursor=pointer]:
+                  - /url: /forgot-password
+              - generic [ref=e31]:
+                - img [ref=e32]
+                - textbox "كلمة المرور" [ref=e35]:
+                  - /placeholder: ••••••••
+                - button "إظهار كلمة المرور" [ref=e36]:
+                  - img [ref=e37]
+            - generic [ref=e40]:
+              - checkbox "تذكرني" [ref=e41]
+              - checkbox [ref=e42]
+              - generic [ref=e43] [cursor=pointer]: تذكرني
+            - button "تسجيل الدخول" [ref=e44]
+          - generic [ref=e49]: أو
+          - button "المتابعة مع Google" [ref=e50]:
+            - img
+            - text: المتابعة مع Google
+        - paragraph [ref=e52]:
+          - text: ليس لديك حساب؟
+          - link "إنشاء حساب" [ref=e53] [cursor=pointer]:
+            - /url: /register
+    - contentinfo [ref=e54]:
+      - paragraph [ref=e55]: © 2026 NexusAD. جميع الحقوق محفوظة.
+  - dialog "موافقة ملفات تعريف الارتباط" [ref=e56]:
+    - generic [ref=e57]:
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - img [ref=e61]
+          - generic [ref=e63]:
+            - heading "نحن نحترم خصوصيتك" [level=2] [ref=e64]
+            - paragraph [ref=e65]:
+              - text: نستخدم ملفات تعريف الارتباط الأساسية فقط لتشغيل الخدمة. ملفات تعريف الارتباط التحليلية اختيارية ويمكنك التحكم فيها.
+              - link "سياسة الخصوصية" [ref=e66] [cursor=pointer]:
+                - /url: /privacy-policy
+                - img [ref=e67]
+                - text: سياسة الخصوصية
+        - button "تخصيص الإعدادات" [ref=e69]:
+          - text: تخصيص الإعدادات
+          - img [ref=e70]
+      - generic [ref=e72]:
+        - button "الأساسية فقط" [ref=e73]
+        - button "قبول الكل" [ref=e74]
+  - region "Notifications alt+T"
+  - generic [ref=e81]:
+    - button "Open Next.js Dev Tools" [ref=e82]:
+      - img [ref=e83]
+    - generic [ref=e86]:
+      - button "Open issues overlay" [ref=e87]:
+        - generic [ref=e88]:
+          - generic [ref=e89]: "0"
+          - generic [ref=e90]: "1"
+        - generic [ref=e91]: Issue
+      - button "Collapse issues badge" [ref=e92]:
+        - img [ref=e93]
+  - alert [ref=e95]
+```
