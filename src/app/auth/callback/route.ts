@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
   // Set the session cookie
   const cookieStore = await cookies()
-  cookieStore.set("session", token, {
+  cookieStore.set("nexus-session", token, {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
