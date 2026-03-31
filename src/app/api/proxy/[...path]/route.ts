@@ -616,6 +616,12 @@ async function proxyRequest(
   // SEC-032: Generate unique request ID for tracing
   const requestId = generateRequestId()
 
+  // DEBUG: Log incoming request
+  console.log(`[${requestId}][DEBUG-INCOMING] ${method} request received`)
+  console.log(`[${requestId}][DEBUG-INCOMING] URL: ${req.nextUrl.pathname}${req.nextUrl.search}`)
+  console.log(`[${requestId}][DEBUG-INCOMING] BACKEND_URL env: "${BACKEND_URL}"`)
+  console.log(`[${requestId}][DEBUG-INCOMING] Content-Type: ${req.headers.get("content-type") || "(none)"}`)
+
   // SEC-221: Block HTTP Method Override headers to prevent verb tampering.
   // Attackers use headers like X-HTTP-Method-Override to change POST to DELETE,
   // bypassing CSRF checks or accessing different handler logic on the backend.
@@ -648,17 +654,26 @@ async function proxyRequest(
 
   const cookieStore = await cookies()
   const session = cookieStore.get("nexus-session")?.value
+  console.log(`[${requestId}][DEBUG-AUTH] Session cookie present: ${!!session}, length: ${session?.length || 0}`)
 
   // CSRF validation for mutating requests
   if (["POST", "PUT", "DELETE", "PATCH"].includes(method)) {
     const csrfCookie = cookieStore.get("csrf-token")?.value
     const csrfHeader = req.headers.get("X-CSRF-Token")
 
+    // DEBUG: CSRF token details
+    console.log(`[${requestId}][DEBUG-CSRF] Cookie present: ${!!csrfCookie}, length: ${csrfCookie?.length || 0}`)
+    console.log(`[${requestId}][DEBUG-CSRF] Header present: ${!!csrfHeader}, length: ${csrfHeader?.length || 0}`)
+    console.log(`[${requestId}][DEBUG-CSRF] Cookie value: ${csrfCookie ? csrfCookie.slice(0, 8) + '...' : '(none)'}`)
+    console.log(`[${requestId}][DEBUG-CSRF] Header value: ${csrfHeader ? csrfHeader.slice(0, 8) + '...' : '(none)'}`)
+
     // SEC-213: Use constant-time comparison for CSRF tokens to prevent
     // timing side-channel attacks that could leak token bytes
     const csrfValid = csrfCookie && csrfHeader &&
       csrfCookie.length === csrfHeader.length &&
       timingSafeCompare(csrfCookie, csrfHeader)
+
+    console.log(`[${requestId}][DEBUG-CSRF] Validation result: ${csrfValid}`)
 
     if (!csrfValid) {
       console.error(`[${requestId}] CSRF validation failed`)
@@ -679,6 +694,8 @@ async function proxyRequest(
   }
 
   const targetUrl = `${BACKEND_URL}/${pathStr}`
+  console.log(`[${requestId}][DEBUG-TRANSFORM] pathStr: "${pathStr}"`)
+  console.log(`[${requestId}][DEBUG-TRANSFORM] targetUrl: "${targetUrl}"`)
   const searchParams = req.nextUrl.searchParams.toString()
   // SEC-036: Sanitize query params to prevent injection of URL fragments or extra paths
   const sanitizedSearchParams = searchParams.replace(/#.*/g, "") // Strip fragments
@@ -716,6 +733,7 @@ async function proxyRequest(
   }
 
   const fullUrl = sanitizedSearchParams ? `${targetUrl}?${sanitizedSearchParams}` : targetUrl
+  console.log(`[${requestId}][DEBUG-TRANSFORM] fullUrl: "${fullUrl}"`)
 
   // SSRF Protection: Validate the FULL URL (including query params) before making request
   // SEC-036: Previously only validated targetUrl, now validates fullUrl to prevent
@@ -883,6 +901,13 @@ async function proxyRequest(
   // The proxy constructs its OWN headers object above, so client headers
   // are NOT forwarded by default. This comment documents the intentional design.
 
+  // DEBUG: Log outgoing request details
+  console.log(`[${requestId}][DEBUG-OUTGOING] Headers being sent:`, JSON.stringify(headers, null, 2))
+  console.log(`[${requestId}][DEBUG-OUTGOING] Has body: ${!!body}, body length: ${body ? (typeof body === 'string' ? body.length : (body as Buffer).length) : 0}`)
+  if (body && typeof body === 'string' && body.length < 500) {
+    console.log(`[${requestId}][DEBUG-OUTGOING] Body preview: ${body}`)
+  }
+
   try {
     // SEC-030: Create AbortController for request timeout
     // PRO-MODE-FIX: Use longer timeout for chat endpoint (SSE streaming)
@@ -924,6 +949,11 @@ async function proxyRequest(
     }
 
     clearTimeout(timeoutId)
+
+    // DEBUG: Log backend response
+    console.log(`[${requestId}][DEBUG-RESPONSE] Status: ${response.status} ${response.statusText}`)
+    console.log(`[${requestId}][DEBUG-RESPONSE] Content-Type: ${response.headers.get("Content-Type") || "(none)"}`)
+    console.log(`[${requestId}][DEBUG-RESPONSE] Content-Length: ${response.headers.get("Content-Length") || "(none)"}`)
 
     // SEC-031: Check Content-Length before reading response
     const contentLength = response.headers.get("Content-Length")
@@ -1022,6 +1052,14 @@ async function proxyRequest(
     }
     const responseData = new TextDecoder().decode(responseBuffer)
 
+    // DEBUG: Log response body preview
+    console.log(`[${requestId}][DEBUG-RESPONSE-BODY] Total size: ${totalSize} bytes`)
+    if (responseData.length < 1000) {
+      console.log(`[${requestId}][DEBUG-RESPONSE-BODY] Full body: ${responseData}`)
+    } else {
+      console.log(`[${requestId}][DEBUG-RESPONSE-BODY] First 500 chars: ${responseData.slice(0, 500)}`)
+    }
+
     return new NextResponse(responseData, {
       status: response.status,
       headers: {
@@ -1047,7 +1085,10 @@ async function proxyRequest(
       )
     }
 
-    console.error(`[${requestId}] Backend error:`, error)
+    console.error(`[${requestId}][DEBUG-ERROR] Backend error:`, error)
+    console.error(`[${requestId}][DEBUG-ERROR] Error name: ${error instanceof Error ? error.name : 'unknown'}`)
+    console.error(`[${requestId}][DEBUG-ERROR] Error message: ${error instanceof Error ? error.message : String(error)}`)
+    console.error(`[${requestId}][DEBUG-ERROR] Target was: ${fullUrl}`)
     return NextResponse.json({ error: "Backend unavailable", requestId }, { status: 502 })
   }
 }

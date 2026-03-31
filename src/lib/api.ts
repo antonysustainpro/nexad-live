@@ -297,14 +297,22 @@ export async function* streamChat(request: ChatRequest, signal?: AbortSignal): A
     MUTATION_RETRY_OPTIONS
   )
 
+  // DEBUG: Log full response details
+  console.log("[streamChat][DEBUG] Response status:", response.status)
+  console.log("[streamChat][DEBUG] Response headers Content-Type:", response.headers.get("Content-Type"))
+  console.log("[streamChat][DEBUG] Response headers X-Request-ID:", response.headers.get("X-Request-ID"))
+  console.log("[streamChat][DEBUG] Response ok:", response.ok)
+
   if (!response.ok) {
     const errorBody = await response.text().catch(() => "")
     console.error("[Chat API] Error response:", response.status, errorBody)
+    console.error("[streamChat][DEBUG] Full error body:", errorBody)
     // Keep status in message so getFriendlyErrorMessage can map it to user text
     throw new Error(`Chat API error: ${response.status}`)
   }
 
   const reader = response.body?.getReader()
+  console.log("[streamChat][DEBUG] Reader obtained:", !!reader)
   if (!reader) throw new Error("We couldn't start the response stream. Please try again.")
 
   const decoder = new TextDecoder()
