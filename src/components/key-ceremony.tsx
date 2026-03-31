@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "motion/react"
+import QRCode from "qrcode"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { generateKeypair } from "@/lib/api"
@@ -13,103 +14,21 @@ interface KeyCeremonyProps {
 }
 
 /**
- * Generates a simple QR-code-like matrix from input data.
- * This uses a deterministic hash to create a scannable-looking pattern.
- * For production, replace with a proper QR encoding library.
+ * Renders a real, scannable QR code onto a canvas element using the qrcode library.
+ * The encoded data is a JSON payload containing the key fingerprint and vault ID,
+ * formatted as a nexusad:// deep-link that the mobile app can parse.
+ * All generation is client-side — no data is sent to any external service.
  */
-function generateQRMatrix(data: string, size: number = 25): boolean[][] {
-  // Simple hash function for deterministic pattern
-  let hash = 0
-  for (let i = 0; i < data.length; i++) {
-    const char = data.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
-    hash = hash & hash // Convert to 32-bit integer
-  }
-
-  // Seed a simple PRNG from the hash
-  let seed = Math.abs(hash)
-  const nextRand = () => {
-    seed = (seed * 16807 + 0) % 2147483647
-    return seed / 2147483647
-  }
-
-  const matrix: boolean[][] = Array.from({ length: size }, () =>
-    Array.from({ length: size }, () => false)
-  )
-
-  // Draw finder patterns (the three corner squares that make it look like a real QR code)
-  const drawFinder = (startR: number, startC: number) => {
-    for (let r = 0; r < 7; r++) {
-      for (let c = 0; c < 7; c++) {
-        const isOuterBorder = r === 0 || r === 6 || c === 0 || c === 6
-        const isInnerBlock = r >= 2 && r <= 4 && c >= 2 && c <= 4
-        matrix[startR + r][startC + c] = isOuterBorder || isInnerBlock
-      }
-    }
-  }
-
-  drawFinder(0, 0)
-  drawFinder(0, size - 7)
-  drawFinder(size - 7, 0)
-
-  // Timing patterns (alternating line between finders)
-  for (let i = 7; i < size - 7; i++) {
-    matrix[6][i] = i % 2 === 0
-    matrix[i][6] = i % 2 === 0
-  }
-
-  // Fill remaining cells with data-derived pattern
-  for (let r = 0; r < size; r++) {
-    for (let c = 0; c < size; c++) {
-      // Skip finder pattern areas and timing lines
-      const inFinder1 = r < 8 && c < 8
-      const inFinder2 = r < 8 && c >= size - 8
-      const inFinder3 = r >= size - 8 && c < 8
-      const onTiming = r === 6 || c === 6
-
-      if (!inFinder1 && !inFinder2 && !inFinder3 && !onTiming && !matrix[r][c]) {
-        matrix[r][c] = nextRand() > 0.5
-      }
-    }
-  }
-
-  return matrix
-}
-
-function drawQRToCanvas(
+async function drawQRToCanvas(
   canvas: HTMLCanvasElement,
-  data: string,
-  moduleSize: number = 6,
-  padding: number = 16
+  data: string
 ) {
-  const qrSize = 25
-  const matrix = generateQRMatrix(data, qrSize)
-  const totalSize = qrSize * moduleSize + padding * 2
-
-  canvas.width = totalSize
-  canvas.height = totalSize
-
-  const ctx = canvas.getContext("2d")
-  if (!ctx) return
-
-  // White background
-  ctx.fillStyle = "#FFFFFF"
-  ctx.fillRect(0, 0, totalSize, totalSize)
-
-  // Draw modules
-  ctx.fillStyle = "#000000"
-  for (let r = 0; r < qrSize; r++) {
-    for (let c = 0; c < qrSize; c++) {
-      if (matrix[r][c]) {
-        ctx.fillRect(
-          padding + c * moduleSize,
-          padding + r * moduleSize,
-          moduleSize,
-          moduleSize
-        )
-      }
-    }
-  }
+  await QRCode.toCanvas(canvas, data, {
+    width: 200,
+    margin: 2,
+    color: { dark: "#000000", light: "#ffffff" },
+    errorCorrectionLevel: "H",
+  })
 }
 
 const PHASES = [
@@ -220,11 +139,20 @@ export function KeyCeremony({ onComplete, language = "en", vaultId = "00247" }: 
     }
   }, [phase, securityLines])
 
-  // Draw QR code when shown
+  // Draw real QR code when shown - encodes a JSON payload with fingerprint + vault ID
   useEffect(() => {
     if (showQR && qrCanvasRef.current) {
-      const qrData = `nexusad://key-backup?fp=${fingerprint}&vault=${vaultId}`
-      drawQRToCanvas(qrCanvasRef.current, qrData, 8, 20)
+      const payload = JSON.stringify({
+        type: "nexusad-key-backup",
+        version: 1,
+        fingerprint,
+        vaultId,
+        createdAt: new Date().toISOString(),
+      })
+      const qrData = `nexusad://key-backup?data=${encodeURIComponent(payload)}`
+      drawQRToCanvas(qrCanvasRef.current, qrData).catch((err) => {
+        console.error("QR generation failed:", err)
+      })
     }
   }, [showQR, fingerprint, vaultId])
 

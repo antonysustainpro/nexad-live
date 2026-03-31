@@ -5,6 +5,7 @@
 
 import { getCsrfToken } from "./csrf"
 import { withRetry, withCircuitBreaker, type RetryOptions } from "./resilience"
+import { checkRateLimit } from "./rate-limiter"
 
 // Default retry config for read-only (GET) API calls
 export const DEFAULT_READ_RETRY: RetryOptions = {

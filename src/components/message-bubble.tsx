@@ -68,7 +68,7 @@ export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbl
     >
       <div
         className={cn(
-          "relative max-w-[80%] p-4",
+          "relative max-w-[85%] sm:max-w-[80%] p-3 sm:p-4 min-w-0",
           isUser
             ? cn(
                 "bg-nexus-jade/10 border border-nexus-jade/20",
@@ -88,8 +88,8 @@ export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbl
       >
         {/* AI Message Header */}
         {!isUser && (message.domain || message.provider || message.piiScrubbed) && (
-          <div className="flex items-center justify-between gap-3 mb-2 pb-2 border-b border-border">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2 pb-2 border-b border-border">
+            <div className="flex flex-wrap items-center gap-1.5 min-w-0">
               {message.domain && (
                 <Badge variant="secondary" className="text-xs">
                   {language === "ar" ? getDomainLabelAr(message.domain) : message.domain}
@@ -103,7 +103,7 @@ export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbl
               )}
             </div>
             {message.provider && (
-              <span className="text-caption text-nexus-gold font-medium">
+              <span className="text-caption text-nexus-gold font-medium whitespace-nowrap">
                 {language === "ar" ? "العقل السيادي" : "Sovereign Brain"}
               </span>
             )}
@@ -212,16 +212,16 @@ export const MessageBubble = React.memo(({ message, onRegenerate }: MessageBubbl
           <div className={cn(
             "flex mt-2 pt-1 transition-opacity duration-150",
             isRTL ? "justify-start" : "justify-end",
-            isHovered ? "opacity-100" : "opacity-0 focus-within:opacity-100"
+            isHovered ? "opacity-100" : "opacity-0 focus-within:opacity-100 touch:opacity-100 [@media(hover:none)]:opacity-100"
           )}>
             <button
               onClick={onRegenerate}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-nexus-jade transition-colors rounded-md px-2 py-1 hover:bg-secondary/60"
-              aria-label={language === "ar" ? "إعادة التوليد" : "Regenerate response"}
-              title={language === "ar" ? "إعادة التوليد" : "Regenerate response"}
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-nexus-jade transition-colors rounded-md px-3 py-2.5 min-h-[44px] min-w-[44px] hover:bg-secondary/60 active:bg-secondary/80"
+              aria-label={language === "ar" ? "توليد رد آخر" : "Regenerate response"}
+              title={language === "ar" ? "توليد رد آخر" : "Regenerate response"}
             >
               <RefreshCw className="h-3 w-3" />
-              <span>{language === "ar" ? "إعادة" : "Regenerate"}</span>
+              <span>{language === "ar" ? "رد آخر" : "Regenerate"}</span>
             </button>
           </div>
         )}
@@ -250,8 +250,8 @@ export const TypingIndicator = React.memo(() => {
 
   const phases = [
     { text: language === "ar" ? "تشفير استفسارك..." : "Encrypting your query...", duration: 1200 },
-    { text: language === "ar" ? "التوزيع عبر الأجزاء..." : "Distributing across shards...", duration: 2500 },
-    { text: language === "ar" ? "استشارة المختصين..." : "Consulting specialists...", duration: null }, // hold forever
+    { text: language === "ar" ? "توزيع الطلب على الخوادم..." : "Distributing across shards...", duration: 2500 },
+    { text: language === "ar" ? "في انتظار رد المختصين..." : "Consulting specialists...", duration: null }, // hold forever
   ]
 
   useEffect(() => {

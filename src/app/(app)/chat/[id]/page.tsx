@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback, use } from "react"
 import { useRouter } from "next/navigation"
 import { Pencil, Check, X, Info, Loader2 } from "lucide-react"
 import { ExportDropdown } from "@/components/export-dropdown"
+import { ErrorRetry } from "@/components/error-retry"
 import {
   Sheet,
   SheetContent,
@@ -229,24 +230,31 @@ export default function ChatConversationPage({ params }: { params: Promise<{ id:
         setIsLoading(false)
       }
     } catch (error) {
-      // Show error message to user instead of mock fallback
-      const errorMessage = error instanceof Error && error.name === "AbortError"
-        ? "Request was cancelled."
-        : "Unable to connect to NexusAD. Please check your connection and try again."
+      // AbortError = user cancelled — no error message needed
+      if (error instanceof Error && error.name === "AbortError") {
+        // Clean up any streaming message left in place
+        setMessages(prev => prev.map(msg =>
+          msg.isStreaming ? { ...msg, isStreaming: false } : msg
+        ))
+        setIsLoading(false)
+        return
+      }
+      // Show error message to user with isError flag so a retry button renders
       setMessages(prev => {
-        // If a streaming assistant message exists, update it with the error
+        // If a streaming assistant message exists, mark it as an error
         const hasStreamingMsg = prev.some(msg => msg.isStreaming)
         if (hasStreamingMsg) {
           return prev.map(msg =>
-            msg.isStreaming ? { ...msg, isStreaming: false, content: msg.content || errorMessage } : msg
+            msg.isStreaming ? { ...msg, isStreaming: false, isError: true } : msg
           )
         }
         // Otherwise add a new error message
         return [...prev, {
           id: generateMessageId(),
           role: "assistant",
-          content: errorMessage,
+          content: "",
           timestamp: new Date(),
+          isError: true,
         }]
       })
       setIsLoading(false)
@@ -444,12 +452,24 @@ export default function ChatConversationPage({ params }: { params: Promise<{ id:
                 key={message.id}
                 message={message}
                 onRegenerate={
-                  message.role === "assistant" && index === messages.length - 1 && !isLoading
+                  message.role === "assistant" && index === messages.length - 1 && !isLoading && !message.isError
                     ? handleRegenerate
                     : undefined
                 }
               />
             ))}
+            {/* Error retry — shown when the last assistant message is an error */}
+            {messages.length > 0 && messages[messages.length - 1]?.isError && !isLoading && (
+              <ErrorRetry
+                onRetry={handleRegenerate}
+                message={language === "ar"
+                  ? "تعذّر الاتصال بـ NexusAD. تحقق من اتصالك وأعد المحاولة."
+                  : "We couldn't connect. Please check your connection and try again."}
+                networkError
+                variant="card"
+                className="mx-2"
+              />
+            )}
             {isLoading && <TypingIndicator />}
             <div ref={messagesEndRef} />
           </div>

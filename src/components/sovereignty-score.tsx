@@ -66,7 +66,7 @@ export function SovereigntyScore({
 
   const factorLabels = {
     encryption: { en: "Encryption", ar: "التشفير" },
-    shards: { en: "Shards", ar: "الأجزاء" },
+    shards: { en: "Shards", ar: "توزيع البيانات" },
     localProcessing: { en: "Local Processing", ar: "المعالجة المحلية" },
     keyHealth: { en: "Key Health", ar: "صحة المفتاح" },
     access: { en: "Access", ar: "الوصول" },
